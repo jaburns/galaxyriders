@@ -2,6 +2,7 @@
 extern crate glium;
 extern crate image;
 
+mod ecs;
 mod teapot;
 
 use std::io::Cursor;
@@ -33,6 +34,9 @@ fn get_perspective_matrix(screen_dimensions: (u32,u32)) -> [[f32; 4]; 4] {
 
 fn main() {
     let mut t: f32 = -0.5;
+
+    ecs::ecs_test();
+    return;
 
     let display = glium::glutin::WindowBuilder::new()
         .with_title("Game")
