@@ -35,8 +35,8 @@ fn get_perspective_matrix(screen_dimensions: (u32,u32)) -> [[f32; 4]; 4] {
 fn main() {
     let mut t: f32 = -0.5;
 
-    ecs::ecs_test();
-    return;
+//  ecs::ecs_test();
+//  return;
 
     let display = glium::glutin::WindowBuilder::new()
         .with_title("Game")
@@ -64,6 +64,10 @@ fn main() {
         .. Default::default()
     };
 
+    let mut world = ecs::World::new();
+    world.new_entity()
+        .add(ecs::Transform { position: [0.0,0.0,2.0] });
+
     loop {
         t += 0.0002;
         if t > 3.14159 {
@@ -74,18 +78,25 @@ fn main() {
         target.clear_color_and_depth((0.0, 0.0, 1.0, 1.0), 1.0);
         let perspective = get_perspective_matrix(target.get_dimensions());
 
-        let uniforms = uniform! {
-            perspective: perspective,
-            matrix: [
-                [0.01 * t.cos(), 0.0, 0.01 * t.sin(), 0.0],
-                [0.0, 0.01, 0.0, 0.0],
-                [0.01 *-t.sin(), 0.0, 0.01 * t.cos(), 0.0],
-                [0.0, 0.0, 2.0, 1.0f32],
-            ],
-            light: [-1.0, 0.4, 0.9f32],
-            tex: &texture,
-        };
-        target.draw((&positions, &normals), &indices, &program, &uniforms, &params).unwrap();
+        world.iter_component(&mut |tr: &mut ecs::Transform| {
+            tr.position[1] = t;
+        });
+
+        world.iter_component(&mut |tr: &mut ecs::Transform| {
+            let uniforms = uniform! {
+                perspective: perspective,
+                matrix: [
+                    [0.01 * t.cos(), 0.0, 0.01 * t.sin(), 0.0],
+                    [0.0, 0.01, 0.0, 0.0],
+                    [0.01 *-t.sin(), 0.0, 0.01 * t.cos(), 0.0],
+                    [tr.position[0], tr.position[1], tr.position[2], 1.0f32],
+                ],
+                light: [-1.0, 0.4, 0.9f32],
+                tex: &texture,
+            };
+            target.draw((&positions, &normals), &indices, &program, &uniforms, &params).unwrap();
+        });
+
         target.finish().unwrap();
 
         for ev in display.poll_events() {
