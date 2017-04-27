@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+cc -o game main.cc teapot.cc \
+    -std=c++14 \
+    -lglfw \
+    -framework OpenGL
