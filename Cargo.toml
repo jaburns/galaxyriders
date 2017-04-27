@@ -1,8 +1,0 @@
-[package]
-name = "glgame"
-version = "0.0.0"
-authors = ["jaburns"]
-
-[dependencies]
-glium = "*"
-image = "*"

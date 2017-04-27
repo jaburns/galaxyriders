@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cc -o game main.cc teapot.cc load_png.cc \
+cc -o game src/*.cc \
     -std=c++14 \
     -lstdc++ \
     -lglfw \
