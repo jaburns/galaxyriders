@@ -141,7 +141,7 @@ int main(void)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapot_indices), teapot_indices, GL_STATIC_DRAW);
 
     int texWidth, texHeight;
-    GLint texture = loadTexture("../res/texture.png", texWidth, texHeight);
+    GLint texture = loadTexture("res/texture.png", texWidth, texHeight);
 
     float t = -0.5;
 
