@@ -78,9 +78,9 @@ fn main() {
         target.clear_color_and_depth((0.0, 0.0, 1.0, 1.0), 1.0);
         let perspective = get_perspective_matrix(target.get_dimensions());
 
-        world.iter_component(&mut |tr: &mut ecs::Transform| {
-            tr.position[1] = t;
-        });
+//      world.iter_component(&mut |tr: &mut ecs::Transform| {
+//          tr.position[1] = t;
+//      });
 
         world.iter_component(&mut |tr: &mut ecs::Transform| {
             let uniforms = uniform! {

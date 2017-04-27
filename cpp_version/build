@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-cc -o game main.cc teapot.cc \
+cc -o game main.cc teapot.cc load_png.cc \
     -std=c++14 \
+    -lstdc++ \
     -lglfw \
+    -lpng \
     -framework OpenGL
