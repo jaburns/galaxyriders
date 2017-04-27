@@ -6,6 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include "ecs.h"
 
 using namespace std;
 
@@ -81,6 +82,10 @@ static GLuint compile_program(const GLchar *vert, const GLchar *frag)
 
 int main(void)
 {
+    ecs_test();
+    return 0;
+
+
     GLFWwindow* window;
 
     glfwSetErrorCallback(error_callback);
