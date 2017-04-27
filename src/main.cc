@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
-#include "ecs.h"
 
 using namespace std;
 

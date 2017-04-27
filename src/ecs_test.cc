@@ -1,6 +1,6 @@
 #include <iostream>
-#include "./deps/linmath.h"
-#include "./ecs.h"
+#include "deps/linmath.h"
+#include "ecs.h"
 
 using namespace std;
 using namespace ecs;
