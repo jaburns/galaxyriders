@@ -69,7 +69,7 @@ fn main() {
         .add(ecs::Transform { position: [0.0,0.0,2.0] });
 
     loop {
-        t += 0.0002;
+        t += 0.0008;
         if t > 3.14159 {
             t = -3.14159;
         }
