@@ -80,6 +80,8 @@ static GLuint compile_program(const GLchar *vert, const GLchar *frag)
     return program;
 }
 
+extern void ecs_test();
+
 int main(void)
 {
     ecs_test();
