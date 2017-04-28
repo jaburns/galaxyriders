@@ -44,14 +44,14 @@ namespace ecs
         World();
         EntityContext create_entity();
 
-        template<typename S> void run_system(S *sys);
+        template<typename S> void run_system(S& sys);
     };
 
     template<typename T>
     struct System
     {
         typedef T MainComponent;
-        void run(EntityContext &c, T &t);
+        void run(EntityContext& c, T& t);
     };
 
 // ------------------------------------------------------------------------
@@ -65,7 +65,7 @@ namespace ecs
     template<typename T>
     void EntityContext::add_component(T val)
     {
-        world->add_component_for_entity(this->entity_id, val);
+        world->add_component_for_entity(entity_id, val);
     }
 
     template<typename T>
@@ -97,19 +97,19 @@ namespace ecs
     }
 
     EntityContext World::create_entity() {
-        return EntityContext(this->next_entity_id++, this);
+        return EntityContext(next_entity_id++, this);
     }
 
     template<typename S>
-    void World::run_system(S *sys)
+    void World::run_system(S& sys)
     {
         typedef typename S::MainComponent MC;
 
         auto set_T = std::static_pointer_cast<ComponentSet<MC>>(component_sets[typeid(MC)]);
 
-        for (auto &pair : set_T->components) {
+        for (auto& pair : set_T->components) {
             EntityContext ec(pair.first, this);
-            sys->run(ec, pair.second);
+            sys.run(ec, pair.second);
         }
     }
 }

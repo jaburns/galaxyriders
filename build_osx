@@ -1,8 +1,12 @@
 #!/usr/bin/env bash
+set -e
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
-cc -o game src/*.cc \
+cc -o game src/*.cc src/deps/*.cc \
     -std=c++14 \
     -lstdc++ \
     -lglfw \
     -lpng \
     -framework OpenGL
+
+./game

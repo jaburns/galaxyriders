@@ -6,6 +6,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 
@@ -13,42 +15,6 @@ extern const vec3 teapot_vertices[531];
 extern const vec3 teapot_normals[531];
 extern const unsigned int teapot_indices[3072];
 extern GLuint loadTexture(const string filename, int &width, int &height);
-
-static const char* vertex_shader_text =
-    "#version 150\n"
-
-    "in vec3 vPos;\n"
-    "in vec3 vNorm;\n"
-
-    "out vec2 v_tex_coords;\n"
-    "out vec3 v_normal;\n"
-
-    "uniform mat4 model;\n"
-    "uniform mat4 perspective;\n"
-
-    "void main()\n"
-    "{\n"
-        "v_normal = transpose(inverse(mat3(model))) * vNorm;\n"
-        "v_tex_coords = 0.01 * vPos.xy;\n"
-        "gl_Position = perspective * model * vec4(vPos, 1.0);\n"
-    "}\n";
-
-static const char* fragment_shader_text =
-    "#version 150\n"
-
-    "in vec2 v_tex_coords;\n"
-    "in vec3 v_normal;\n"
-
-    "out vec4 color;\n"
-
-    "const vec3 light = vec3(-1.0, 0.4, 0.9);\n"
-    "uniform sampler2D tex;\n"
-
-    "void main()\n"
-    "{\n"
-        "float brightness = dot(normalize(v_normal), normalize(light));\n"
-        "color = (0.5 + 0.5 * brightness) * texture(tex, v_tex_coords);\n"
-    "}\n";
 
 static void error_callback(int error, const char* description)
 {
@@ -61,19 +27,26 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
-static GLuint compile_program(const GLchar *vert, const GLchar *frag)
+static GLuint compile_from_file(const char *shader_path, GLenum shader_type)
 {
-    GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vertex_shader, 1, &vert, NULL);
-    glCompileShader(vertex_shader);
+    ifstream file(shader_path);
+    stringstream buffer;
+    buffer << file.rdbuf();
+    string str = buffer.str();
+    const char *cstr = str.c_str();
 
-    GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fragment_shader, 1, &frag, NULL);
-    glCompileShader(fragment_shader);
+    GLuint shader = glCreateShader(shader_type);
+    glShaderSource(shader, 1, &cstr, NULL);
+    glCompileShader(shader);
 
+    return shader;
+}
+
+static GLuint compile_program(const char *vert_path, const char *frag_path)
+{
     GLuint program = glCreateProgram();
-    glAttachShader(program, vertex_shader);
-    glAttachShader(program, fragment_shader);
+    glAttachShader(program, compile_from_file(vert_path, GL_VERTEX_SHADER));
+    glAttachShader(program, compile_from_file(frag_path, GL_FRAGMENT_SHADER));
     glLinkProgram(program);
 
     return program;
@@ -83,10 +56,6 @@ extern void ecs_test();
 
 int main(void)
 {
-    ecs_test();
-    return 0;
-
-
     GLFWwindow* window;
 
     glfwSetErrorCallback(error_callback);
@@ -116,7 +85,7 @@ int main(void)
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
 
-    GLuint program = compile_program(vertex_shader_text, fragment_shader_text);
+    GLuint program = compile_program("res/shaders/main.vert", "res/shaders/main.frag");
     GLint model_location = glGetUniformLocation(program, "model");
     GLint perspective_location = glGetUniformLocation(program, "perspective");
     GLint texture_location = glGetUniformLocation(program, "tex");
