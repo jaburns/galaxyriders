@@ -8,8 +8,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include "math.h"
+#include "ecs.h"
 
 using namespace std;
+using namespace ecs;
 
 extern const vec3 teapot_vertices[531];
 extern const vec3 teapot_normals[531];
@@ -52,7 +55,69 @@ static GLuint compile_program(const char *vert_path, const char *frag_path)
     return program;
 }
 
-extern void ecs_test();
+
+
+struct Transform {
+    vec3 position;
+    float rotation;
+};
+
+struct RotationSystem : public System<Transform>
+{
+    void run(EntityContext &c, Transform &t)
+    {
+        t.rotation = glfwGetTime();
+        t.position[1] = sinf(t.rotation + t.position[0]);
+    }
+};
+
+class TeaSystem : public System<Transform>
+{
+    GLuint program;
+    GLint model_location;
+    GLint perspective_location;
+    GLint texture;
+    GLint texture_location;
+    GLint index_buffer;
+
+public:
+    const GLfloat* p;
+
+    TeaSystem(
+        GLuint program,
+        GLint model_location,
+        GLint perspective_location,
+        GLint texture,
+        GLint texture_location,
+        GLint index_buffer
+    ) :   program(program)
+        , model_location(model_location)
+        , perspective_location(perspective_location)
+        , texture(texture)
+        , texture_location(texture_location)
+        , index_buffer(index_buffer)
+    { }
+
+    void run(EntityContext &c, Transform &t) 
+    {
+        mat4x4 m;
+        mat4x4_translate(m, t.position[0], t.position[1], t.position[2]);
+        mat4x4_scale_aniso(m, m, 0.01, 0.01, 0.01);
+        mat4x4_rotate_Y(m, m, t.rotation);
+
+        glUseProgram(program);
+        glUniformMatrix4fv(model_location, 1, GL_FALSE, (const GLfloat*)m);
+        glUniformMatrix4fv(perspective_location, 1, GL_FALSE, p);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, texture);
+        glUniform1i(texture_location, 0);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+        glDrawElements(GL_TRIANGLES, 3072, GL_UNSIGNED_INT, (void*)0);
+    }
+};
+
+
 
 int main(void)
 {
@@ -77,7 +142,7 @@ int main(void)
     glfwSetKeyCallback(window, key_callback);
 
     glfwMakeContextCurrent(window);
-    glfwSwapInterval(0); // TODO set to 1 for vsync
+    glfwSwapInterval(1); // TODO set to 1 for vsync
 
     glEnable(GL_DEPTH_TEST);
 
@@ -118,16 +183,28 @@ int main(void)
     int texWidth, texHeight;
     GLint texture = loadTexture("res/texture.png", texWidth, texHeight);
 
-    float t = -0.5;
+    glClearColor(0, 0, 0, 1);
 
-    glClearColor(0, 0, 1, 1);
+    World w;
+
+    auto pot1 = w.create_entity();
+    pot1.add_component((Transform){ { -1.0, 0.0, -3.0 } });
+
+    auto pot2 = w.create_entity();
+    pot2.add_component((Transform){ { 1.0, 1.0, -3.0 } });
+
+    TeaSystem s(
+        program,
+        model_location,
+        perspective_location,
+        texture,
+        texture_location,
+        index_buffer
+    );
+
+    RotationSystem r;
 
     while (!glfwWindowShouldClose(window)) {
-        t += 0.0008;
-        if (t > 3.14159) {
-            t = -3.14159;
-        }
-
         float ratio;
         int width, height;
         glfwGetFramebufferSize(window, &width, &height);
@@ -135,23 +212,12 @@ int main(void)
         glViewport(0, 0, width, height);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        mat4x4 m;
-        mat4x4_translate(m, 0, 0, -2);
-        mat4x4_scale_aniso(m, m, 0.01, 0.01, 0.01);
-        mat4x4_rotate_Y(m, m, -t);
-
         mat4x4 p;
         mat4x4_perspective(p, 3.14159 / 3.0, width / (float)height, 1.0, 1024.0);
+        s.p = (const GLfloat*)p;
 
-        glUseProgram(program);
-        glUniformMatrix4fv(model_location, 1, GL_FALSE, (const GLfloat*) m);
-        glUniformMatrix4fv(perspective_location, 1, GL_FALSE, (const GLfloat*) p);
-
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glUniform1i(texture_location, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-        glDrawElements(GL_TRIANGLES, 3072, GL_UNSIGNED_INT, (void*)0);
+        w.run_system(r);
+        w.run_system(s);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

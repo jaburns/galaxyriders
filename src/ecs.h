@@ -25,7 +25,9 @@ namespace ecs
         World *world;
 
     public:
-        EntityContext(EntityId id, World *world);
+        EntityContext(EntityId id, World *world)
+            : entity_id(id), world(world)
+        { }
 
         template<typename T> void add_component(T val);
         template<typename T> T* get_component();
@@ -41,7 +43,10 @@ namespace ecs
         template<typename T> void add_component_for_entity(EntityId id, T val);
 
     public:
-        World();
+        World()
+            : next_entity_id(0)
+        { }
+
         EntityContext create_entity();
 
         template<typename S> void run_system(S& sys);
@@ -55,12 +60,6 @@ namespace ecs
     };
 
 // ------------------------------------------------------------------------
-
-    EntityContext::EntityContext(EntityId id, World *world)
-    {
-        this->entity_id = id;
-        this->world = world;
-    }
 
     template<typename T>
     void EntityContext::add_component(T val)
@@ -80,10 +79,6 @@ namespace ecs
     }
 
 
-    World::World() {
-        this->next_entity_id = 0;
-    }
-
     template<typename T>
     void World::add_component_for_entity(EntityId id, T val)
     {
@@ -96,7 +91,8 @@ namespace ecs
         component_set->components[id] = val;
     }
 
-    EntityContext World::create_entity() {
+    EntityContext World::create_entity() 
+    {
         return EntityContext(next_entity_id++, this);
     }
 
