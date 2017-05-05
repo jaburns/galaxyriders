@@ -59,8 +59,6 @@ static GLuint compile_program(const char *vert_path, const char *frag_path)
     return program;
 }
 
-
-
 struct Transform {
     vec3 position;
     float rotation;
@@ -123,19 +121,15 @@ public:
 
 GLint loadPNGTexture(const char *path)
 {
-    // Load file and decode image.
     std::vector<unsigned char> image;
     unsigned width, height;
     unsigned error = lodepng::decode(image, width, height, path);
 
-    // If there's an error, display it.
-    if (error != 0)
-    {
+    if (error != 0) {
         std::cout << "error " << error << ": " << lodepng_error_text(error) << std::endl;
         return 1;
     }
 
-    //Now generate the OpenGL texture object
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
@@ -144,8 +138,6 @@ GLint loadPNGTexture(const char *path)
 
     return texture;
 }
-
-
 
 int main(void)
 {
@@ -216,14 +208,8 @@ int main(void)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapot_indices), teapot_indices, GL_STATIC_DRAW);
 
-    cout << "LOADING" << endl;
-
-//    int texWidth, texHeight;
     GLint texture = loadPNGTexture("res/texture.png");
-
-    cout << "Loaded texture result: " << texture << endl;
-
-    glClearColor(0, 0.5, 0, 1);
+    glClearColor(0, 0, 0, 1);
 
     World w;
 
