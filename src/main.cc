@@ -102,7 +102,7 @@ public:
         , index_buffer(index_buffer)
     { }
 
-    void run(EntityContext &c, Transform &t) 
+    void run(EntityContext &c, Transform &t)
     {
         mat4x4 m;
         mat4x4_translate(m, t.position[0], t.position[1], t.position[2]);
@@ -123,26 +123,26 @@ public:
 
 GLint loadPNGTexture(const char *path)
 {
-	// Load file and decode image.
-	std::vector<unsigned char> image;
-	unsigned width, height;
-	unsigned error = lodepng::decode(image, width, height, path);
+    // Load file and decode image.
+    std::vector<unsigned char> image;
+    unsigned width, height;
+    unsigned error = lodepng::decode(image, width, height, path);
 
-	// If there's an error, display it.
-	if (error != 0)
-	{
-		std::cout << "error " << error << ": " << lodepng_error_text(error) << std::endl;
-		return 1;
-	}
+    // If there's an error, display it.
+    if (error != 0)
+    {
+        std::cout << "error " << error << ": " << lodepng_error_text(error) << std::endl;
+        return 1;
+    }
 
-	//Now generate the OpenGL texture object
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)image.data());
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    //Now generate the OpenGL texture object
+    GLuint texture;
+    glGenTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)image.data());
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-	return texture;
+    return texture;
 }
 
 
@@ -173,11 +173,11 @@ int main(void)
     glfwSwapInterval(1); // TODO set to 1 for vsync
 
 #ifdef _WIN32
-	GLint GlewInitResult = glewInit();
-	if (GLEW_OK != GlewInitResult) {
-		printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
-		exit(EXIT_FAILURE);
-	}
+    GLint GlewInitResult = glewInit();
+    if (GLEW_OK != GlewInitResult) {
+        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+        exit(EXIT_FAILURE);
+    }
 #endif
 
     glEnable(GL_DEPTH_TEST);
@@ -186,7 +186,7 @@ int main(void)
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
 
-    GLuint program = compile_program("res\\shaders\\main.vert", "res\\shaders\\main.frag");
+    GLuint program = compile_program("res/shaders/main.vert", "res/shaders/main.frag");
     GLint model_location = glGetUniformLocation(program, "model");
     GLint perspective_location = glGetUniformLocation(program, "perspective");
     GLint texture_location = glGetUniformLocation(program, "tex");
@@ -216,12 +216,12 @@ int main(void)
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapot_indices), teapot_indices, GL_STATIC_DRAW);
 
-	cout << "LOADING" << endl;
+    cout << "LOADING" << endl;
 
 //    int texWidth, texHeight;
-    GLint texture = loadPNGTexture("res\\texture.png");
+    GLint texture = loadPNGTexture("res/texture.png");
 
-	cout << "Loaded texture result: " << texture << endl;
+    cout << "Loaded texture result: " << texture << endl;
 
     glClearColor(0, 0.5, 0, 1);
 
