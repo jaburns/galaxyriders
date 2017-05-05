@@ -26,6 +26,6 @@
   <ItemGroup>
     <ClCompile Include="src\main.cc" />
     <ClCompile Include="src\teapot.cc" />
-    <ClCompile Include="src\deps\lodepng.cpp" />
+    <ClCompile Include="src\deps\lodepng.cc" />
   </ItemGroup>
 </Project>
