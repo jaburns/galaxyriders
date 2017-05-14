@@ -27,8 +27,11 @@
     <ClInclude Include="include\GL\wglew.h" />
     <ClInclude Include="src\deps\linmath.h" />
     <ClInclude Include="src\deps\lodepng.h" />
-    <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\deps\glfw.h" />
     <ClInclude Include="src\input.h" />
+    <ClInclude Include="src\models\teapot.h" />
+    <ClInclude Include="src\render.h" />
+    <ClInclude Include="src\resources.h" />
     <ClInclude Include="src\world.h" />
   </ItemGroup>
   <ItemGroup>
@@ -39,9 +42,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\deps\lodepng.cc" />
-    <ClCompile Include="src\game.cc" />
     <ClCompile Include="src\main.cc" />
-    <ClCompile Include="src\teapot.cc" />
+    <ClCompile Include="src\render.cc" />
+    <ClCompile Include="src\models\teapot.cc" />
+    <ClCompile Include="src\resources.cc" />
+    <ClCompile Include="src\world.cc" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

@@ -17,7 +17,10 @@
     <ClInclude Include="include\GLFW\glfw3native.h" />
     <ClInclude Include="src\world.h" />
     <ClInclude Include="src\input.h" />
-    <ClInclude Include="src\game.h" />
+    <ClInclude Include="src\render.h" />
+    <ClInclude Include="src\models\teapot.h" />
+    <ClInclude Include="src\deps\glfw.h" />
+    <ClInclude Include="src\resources.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -27,8 +30,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cc" />
-    <ClCompile Include="src\teapot.cc" />
     <ClCompile Include="src\deps\lodepng.cc" />
-    <ClCompile Include="src\game.cc" />
+    <ClCompile Include="src\world.cc" />
+    <ClCompile Include="src\render.cc" />
+    <ClCompile Include="src\models\teapot.cc" />
+    <ClCompile Include="src\resources.cc" />
   </ItemGroup>
 </Project>

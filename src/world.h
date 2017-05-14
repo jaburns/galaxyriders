@@ -1,8 +1,8 @@
-#ifndef __WORLD_H
-#define __WORLD_H
+#pragma once
 
-#include "deps/linmath.h"
 #include <vector>
+#include "deps/linmath.h"
+#include "input.h"
 
 struct Teapot
 {
@@ -16,7 +16,7 @@ struct World
     vec3 camera_up;
 
     std::vector<Teapot> teapots;
+
+    World();
+    World step(Input& input) const;
 };
-
-
-#endif//__WORLD_H

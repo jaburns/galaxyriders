@@ -1,5 +1,5 @@
 #include <GLFW/glfw3.h>
-#include "deps/linmath.h"
+#include "../deps/linmath.h"
 
 extern const vec3 teapot_vertices[531] = {
     { 0.0, 0.0, 0.0 },

@@ -1,3 +1,5 @@
+#pragma once
+
 /*
 LodePNG version 20161127
 
