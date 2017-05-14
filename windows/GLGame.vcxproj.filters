@@ -8,7 +8,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\deps\linmath.h" />
-    <ClInclude Include="src\ecs.h" />
     <ClInclude Include="src\deps\lodepng.h" />
     <ClInclude Include="include\GL\eglew.h" />
     <ClInclude Include="include\GL\glew.h" />
@@ -16,6 +15,9 @@
     <ClInclude Include="include\GL\wglew.h" />
     <ClInclude Include="include\GLFW\glfw3.h" />
     <ClInclude Include="include\GLFW\glfw3native.h" />
+    <ClInclude Include="src\world.h" />
+    <ClInclude Include="src\input.h" />
+    <ClInclude Include="src\game.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -27,5 +29,6 @@
     <ClCompile Include="src\main.cc" />
     <ClCompile Include="src\teapot.cc" />
     <ClCompile Include="src\deps\lodepng.cc" />
+    <ClCompile Include="src\game.cc" />
   </ItemGroup>
 </Project>

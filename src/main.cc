@@ -13,11 +13,9 @@
 #include <fstream>
 #include <sstream>
 #include "math.h"
-#include "ecs.h"
 #include "deps/lodepng.h"
 
 using namespace std;
-using namespace ecs;
 
 extern const vec3 teapot_vertices[531];
 extern const vec3 teapot_normals[531];
@@ -64,60 +62,60 @@ struct Transform {
     float rotation;
 };
 
-struct RotationSystem : public System<Transform>
-{
-    void run(EntityContext &c, Transform &t)
-    {
-        t.rotation = glfwGetTime();
-        t.position[1] = sinf(t.rotation + t.position[0]);
-    }
-};
+// struct RotationSystem : public System<Transform>
+// {
+//     void run(EntityContext &c, Transform &t)
+//     {
+//         t.rotation = glfwGetTime();
+//         t.position[1] = sinf(t.rotation + t.position[0]);
+//     }
+// };
 
-class TeaSystem : public System<Transform>
-{
-    GLuint program;
-    GLint model_location;
-    GLint perspective_location;
-    GLint texture;
-    GLint texture_location;
-    GLint index_buffer;
+// class TeaSystem : public System<Transform>
+// {
+//     GLuint program;
+//     GLint model_location;
+//     GLint perspective_location;
+//     GLint texture;
+//     GLint texture_location;
+//     GLint index_buffer;
 
-public:
-    const GLfloat* p;
+// public:
+//     const GLfloat* p;
 
-    TeaSystem(
-        GLuint program,
-        GLint model_location,
-        GLint perspective_location,
-        GLint texture,
-        GLint texture_location,
-        GLint index_buffer
-    ) :   program(program)
-        , model_location(model_location)
-        , perspective_location(perspective_location)
-        , texture(texture)
-        , texture_location(texture_location)
-        , index_buffer(index_buffer)
-    { }
+//     TeaSystem(
+//         GLuint program,
+//         GLint model_location,
+//         GLint perspective_location,
+//         GLint texture,
+//         GLint texture_location,
+//         GLint index_buffer
+//     ) :   program(program)
+//         , model_location(model_location)
+//         , perspective_location(perspective_location)
+//         , texture(texture)
+//         , texture_location(texture_location)
+//         , index_buffer(index_buffer)
+//     { }
 
-    void run(EntityContext &c, Transform &t)
-    {
-        mat4x4 m;
-        mat4x4_translate(m, t.position[0], t.position[1], t.position[2]);
-        mat4x4_scale_aniso(m, m, 0.01, 0.01, 0.01);
-        mat4x4_rotate_Y(m, m, t.rotation);
+//     void run(EntityContext &c, Transform &t)
+//     {
+//         mat4x4 m;
+//         mat4x4_translate(m, t.position[0], t.position[1], t.position[2]);
+//         mat4x4_scale_aniso(m, m, 0.01, 0.01, 0.01);
+//         mat4x4_rotate_Y(m, m, t.rotation);
 
-        glUseProgram(program);
-        glUniformMatrix4fv(model_location, 1, GL_FALSE, (const GLfloat*)m);
-        glUniformMatrix4fv(perspective_location, 1, GL_FALSE, p);
+//         glUseProgram(program);
+//         glUniformMatrix4fv(model_location, 1, GL_FALSE, (const GLfloat*)m);
+//         glUniformMatrix4fv(perspective_location, 1, GL_FALSE, p);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glUniform1i(texture_location, 0);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-        glDrawElements(GL_TRIANGLES, 3072, GL_UNSIGNED_INT, (void*)0);
-    }
-};
+//         glActiveTexture(GL_TEXTURE0);
+//         glBindTexture(GL_TEXTURE_2D, texture);
+//         glUniform1i(texture_location, 0);
+//         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+//         glDrawElements(GL_TRIANGLES, 3072, GL_UNSIGNED_INT, (void*)0);
+//     }
+// };
 
 GLint loadPNGTexture(const char *path)
 {
@@ -211,24 +209,24 @@ int main(void)
     GLint texture = loadPNGTexture("res/texture.png");
     glClearColor(0, 0, 0, 1);
 
-    World w;
+//  World w;
 
-    auto pot1 = w.create_entity();
-    pot1.add_component(Transform{ { -1.0, 0.0, -3.0 } });
+//  auto pot1 = w.create_entity();
+//  pot1.add_component(Transform{ { -1.0, 0.0, -3.0 } });
 
-    auto pot2 = w.create_entity();
-    pot2.add_component(Transform{ { 1.0, 1.0, -3.0 } });
+//  auto pot2 = w.create_entity();
+//  pot2.add_component(Transform{ { 1.0, 1.0, -3.0 } });
 
-    TeaSystem s(
-        program,
-        model_location,
-        perspective_location,
-        texture,
-        texture_location,
-        index_buffer
-    );
+//  TeaSystem s(
+//      program,
+//      model_location,
+//      perspective_location,
+//      texture,
+//      texture_location,
+//      index_buffer
+//  );
 
-    RotationSystem r;
+//  RotationSystem r;
 
     while (!glfwWindowShouldClose(window)) {
         float ratio;
@@ -240,10 +238,10 @@ int main(void)
 
         mat4x4 p;
         mat4x4_perspective(p, 3.14159 / 3.0, width / (float)height, 1.0, 1024.0);
-        s.p = (const GLfloat*)p;
+//      s.p = (const GLfloat*)p;
 
-        w.run_system(r);
-        w.run_system(s);
+//      w.run_system(r);
+//      w.run_system(s);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
