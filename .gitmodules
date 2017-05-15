@@ -1,0 +1,4 @@
+[submodule "external/glm"]
+	path = external/glm
+	url = git@github.com:g-truc/glm
+	shallow = true
