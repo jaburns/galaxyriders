@@ -3,7 +3,7 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include "deps/lodepng.h"
+#include <lodepng.h>
 
 
 static GLuint shader_compile_from_file(const char *shader_path, GLenum shader_type)
