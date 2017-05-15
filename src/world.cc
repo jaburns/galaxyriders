@@ -1,7 +1,5 @@
 #include "world.h"
 
-#include <iostream>
-
 World::World()
 {
     camera_position[0] = 0;
@@ -32,7 +30,6 @@ World World::step(Input& input) const
     using namespace std;
 
     World new_world = *this;
-    cout << input.movement[0] << "\t" << input.movement[1] << "\t" << input.movement[2] << endl;
     vec3_add(new_world.teapots[0].position, new_world.teapots[0].position, input.movement);
     return new_world;
 }

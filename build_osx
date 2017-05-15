@@ -2,7 +2,7 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-cc -o game src/*.cc src/deps/*.cc \
+cc -o game src/*.cc src/deps/*.cc src/models/*.cc \
     -std=c++14 \
     -lstdc++ \
     -lglfw \

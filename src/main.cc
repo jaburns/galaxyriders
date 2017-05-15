@@ -41,7 +41,8 @@ int main(void)
     raw_input.key_d = false;
 
     while (!renderer.should_close_window()) {
-        world = world.step(Input(raw_input));
+        auto in = Input(raw_input);
+        world = world.step(in);
         renderer.render(world);
     }
 

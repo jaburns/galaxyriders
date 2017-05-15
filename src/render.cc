@@ -1,5 +1,6 @@
 #include "render.h"
 
+#include <stdlib.h>
 #include "models/teapot.h"
 
 
@@ -113,12 +114,11 @@ bool Renderer::should_close_window()
     return glfwWindowShouldClose(window);
 }
 
-Renderer::~Renderer() 
+Renderer::~Renderer()
 {
     delete program;
     delete texture;
 
     glfwDestroyWindow(window);
     glfwTerminate();
-    exit(EXIT_SUCCESS);
 }
