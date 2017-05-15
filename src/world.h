@@ -1,19 +1,19 @@
 #pragma once
 
 #include <vector>
-#include "deps/linmath.h"
+#include <glm/vec3.hpp>
 #include "input.h"
 
 struct Teapot
 {
-    vec3 position;
+    glm::vec3 position;
     float spin;
 };
 
-struct World 
+struct World
 {
-    vec3 camera_position;
-    vec3 camera_up;
+    glm::vec3 camera_position;
+    glm::vec3 camera_up;
 
     std::vector<Teapot> teapots;
 

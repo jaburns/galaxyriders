@@ -1,9 +1,9 @@
 #pragma once
 
-#include "deps/glfw.h"
+#include "glfw.h"
 #include <string>
 
-class ShaderProgram 
+class ShaderProgram
 {
     GLuint _id;
 public:

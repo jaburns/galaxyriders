@@ -1,8 +1,11 @@
 #include "render.h"
 
 #include <stdlib.h>
-#include "models/teapot.h"
+#include <glm/mat4x4.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
+#include "models/teapot.h"
 
 static void error_callback(int error, const char* description)
 {
@@ -82,22 +85,14 @@ void Renderer::render(const World& world)
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    mat4x4 p;
-    mat4x4_perspective(p, 3.14159 / 3.0, width / (float)height, 1.0, 1024.0);
+    glm::mat4 p = glm::perspective(3.14159f / 3.0f, width / (float)height, 1.0f, 1024.0f);
 
-        mat4x4 m;
-        mat4x4_translate(m,
-           world.teapots[0].position[0],
-           world.teapots[0].position[1],
-           world.teapots[0].position[2]
-        );
-
-        mat4x4_scale_aniso(m, m, 0.01, 0.01, 0.01);
-        mat4x4_rotate_Y(m, m, 0);
+        glm::mat4 m = glm::translate(glm::mat4(1.0), world.teapots[0].position);
+        m = glm::scale(m, glm::vec3(0.01));
 
         glUseProgram(*program);
-        glUniformMatrix4fv(glGetUniformLocation(*program, "model"), 1, GL_FALSE, (const GLfloat*)m);
-        glUniformMatrix4fv(glGetUniformLocation(*program, "perspective"), 1, GL_FALSE, (const GLfloat*)p);
+        glUniformMatrix4fv(glGetUniformLocation(*program, "model"), 1, GL_FALSE, glm::value_ptr(m));
+        glUniformMatrix4fv(glGetUniformLocation(*program, "perspective"), 1, GL_FALSE, glm::value_ptr(p));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, *texture);

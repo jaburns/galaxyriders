@@ -1,6 +1,6 @@
 #pragma once
 
-#include "deps/glfw.h"
+#include "glfw.h"
 #include "resources.h"
 #include "world.h"
 

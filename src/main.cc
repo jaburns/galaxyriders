@@ -1,4 +1,4 @@
-#include "deps/glfw.h"
+#include "glfw.h"
 #include "input.h"
 #include "render.h"
 

@@ -2,23 +2,23 @@
 
 World::World()
 {
-    camera_position[0] = 0;
-    camera_position[1] = 0;
-    camera_position[2] = 0;
-    camera_up[0] = 0;
-    camera_up[1] = 1;
-    camera_up[2] = 0;
+    camera_position.x = 0;
+    camera_position.y = 0;
+    camera_position.z = 0;
+    camera_up.x = 0;
+    camera_up.y = 1;
+    camera_up.z = 0;
 
     Teapot a;
-    a.position[0] = -1;
-    a.position[1] =  0;
-    a.position[2] = -3;
+    a.position.x = -1;
+    a.position.y =  0;
+    a.position.z = -3;
     a.spin = 0;
 
     Teapot b;
-    b.position[0] = -1;
-    b.position[1] =  1;
-    b.position[2] = -3;
+    b.position.x = -1;
+    b.position.y =  1;
+    b.position.z = -3;
     b.spin = 0;
 
     teapots.push_back(a);
@@ -30,6 +30,6 @@ World World::step(Input& input) const
     using namespace std;
 
     World new_world = *this;
-    vec3_add(new_world.teapots[0].position, new_world.teapots[0].position, input.movement);
+    new_world.teapots[0].position += input.movement;
     return new_world;
 }
