@@ -78,27 +78,29 @@ Renderer::Renderer(GLFWkeyfun key_callback)
 
 void Renderer::render(const World& world)
 {
-    float ratio;
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
-    ratio = width / (float) height;
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glm::mat4 p = glm::perspective(3.14159f / 3.0f, width / (float)height, 1.0f, 1024.0f);
+    auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 1.0f, 1024.0f);
+    auto v = glm::translate(glm::mat4(1.0f), -world.camera_position);
 
-        glm::mat4 m = glm::translate(glm::mat4(1.0), world.teapots[0].position);
-        m = glm::scale(m, glm::vec3(0.01));
+    for (auto tp : world.teapots) {
+        auto m = glm::scale(glm::translate(glm::mat4(1.0f), tp.position), glm::vec3(0.01f));
+        auto mv = v * m;
+        auto mvp = p * mv;
 
         glUseProgram(*program);
-        glUniformMatrix4fv(glGetUniformLocation(*program, "model"), 1, GL_FALSE, glm::value_ptr(m));
-        glUniformMatrix4fv(glGetUniformLocation(*program, "perspective"), 1, GL_FALSE, glm::value_ptr(p));
+        glUniformMatrix4fv(glGetUniformLocation(*program, "mv"), 1, GL_FALSE, glm::value_ptr(mv));
+        glUniformMatrix4fv(glGetUniformLocation(*program, "mvp"), 1, GL_FALSE, glm::value_ptr(mvp));
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, *texture);
         glUniform1i(glGetUniformLocation(*program, "texture"), 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
         glDrawElements(GL_TRIANGLES, sizeof(teapot_indices) / sizeof(unsigned int), GL_UNSIGNED_INT, (void*)0);
+    }
 
     glfwSwapBuffers(window);
     glfwPollEvents();

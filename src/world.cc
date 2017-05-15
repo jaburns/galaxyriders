@@ -27,9 +27,7 @@ World::World()
 
 World World::step(Input& input) const
 {
-    using namespace std;
-
     World new_world = *this;
-    new_world.teapots[0].position += input.movement;
+    new_world.camera_position += input.movement;
     return new_world;
 }

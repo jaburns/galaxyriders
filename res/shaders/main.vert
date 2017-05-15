@@ -6,12 +6,12 @@ in vec3 vNorm;
 out vec2 v_tex_coords;
 out vec3 v_normal;
 
-uniform mat4 model;
-uniform mat4 perspective;
+uniform mat4 mv;
+uniform mat4 mvp;
 
 void main()
 {
-   v_normal = transpose(inverse(mat3(model))) * vNorm;
-   v_tex_coords = 0.01 * vPos.xy;
-   gl_Position = perspective * model * vec4(vPos, 1.0);
+    v_normal = transpose(inverse(mat3(mv))) * vNorm;
+    v_tex_coords = 0.01 * vPos.xy;
+    gl_Position = mvp * vec4(vPos, 1.0);
 }
