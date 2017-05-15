@@ -7,10 +7,10 @@ cc -o game \
         src/models/*.cc \
         external/lodepng/*.cc \
     -Iexternal/lodepng \
+    -Iexternal/glm \
     -std=c++14 \
     -lstdc++ \
     -lglfw \
-    -lpng \
     -framework OpenGL
 
 ./game
