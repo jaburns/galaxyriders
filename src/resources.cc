@@ -5,7 +5,6 @@
 #include <iostream>
 #include <lodepng.h>
 
-
 static GLuint shader_compile_from_file(const char *shader_path, GLenum shader_type)
 {
     std::ifstream file(shader_path);

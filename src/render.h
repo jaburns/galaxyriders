@@ -1,5 +1,6 @@
 #pragma once
 
+#include <memory>
 #include "glfw.h"
 #include "resources.h"
 #include "world.h"
@@ -7,8 +8,8 @@
 class Renderer
 {
     GLFWwindow* window;
-    ShaderProgram program;
-    Texture texture;
+    std::unique_ptr<ShaderProgram> program;
+    std::unique_ptr<Texture> texture;
     GLuint index_buffer;
 
 public:

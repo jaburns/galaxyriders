@@ -54,22 +54,22 @@ Renderer::Renderer()
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 
-    program = ShaderProgram("res/shaders/main.vert", "res/shaders/main.frag");
-    texture = Texture("res/texture.png");
+    program = std::make_unique<ShaderProgram>("res/shaders/main.vert", "res/shaders/main.frag");;
+    texture = std::make_unique<Texture>("res/texture.png");
 
     GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_vertices), teapot_vertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(program, "vPos"));
-    glVertexAttribPointer(glGetAttribLocation(program, "vPos"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
+    glEnableVertexAttribArray(glGetAttribLocation(*program, "vPos"));
+    glVertexAttribPointer(glGetAttribLocation(*program, "vPos"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
 
     GLuint normal_buffer;
     glGenBuffers(1, &normal_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_normals), teapot_normals, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(program, "vNorm"));
-    glVertexAttribPointer(glGetAttribLocation(program, "vNorm"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
+    glEnableVertexAttribArray(glGetAttribLocation(*program, "vNorm"));
+    glVertexAttribPointer(glGetAttribLocation(*program, "vNorm"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
 
     glGenBuffers(1, &index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
@@ -92,11 +92,11 @@ void Renderer::render(const World& world)
     );
 
     {
-        glUseProgram(program);
+        glUseProgram(*program);
 
         glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture);
-        glUniform1i(glGetUniformLocation(program, "texture"), 0);
+        glBindTexture(GL_TEXTURE_2D, *texture);
+        glUniform1i(glGetUniformLocation(*program, "texture"), 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
 
         for (auto tp : world.teapots) {
@@ -111,8 +111,8 @@ void Renderer::render(const World& world)
             auto mv = v * m;
             auto mvp = p * mv;
 
-            glUniformMatrix4fv(glGetUniformLocation(program, "mv"), 1, GL_FALSE, glm::value_ptr(mv));
-            glUniformMatrix4fv(glGetUniformLocation(program, "mvp"), 1, GL_FALSE, glm::value_ptr(mvp));
+            glUniformMatrix4fv(glGetUniformLocation(*program, "mv"), 1, GL_FALSE, glm::value_ptr(mv));
+            glUniformMatrix4fv(glGetUniformLocation(*program, "mvp"), 1, GL_FALSE, glm::value_ptr(mvp));
 
             glDrawElements(GL_TRIANGLES, sizeof(teapot_indices) / sizeof(unsigned int), GL_UNSIGNED_INT, (void*)0);
         }

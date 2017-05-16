@@ -1,87 +1,27 @@
 #pragma once
 
 #include "glfw.h"
+#include <memory>
 #include <string>
 
-/*
-class IDResource
+class GLuintResource
 {
 protected:
     GLuint _id = 0;
-
-    IDResource() { }
-
-    IDResource(IDResource&& other) {
-        _id = other._id;
-        other._id = 0;
-    }
-
-    IDResource& operator=(IDResource&& other) {
-        if (this != &other) {
-            _id = other._id;
-            other._id = 0;
-        }
-        return *this;
-    }
-
 public:
     operator GLuint() const { return _id; }
 };
 
-struct ShaderProgram : public IDResource
+struct ShaderProgram : public GLuintResource
 {
     ShaderProgram(const char *vert_path, const char *frag_path);
-    ShaderProgram(ShaderProgram&&) = default;
     ~ShaderProgram();
 };
-*/
 
-struct ShaderProgram
+struct Texture : public GLuintResource
 {
-    GLuint _id = 0;
-public:
-    operator GLuint() const { return _id; }
-
-    ShaderProgram() { }
-    ShaderProgram(const char *vert_path, const char *frag_path);
-    ~ShaderProgram();
-
-    ShaderProgram(ShaderProgram&& other) {
-        _id = other._id;
-        other._id = 0;
-    }
-
-    ShaderProgram& operator=(ShaderProgram&& other) {
-        if (this != &other) {
-            _id = other._id;
-            other._id = 0;
-        }
-        return *this;
-    }
-};
-
-class Texture
-{
-    GLuint _id = 0;
-public:
-    operator GLuint() const { return _id; }
-
-    Texture() { }
     Texture(const char *png_path);
     ~Texture();
-
-    Texture(Texture&& other) {
-        _id = other._id;
-        other._id = 0;
-    }
-
-    Texture& operator=(Texture&& other) {
-        if (this != &other) {
-            _id = other._id;
-            other._id = 0;
-        }
-        return *this;
-    }
 };
 
 struct Mesh
