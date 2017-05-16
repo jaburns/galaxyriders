@@ -7,8 +7,8 @@
 class Renderer
 {
     GLFWwindow* window;
-    ShaderProgram* program;
-    Texture* texture;
+    ShaderProgram program;
+    Texture texture;
     GLuint index_buffer;
 
 public:

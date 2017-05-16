@@ -2,9 +2,11 @@
 #include "input.h"
 #include "render.h"
 
+#include <iostream>
+
 using namespace std;
 
-int main(void)
+void run()
 {
     Renderer renderer;
     World world;
@@ -16,6 +18,10 @@ int main(void)
         world = world.step(input_state);
         renderer.render(world);
     }
+}
 
+int main(int argc, char** argv)
+{
+    run();
     return 0;
 }

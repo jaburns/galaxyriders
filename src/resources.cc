@@ -37,7 +37,9 @@ ShaderProgram::ShaderProgram(const char *vert_path, const char *frag_path)
 
 ShaderProgram::~ShaderProgram()
 {
-    glDeleteProgram(_id);
+    if (_id != 0) {
+        glDeleteProgram(_id);
+    }
 }
 
 
@@ -60,5 +62,7 @@ Texture::Texture(const char *png_path)
 
 Texture::~Texture()
 {
-    glDeleteTextures(1, &_id);
+    if (_id != 0) {
+        glDeleteTextures(1, &_id);
+    }
 }
