@@ -7,8 +7,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\deps\linmath.h" />
-    <ClInclude Include="src\deps\lodepng.h" />
     <ClInclude Include="include\GL\eglew.h" />
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
@@ -21,6 +19,7 @@
     <ClInclude Include="src\models\teapot.h" />
     <ClInclude Include="src\deps\glfw.h" />
     <ClInclude Include="src\resources.h" />
+    <ClInclude Include="src\glfw.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -30,10 +29,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cc" />
-    <ClCompile Include="src\deps\lodepng.cc" />
     <ClCompile Include="src\world.cc" />
     <ClCompile Include="src\render.cc" />
     <ClCompile Include="src\models\teapot.cc" />
     <ClCompile Include="src\resources.cc" />
+    <ClCompile Include="..\external\lodepng\lodepng.cc" />
+    <ClCompile Include="src\input.cc" />
   </ItemGroup>
 </Project>
