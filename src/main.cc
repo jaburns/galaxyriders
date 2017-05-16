@@ -12,7 +12,8 @@ int main(void)
     Input::bind_handlers(renderer.raw_glfw_window());
 
     while (!renderer.should_close_window()) {
-        world = world.step(Input::read_state());
+        auto input_state = Input::read_state();
+        world = world.step(input_state);
         renderer.render(world);
     }
 
