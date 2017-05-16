@@ -14,9 +14,10 @@ struct World
 {
     glm::vec3 camera_position;
     glm::vec3 camera_up;
+    glm::vec3 camera_look;
 
     std::vector<Teapot> teapots;
 
     World();
-    World step(Input& input) const;
+    World step(InputState& input) const;
 };

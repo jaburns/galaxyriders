@@ -1,33 +1,36 @@
 #include "world.h"
 
+#include <glm/gtc/constants.hpp>
+#include <math.h>
+
 World::World()
 {
-    camera_position.x = 0;
-    camera_position.y = 0;
-    camera_position.z = 0;
-    camera_up.x = 0;
-    camera_up.y = 1;
-    camera_up.z = 0;
+    camera_position = { 0.0f, 0.0f, 0.0f };
+    camera_up = { 0.0f, 1.0f, 0.0f };
 
     Teapot a;
-    a.position.x = -1;
-    a.position.y =  0;
-    a.position.z = -3;
-    a.spin = 0;
+    a.position = { -1.0f, 0.0f, -3.0f };
+    a.spin = 0.0f;
 
     Teapot b;
-    b.position.x = -1;
-    b.position.y =  1;
-    b.position.z = -3;
-    b.spin = 0;
+    b.position = { 1.0, 0.0f, -3.0f };
+    b.spin = glm::pi<float>();
 
     teapots.push_back(a);
     teapots.push_back(b);
 }
 
-World World::step(Input& input) const
+World World::step(InputState& input) const
 {
-    World new_world = *this;
-    new_world.camera_position += input.movement;
-    return new_world;
+    World world = *this;
+
+    world.camera_position += input.movement;
+    world.camera_look = input.look_dir;
+
+    for (auto& tp : world.teapots) {
+        tp.spin += 0.02f;
+        tp.position.y = sin(tp.spin);
+    }
+
+    return world;
 }

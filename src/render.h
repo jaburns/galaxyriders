@@ -12,9 +12,10 @@ class Renderer
     GLuint index_buffer;
 
 public:
-    Renderer(GLFWkeyfun key_callback);
+    Renderer();
     ~Renderer();
 
-    bool should_close_window();
+    GLFWwindow* raw_glfw_window() const { return window; }
+    bool should_close_window() const { return glfwWindowShouldClose(window); }
     void render(const World& world);
 };

@@ -13,7 +13,7 @@ static void error_callback(int error, const char* description)
     exit(EXIT_FAILURE);
 }
 
-Renderer::Renderer(GLFWkeyfun key_callback)
+Renderer::Renderer()
 {
     glfwSetErrorCallback(error_callback);
     if (!glfwInit()) {
@@ -31,7 +31,6 @@ Renderer::Renderer(GLFWkeyfun key_callback)
         exit(EXIT_FAILURE);
     }
 
-    glfwSetKeyCallback(window, key_callback);
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1); // 1: vsync, 0: fast
 
@@ -83,8 +82,11 @@ void Renderer::render(const World& world)
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 1.0f, 1024.0f);
-    auto v = glm::translate(glm::mat4(1.0f), -world.camera_position);
+    auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
+    auto v = glm::translate(
+        glm::lookAt(glm::vec3(0.0f), world.camera_look, world.camera_up),
+        -world.camera_position
+    );
 
     {
         glUseProgram(*program);
@@ -95,7 +97,14 @@ void Renderer::render(const World& world)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
 
         for (auto tp : world.teapots) {
-            auto m = glm::scale(glm::translate(glm::mat4(1.0f), tp.position), glm::vec3(0.01f));
+            auto m = glm::rotate(
+                glm::scale(
+                    glm::translate(glm::mat4(1.0f), tp.position), 
+                    glm::vec3(0.01f)
+                ),
+                tp.spin,
+                { 0.0f, 1.0f, 0.0f }
+            );
             auto mv = v * m;
             auto mvp = p * mv;
 
@@ -108,11 +117,6 @@ void Renderer::render(const World& world)
 
     glfwSwapBuffers(window);
     glfwPollEvents();
-}
-
-bool Renderer::should_close_window()
-{
-    return glfwWindowShouldClose(window);
 }
 
 Renderer::~Renderer()
