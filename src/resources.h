@@ -3,7 +3,40 @@
 #include "glfw.h"
 #include <string>
 
-class ShaderProgram
+/*
+class IDResource
+{
+protected:
+    GLuint _id = 0;
+
+    IDResource() { }
+
+    IDResource(IDResource&& other) {
+        _id = other._id;
+        other._id = 0;
+    }
+
+    IDResource& operator=(IDResource&& other) {
+        if (this != &other) {
+            _id = other._id;
+            other._id = 0;
+        }
+        return *this;
+    }
+
+public:
+    operator GLuint() const { return _id; }
+};
+
+struct ShaderProgram : public IDResource
+{
+    ShaderProgram(const char *vert_path, const char *frag_path);
+    ShaderProgram(ShaderProgram&&) = default;
+    ~ShaderProgram();
+};
+*/
+
+struct ShaderProgram
 {
     GLuint _id = 0;
 public:
