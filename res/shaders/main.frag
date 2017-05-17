@@ -7,6 +7,7 @@ out vec4 color;
 
 uniform vec3 camera_pos;
 uniform samplerCube skybox;
+uniform sampler2D surf_texture;
 
 void main()
 {

@@ -73,7 +73,7 @@ Renderer::Renderer()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
+//  glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 4); // MSAA
 
     window = glfwCreateWindow(1280, 720, "Hello world", NULL, NULL);
@@ -131,7 +131,6 @@ Renderer::Renderer()
     glGenBuffers(1, &index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapot_indices), teapot_indices, GL_STATIC_DRAW);
-    glBindVertexArray(0);
 
     // Setup skybox VAO
 //  GLuint skyboxVAO;
@@ -143,8 +142,6 @@ Renderer::Renderer()
     glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*skyboxShader, "position"));
     glVertexAttribPointer(glGetAttribLocation(*skyboxShader, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
-    glBindVertexArray(0);
-
 }
 
 void Renderer::render(const World& world)
@@ -167,7 +164,6 @@ void Renderer::render(const World& world)
         glUseProgram(*skyboxShader);
         glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "view"), 1, GL_FALSE, glm::value_ptr(new_v));
         glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "projection"), 1, GL_FALSE, glm::value_ptr(p));
-        // skybox cube
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glUniform1i(glGetUniformLocation(*skyboxShader, "skybox"), 0);
@@ -185,10 +181,15 @@ void Renderer::render(const World& world)
         glUniform1i(glGetUniformLocation(*program, "skybox"), 0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, *skyboxTexture);
 
-    //  glActiveTexture(GL_TEXTURE0);
-    //  glUniform1i(glGetUniformLocation(*program, "texture"), 0);
-    //  glBindTexture(GL_TEXTURE_2D, *texture);
+        glActiveTexture(GL_TEXTURE0);
+        glUniform1i(glGetUniformLocation(*program, "surf_texture"), 0);
+        glBindTexture(GL_TEXTURE_2D, *texture);
+
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
+
+        glUniform3fv(glGetUniformLocation(*program, "camera_pos"), 1, glm::value_ptr(world.camera_position));
+        glUniformMatrix4fv(glGetUniformLocation(*program, "view"), 1, GL_FALSE, glm::value_ptr(v));
+        glUniformMatrix4fv(glGetUniformLocation(*program, "projection"), 1, GL_FALSE, glm::value_ptr(p));
 
         for (auto tp : world.teapots) {
             auto m = glm::rotate(
@@ -200,10 +201,7 @@ void Renderer::render(const World& world)
                 { 0.0f, 1.0f, 0.0f }
             );
 
-            glUniform3fv(glGetUniformLocation(*program, "camera_pos"), 1, glm::value_ptr(world.camera_position));
             glUniformMatrix4fv(glGetUniformLocation(*program, "model"), 1, GL_FALSE, glm::value_ptr(m));
-            glUniformMatrix4fv(glGetUniformLocation(*program, "view"), 1, GL_FALSE, glm::value_ptr(v));
-            glUniformMatrix4fv(glGetUniformLocation(*program, "projection"), 1, GL_FALSE, glm::value_ptr(p));
 
             glDrawElements(GL_TRIANGLES, sizeof(teapot_indices) / sizeof(unsigned int), GL_UNSIGNED_INT, (void*)0);
         }
