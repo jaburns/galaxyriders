@@ -10,7 +10,11 @@ class Renderer
     GLFWwindow* window;
     std::unique_ptr<ShaderProgram> program;
     std::unique_ptr<Texture> texture;
+    std::unique_ptr<ShaderProgram> skyboxShader;
+    std::unique_ptr<CubeMap> skyboxTexture;
     GLuint index_buffer;
+
+    GLuint vao, skyboxVAO;
 
 public:
     Renderer();

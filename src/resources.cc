@@ -66,3 +66,39 @@ Texture::~Texture()
         glDeleteTextures(1, &_id);
     }
 }
+
+
+
+CubeMap::CubeMap(const char *r, const char *l, const char *t, const char *bo, const char *ba, const char *f)
+{
+    glGenTextures(1, &_id);
+    glActiveTexture(GL_TEXTURE0);
+
+    const char* sides[6] = { r, l, t, bo, ba, f };
+
+    glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
+    for (int i = 0; i < 6; ++i) {
+        std::vector<unsigned char> image; 
+        unsigned width, height; 
+        unsigned error = lodepng::decode(image, width, height, sides[i]);
+        if (error != 0) {
+            std::cout << "Error " << error << ": " << lodepng_error_text(error) << std::endl;
+            return;
+        }
+        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, (GLvoid*)image.data());
+    }
+
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
+}
+
+CubeMap::~CubeMap()
+{
+    if (_id != 0) {
+        glDeleteTextures(1, &_id);
+    }
+}

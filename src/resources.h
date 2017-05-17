@@ -24,7 +24,8 @@ struct Texture : public GLuintResource
     ~Texture();
 };
 
-struct Mesh
+struct CubeMap : public GLuintResource
 {
-
+    CubeMap(const char *r, const char *l, const char *t, const char *bo, const char *ba, const char *f);
+    ~CubeMap();
 };

@@ -10,6 +10,53 @@
 
 #include "models/teapot.h"
 
+static GLfloat skyboxVertices[] = {
+    // Positions          
+    -1.0f,  1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f, -1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+
+     1.0f, -1.0f, -1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f,  1.0f, -1.0f,
+
+    -1.0f, -1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f,  1.0f,
+
+    -1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f,  1.0f,
+     1.0f,  1.0f, -1.0f,
+     1.0f,  1.0f,  1.0f,
+    -1.0f,  1.0f, -1.0f,
+    -1.0f,  1.0f,  1.0f,
+
+    -1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f, -1.0f,
+    -1.0f, -1.0f,  1.0f,
+     1.0f, -1.0f, -1.0f,
+     1.0f, -1.0f,  1.0f,
+    -1.0f, -1.0f,  1.0f,
+};
+
+
+
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -51,33 +98,53 @@ Renderer::Renderer()
     glEnable(GL_MULTISAMPLE); 
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
-
-    GLuint vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
+    glClearColor(0.16f, 0.17f, 0.18f, 1.0f);
 
     program = std::make_unique<ShaderProgram>("res/shaders/main.vert", "res/shaders/main.frag");;
     texture = std::make_unique<Texture>("res/texture.png");
+    skyboxShader = std::make_unique<ShaderProgram>("res/shaders/skybox.vert", "res/shaders/skybox.frag");;
+    skyboxTexture = std::make_unique<CubeMap>(
+        "res/hw_crater/craterlake_rt.png",
+        "res/hw_crater/craterlake_lf.png",
+        "res/hw_crater/craterlake_up.png",
+        "res/hw_crater/craterlake_dn.png",
+        "res/hw_crater/craterlake_bk.png",
+        "res/hw_crater/craterlake_ft.png"
+    );
 
+    // Setup teapot VAO
+//  GLuint vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
     GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_vertices), teapot_vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*program, "vPos"));
     glVertexAttribPointer(glGetAttribLocation(*program, "vPos"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
-
     GLuint normal_buffer;
     glGenBuffers(1, &normal_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_normals), teapot_normals, GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*program, "vNorm"));
     glVertexAttribPointer(glGetAttribLocation(*program, "vNorm"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
-
     glGenBuffers(1, &index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapot_indices), teapot_indices, GL_STATIC_DRAW);
+    glBindVertexArray(0);
 
-    glClearColor(0, 0, 0, 1);
+    // Setup skybox VAO
+//  GLuint skyboxVAO;
+    glGenVertexArrays(1, &skyboxVAO);
+    glBindVertexArray(skyboxVAO);
+    GLuint skyboxVBO;
+    glGenBuffers(1, &skyboxVBO);
+    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(glGetAttribLocation(*skyboxShader, "position"));
+    glVertexAttribPointer(glGetAttribLocation(*skyboxShader, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+    glBindVertexArray(0);
+
 }
 
 void Renderer::render(const World& world)
@@ -94,8 +161,26 @@ void Renderer::render(const World& world)
     );
 
     {
+        auto new_v = glm::mat4(glm::mat3(v));
+
+        glDepthMask(GL_FALSE);
+        glUseProgram(*skyboxShader);
+        glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "view"), 1, GL_FALSE, glm::value_ptr(new_v));
+        glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "projection"), 1, GL_FALSE, glm::value_ptr(p));
+        // skybox cube
+        glBindVertexArray(skyboxVAO);
+        glActiveTexture(GL_TEXTURE0);
+        glUniform1i(glGetUniformLocation(*skyboxShader, "skybox"), 0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, *skyboxTexture);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glBindVertexArray(0);
+        glDepthMask(GL_TRUE);
+    }
+
+    {
         glUseProgram(*program);
 
+        glBindVertexArray(vao);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, *texture);
         glUniform1i(glGetUniformLocation(*program, "texture"), 0);
