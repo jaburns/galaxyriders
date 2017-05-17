@@ -27,6 +27,7 @@ Renderer::Renderer()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+    glfwWindowHint(GLFW_SAMPLES, 4); // MSAA
 
     window = glfwCreateWindow(1280, 720, "Hello world", NULL, NULL);
     if (!window) {
@@ -47,6 +48,7 @@ Renderer::Renderer()
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
+    glEnable(GL_MULTISAMPLE); 
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
 
