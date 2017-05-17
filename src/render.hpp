@@ -1,9 +1,9 @@
 #pragma once
 
 #include <memory>
-#include "glfw.h"
-#include "resources.h"
-#include "world.h"
+#include "glfw.hpp"
+#include "resources.hpp"
+#include "world.hpp"
 
 class Renderer
 {

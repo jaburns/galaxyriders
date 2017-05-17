@@ -1,4 +1,4 @@
-#include "resources.h"
+#include "resources.hpp"
 
 #include <fstream>
 #include <sstream>

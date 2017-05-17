@@ -1,4 +1,4 @@
-#include "input.h"
+#include "input.hpp"
 
 #include <iostream>
 #include <glm/geometric.hpp>
@@ -29,7 +29,7 @@ static float tilt = 0.0f;
 
 static InputState state;
 
-static void update_state() 
+static void update_state()
 {
     state.look_dir = {
         cos(facing - glm::half_pi<float>()),

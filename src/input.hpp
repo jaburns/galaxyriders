@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/vec3.hpp>
-#include "glfw.h"
+#include "glfw.hpp"
 
 struct InputState
 {

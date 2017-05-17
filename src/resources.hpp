@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glfw.h"
+#include "glfw.hpp"
 #include <memory>
 #include <string>
 

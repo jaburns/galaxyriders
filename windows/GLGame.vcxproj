@@ -17,13 +17,12 @@
     <ClInclude Include="include\GL\glew.h" />
     <ClInclude Include="include\GL\glxew.h" />
     <ClInclude Include="include\GL\wglew.h" />
-    <ClInclude Include="src\deps\glfw.h" />
-    <ClInclude Include="src\glfw.h" />
-    <ClInclude Include="src\input.h" />
-    <ClInclude Include="src\models\teapot.h" />
-    <ClInclude Include="src\render.h" />
-    <ClInclude Include="src\resources.h" />
-    <ClInclude Include="src\world.h" />
+    <ClInclude Include="src\glfw.hpp" />
+    <ClInclude Include="src\input.hpp" />
+    <ClInclude Include="src\models\teapot.hpp" />
+    <ClInclude Include="src\render.hpp" />
+    <ClInclude Include="src\resources.hpp" />
+    <ClInclude Include="src\world.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -32,13 +31,13 @@
     <Library Include="lib\glfw3dll.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\external\lodepng\lodepng.cc" />
-    <ClCompile Include="src\input.cc" />
-    <ClCompile Include="src\main.cc" />
-    <ClCompile Include="src\render.cc" />
-    <ClCompile Include="src\models\teapot.cc" />
-    <ClCompile Include="src\resources.cc" />
-    <ClCompile Include="src\world.cc" />
+    <ClCompile Include="..\external\lodepng\lodepng.cpp" />
+    <ClCompile Include="src\input.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\render.cpp" />
+    <ClCompile Include="src\models\teapot.cpp" />
+    <ClCompile Include="src\resources.cpp" />
+    <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

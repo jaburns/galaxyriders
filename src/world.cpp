@@ -1,4 +1,4 @@
-#include "world.h"
+#include "world.hpp"
 
 #include <glm/gtc/constants.hpp>
 #include <math.h>

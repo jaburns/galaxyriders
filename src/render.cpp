@@ -1,4 +1,4 @@
-#include "render.h"
+#include "render.hpp"
 
 #include <utility>
 #include <stdlib.h>
@@ -8,7 +8,7 @@
 
 #include <iostream>
 
-#include "models/teapot.h"
+#include "models/teapot.hpp"
 
 static GLfloat skyboxVertices[] = {
     -1.0f,  1.0f, -1.0f,

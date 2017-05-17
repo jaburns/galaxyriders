@@ -1,6 +1,6 @@
-#include "glfw.h"
-#include "input.h"
-#include "render.h"
+#include "glfw.hpp"
+#include "input.hpp"
+#include "render.hpp"
 
 #include <iostream>
 

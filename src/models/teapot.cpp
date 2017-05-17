@@ -1,4 +1,4 @@
-#include "teapot.h"
+#include "teapot.hpp"
 
 extern const glm::vec3 teapot_vertices[531] = {
     { 0.0, 0.0, 0.0 },
