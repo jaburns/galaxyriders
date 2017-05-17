@@ -1,17 +1,18 @@
 #version 150
 
-in vec3 vPos;
-in vec3 vNorm;
+in vec3 position;
+in vec3 normal;
 
-out vec2 v_tex_coords;
 out vec3 v_normal;
+out vec3 v_position;
 
-uniform mat4 mv;
-uniform mat4 mvp;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
-    v_normal = transpose(inverse(mat3(mv))) * vNorm;
-    v_tex_coords = 0.01 * vPos.xy;
-    gl_Position = mvp * vec4(vPos, 1.0);
-}
+    gl_Position = projection * view * model * vec4(position, 1.0f);
+    v_normal = mat3(transpose(inverse(model))) * normal;
+    v_position = vec3(model * vec4(position, 1.0f));
+}  
