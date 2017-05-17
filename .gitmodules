@@ -2,3 +2,6 @@
 	path = external/glm
 	url = git@github.com:g-truc/glm
 	shallow = true
+[submodule "external/lodepng"]
+	path = external/lodepng
+	url = git@github.com:lvandeve/lodepng
