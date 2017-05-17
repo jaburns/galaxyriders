@@ -17,6 +17,18 @@ static GLuint shader_compile_from_file(const char *shader_path, GLenum shader_ty
     glShaderSource(shader, 1, &cstr, NULL);
     glCompileShader(shader);
 
+    GLint isCompiled = 0;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &isCompiled);
+    if (isCompiled == GL_FALSE) {
+        GLint maxLength = 0;
+        glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
+        char log[maxLength];
+        glGetShaderInfoLog(shader, maxLength, &maxLength, log);
+        std::cout << "Error in shader: " << shader_path << std::endl;
+        std::cout << log << std::endl;
+        exit(EXIT_FAILURE);
+    }
+
     return shader;
 }
 
@@ -78,8 +90,8 @@ CubeMap::CubeMap(const char *r, const char *l, const char *t, const char *bo, co
 
     glBindTexture(GL_TEXTURE_CUBE_MAP, _id);
     for (int i = 0; i < 6; ++i) {
-        std::vector<unsigned char> image; 
-        unsigned width, height; 
+        std::vector<unsigned char> image;
+        unsigned width, height;
         unsigned error = lodepng::decode(image, width, height, sides[i]);
         if (error != 0) {
             std::cout << "Error " << error << ": " << lodepng_error_text(error) << std::endl;
