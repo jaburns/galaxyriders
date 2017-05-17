@@ -11,7 +11,6 @@
 #include "models/teapot.h"
 
 static GLfloat skyboxVertices[] = {
-    // Positions          
     -1.0f,  1.0f, -1.0f,
      1.0f, -1.0f, -1.0f,
     -1.0f, -1.0f, -1.0f,
@@ -96,7 +95,7 @@ Renderer::Renderer()
 
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
-    glEnable(GL_MULTISAMPLE); 
+    glEnable(GL_MULTISAMPLE);
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
     glClearColor(0.16f, 0.17f, 0.18f, 1.0f);
@@ -121,14 +120,14 @@ Renderer::Renderer()
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_vertices), teapot_vertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(*program, "vPos"));
-    glVertexAttribPointer(glGetAttribLocation(*program, "vPos"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
+    glEnableVertexAttribArray(glGetAttribLocation(*program, "position"));
+    glVertexAttribPointer(glGetAttribLocation(*program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
     GLuint normal_buffer;
     glGenBuffers(1, &normal_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_normals), teapot_normals, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(*program, "vNorm"));
-    glVertexAttribPointer(glGetAttribLocation(*program, "vNorm"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
+    glEnableVertexAttribArray(glGetAttribLocation(*program, "normal"));
+    glVertexAttribPointer(glGetAttribLocation(*program, "normal"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
     glGenBuffers(1, &index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapot_indices), teapot_indices, GL_STATIC_DRAW);
@@ -180,7 +179,6 @@ void Renderer::render(const World& world)
 
     {
         glUseProgram(*program);
-
         glBindVertexArray(vao);
 
         glActiveTexture(GL_TEXTURE0);
@@ -195,7 +193,7 @@ void Renderer::render(const World& world)
         for (auto tp : world.teapots) {
             auto m = glm::rotate(
                 glm::scale(
-                    glm::translate(glm::mat4(1.0f), tp.position), 
+                    glm::translate(glm::mat4(1.0f), tp.position),
                     glm::vec3(0.01f)
                 ),
                 tp.spin,
