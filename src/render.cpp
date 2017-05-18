@@ -5,6 +5,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/quaternion.hpp>
 
 #include <iostream>
 
@@ -191,14 +192,8 @@ void Renderer::render(const World& world)
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
 
         for (auto tp : world.teapots) {
-            auto m = glm::rotate(
-                glm::scale(
-                    glm::translate(glm::mat4(1.0f), tp.position),
-                    glm::vec3(0.01f)
-                ),
-                tp.spin,
-                { 0.0f, 1.0f, 0.0f }
-            );
+            auto m = glm::scale(glm::translate(glm::mat4(1.0f), tp.transform.position), tp.transform.scale) 
+                * glm::mat4_cast(tp.transform.rotation);
 
             glUniformMatrix4fv(glGetUniformLocation(*program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 

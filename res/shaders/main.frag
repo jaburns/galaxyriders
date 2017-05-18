@@ -18,7 +18,7 @@ void main()
     vec3 norm_view_vec = normalize(camera_pos - v_position);
 
     vec4 texture_color = texture(surf_texture, v_tex_coords);
-    vec4 reflect_color = texture(skybox, reflect(norm_view_vec, norm_v_norm));
+    vec4 reflect_color = texture(skybox, reflect(-norm_view_vec, norm_v_norm));
 
     float cosine_light_normal = clamp(dot(LIGHT_VEC, norm_v_norm), 0.0, 1.0);
     float cosine_view_normal = clamp(dot(norm_view_vec, norm_v_norm), 0.0, 1.0);
