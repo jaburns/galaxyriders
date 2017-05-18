@@ -1,5 +1,6 @@
 #include "resources.hpp"
 
+#include <vector>
 #include <fstream>
 #include <sstream>
 #include <iostream>
@@ -22,10 +23,10 @@ static GLuint shader_compile_from_file(const char *shader_path, GLenum shader_ty
     if (isCompiled == GL_FALSE) {
         GLint maxLength = 0;
         glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
-        char log[maxLength];
-        glGetShaderInfoLog(shader, maxLength, &maxLength, log);
+        std::vector<char> log(maxLength);
+        glGetShaderInfoLog(shader, maxLength, &maxLength, log.data());
         std::cout << "Error in shader: " << shader_path << std::endl;
-        std::cout << log << std::endl;
+        std::cout << log.data() << std::endl;
         exit(EXIT_FAILURE);
     }
 
