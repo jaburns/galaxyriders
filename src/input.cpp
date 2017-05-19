@@ -1,6 +1,5 @@
 #include "input.hpp"
 
-#include <iostream>
 #include <glm/geometric.hpp>
 #include <glm/gtc/constants.hpp>
 #include <math.h>
@@ -77,9 +76,12 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 {
-    using namespace std;
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-        cout << "CLICK" << endl;
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            state.clicking = true;
+        } else if (action == GLFW_RELEASE) {
+            state.clicking = false;
+        }
     }
 }
 

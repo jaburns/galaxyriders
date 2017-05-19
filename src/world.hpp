@@ -27,7 +27,8 @@ struct World
 
     std::vector<Teapot> teapots;
 
-    int frame_counter;
+    int frame_counter = 0;
+    float time_factor = 1.0f;
 
     World();
     World step(InputState& input) const;
