@@ -7,6 +7,7 @@
 
 static const float TIME_SPEED_UP = 1.5f;
 static const float TIME_SLOW_DOWN = 1.3f;
+static const int MAX_POTS = 600;
 
 World::World()
 {
@@ -28,8 +29,15 @@ World World::step(InputState& input) const
     world.camera_position += 2.0f * input.movement;
     world.camera_look = input.look_dir;
 
+    if (frame_counter == 1 || frame_counter == 45 || frame_counter == 105) {
+        world.parent_pot_tilt = glm::angleAxis(glm::linearRand(0.0f, 3.14159f), glm::sphericalRand(1.0f));
+    }
+
     if (frame_counter < 120) {
-        world.teapots[0].transform.scale = glm::vec3(0.01f + (0.002f + 0.003f * frame_counter / 120.0f) * sin(frame_counter / 60.0f * 2.0f * 3.14159f));
+        float sin_frame = sin(frame_counter / 60.0f * 2.0f * 3.14159f);
+        float scale = 0.01f + (0.002f + 0.006f * frame_counter / 120.0f) * sin_frame;
+        world.teapots.front().transform.scale = glm::vec3(scale);
+        world.teapots.front().transform.rotation = glm::mix(glm::quat(), world.parent_pot_tilt, 0.5f * (0.5f + 0.5f*sin_frame));
         return world;
     }
     else if (frame_counter == 120) {
@@ -57,6 +65,10 @@ World World::step(InputState& input) const
         ntp.velocity.position = glm::sphericalRand(0.1f);
         ntp.velocity.rotation = glm::rotate(glm::quat(), glm::linearRand(-0.2f, 0.2f), glm::sphericalRand(1.0f));
         world.teapots.push_back(ntp);
+    }
+
+    if (world.teapots.size() > MAX_POTS) {
+        world.teapots.pop_front();
     }
 
     for (auto& tp : world.teapots) {

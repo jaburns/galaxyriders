@@ -1,6 +1,6 @@
 #pragma once
 
-#include <vector>
+#include <deque>
 #include <glm/vec3.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "input.hpp"
@@ -25,7 +25,8 @@ struct World
     glm::vec3 camera_up;
     glm::vec3 camera_look;
 
-    std::vector<Teapot> teapots;
+    glm::quat parent_pot_tilt;
+    std::deque<Teapot> teapots;
 
     int frame_counter = 0;
     float time_factor = 1.0f;
