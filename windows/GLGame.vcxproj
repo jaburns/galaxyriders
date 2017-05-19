@@ -39,6 +39,12 @@
     <ClCompile Include="src\resources.cpp" />
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="shaders\main.frag" />
+    <None Include="shaders\main.vert" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{16F456AA-24BF-42C2-85CB-57264B41E8C1}</ProjectGuid>
