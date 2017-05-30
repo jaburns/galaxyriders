@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 
 #include <unistd.h>
 #include <sys/socket.h>
@@ -11,7 +12,7 @@ int main(int argc, char **argv)
     int fd;
 
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-        perror("cannot create socket");
+        std::cout << "cannot create socket" << std::endl;
         return 1;
     }
 
@@ -22,11 +23,11 @@ int main(int argc, char **argv)
     addr.sin_port = htons(PORT);
 
     if (bind(fd, (sockaddr *)&addr, sizeof(addr)) < 0) {
-        perror("bind failed");
+        std::cout << "bind failed" << std::endl;
         return 1;
     }
 
-    printf("created socket: descriptor=%d\n", fd);
+    std::cout << "created socket: descriptor=" << fd << std::endl;
 
     close(fd);
 
