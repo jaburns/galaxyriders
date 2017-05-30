@@ -17,7 +17,7 @@ int main(int argc, char **argv)
     }
 
     sockaddr_in addr;
-    memset((char *)&addr, 0, sizeof(addr));
+    std::memset((char *)&addr, 0, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_ANY);
     addr.sin_port = htons(PORT);
