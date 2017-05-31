@@ -5,6 +5,9 @@ class SocketConnection
     unsigned short _port;
     int _socket;
 
+    SocketConnection(const SocketConnection&);
+    SocketConnection& operator=(const SocketConnection&);
+
 public:
     SocketConnection(unsigned short port = 0);
     ~SocketConnection();
