@@ -9,14 +9,13 @@
 #ifdef WINDOWS
 #  include <winsock2.h>
 #else
-#  include <unistd.h>
 #  include <netdb.h>
 #  include <sys/socket.h>
-#  include <netinet/in.h>
+#  include <arpa/inet.h>
 #endif
 
-const int LOCAL_PORT = 12345;
-const int REMOTE_PORT = 12345;
+
+const int LOCAL_PORT 12345
 
 int main(int argc, char **argv)
 {
@@ -32,12 +31,12 @@ int main(int argc, char **argv)
 
     int fd;
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-        std::cout << "Cannot create socket" << std::endl;
+        std::cout << "cannot create socket" << std::endl;
         return 1;
     }
 
     sockaddr_in myaddr;
-    std::memset((char *)&myaddr, 0, sizeof(myaddr));
+    memset((char *)&myaddr, 0, sizeof(myaddr));
     myaddr.sin_family = AF_INET;
     myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     myaddr.sin_port = htons(LOCAL_PORT);
@@ -46,37 +45,30 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    int msgcnt = 0;
     sockaddr_in remaddr;
-    std::memset((char *) &remaddr, 0, sizeof(remaddr));
-    remaddr.sin_family = AF_INET;
-    remaddr.sin_port = htons(REMOTE_PORT);
+    unsigned char buf[2048];
+    socklen_t slen = sizeof(remaddr);
 
-    hostent *hp = gethostbyname("jaburns.net");
-    if (!hp) {
-        std::cout << "Cannot get host address" << std::endl;
-        return 1;
-    }
-    memcpy((void *)&remaddr.sin_addr, hp->h_addr_list[0], hp->h_length);
-
-    char buf[2048];
-    socklen_t slen=sizeof(remaddr);
-
-    for (int i=0; i < 5; i++) {
-        std::cout << "Sending packet " << i << " to server port " << REMOTE_PORT << std::endl;
-        sprintf(buf, "This is packet %d", i);
-        if (sendto(fd, buf, strlen(buf), 0, (sockaddr *)&remaddr, slen) < 0) {
-            std::cout << "Error sending message" << std::endl;
-            return 1;
-        }
-        int recvlen = recvfrom(fd, buf, BUFLEN, 0, (sockaddr *)&remaddr, &slen);
-        if (recvlen >= 0) {
+    for (;;) {
+        std::cout << "Waiting on port " << LOCAL_PORT << std::endl;
+        int recvlen = recvfrom(fd, buf, BUFSIZE, 0, (sockaddr *)&remaddr, &slen);
+        if (recvlen > 0) {
             buf[recvlen] = 0;
-            std::cout << "Received message: " << buf << std::endl;
+            std::cout << "received message: " << buf << " :: byte count: " << recvln << std::endl;
         } else {
             std::cout << "Error receiving message" << std::endl;
             return 1;
         }
+        sprintf(buf, "Ack %d", msgcnt++);
+        std::cout << "Sending response " << buf << std::endl;
+        if (sendto(fd, buf, strlen(buf), 0, (sockaddr *)&remaddr, slen) < 0) {
+            std::cout << "Error sending message" << std::endl;
+            return 1;
+        }
     }
+
+    // Never gets here.
 
 #ifdef WINDOWS
     closesocket(s);
@@ -84,6 +76,4 @@ int main(int argc, char **argv)
 #else
     close(fd);
 #endif
-
-    return 0;
 }
