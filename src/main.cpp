@@ -20,16 +20,23 @@ void run()
     }
 }
 
-int main(int argc, char** argv)
+void test_network_client()
 {
     SocketConnection s(12344);
     s.client_loop("jaburns.net", 12345);
+    exit(0);
+}
 
-//  run();
-
+void wait_for_char()
+{
     cout << "Enter a char to quit";
     char x;
     cin >> x;
+}
+
+int main(int argc, char** argv)
+{
+    run();
 
     return 0;
 }
