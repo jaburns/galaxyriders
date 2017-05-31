@@ -9,13 +9,14 @@
 #ifdef WINDOWS
 #  include <winsock2.h>
 #else
+#  include <unistd.h>
 #  include <netdb.h>
 #  include <sys/socket.h>
 #  include <arpa/inet.h>
 #endif
 
-
-const int LOCAL_PORT 12345
+const int BUFFER_LEN = 2048;
+const int LOCAL_PORT = 12345;
 
 int main(int argc, char **argv)
 {
@@ -31,7 +32,7 @@ int main(int argc, char **argv)
 
     int fd;
     if ((fd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-        std::cout << "cannot create socket" << std::endl;
+        std::cout << "Cannot create socket" << std::endl;
         return 1;
     }
 
@@ -47,15 +48,15 @@ int main(int argc, char **argv)
 
     int msgcnt = 0;
     sockaddr_in remaddr;
-    unsigned char buf[2048];
+    char buf[BUFFER_LEN];
     socklen_t slen = sizeof(remaddr);
 
     for (;;) {
         std::cout << "Waiting on port " << LOCAL_PORT << std::endl;
-        int recvlen = recvfrom(fd, buf, BUFSIZE, 0, (sockaddr *)&remaddr, &slen);
+        int recvlen = recvfrom(fd, buf, BUFFER_LEN, 0, (sockaddr *)&remaddr, &slen);
         if (recvlen > 0) {
             buf[recvlen] = 0;
-            std::cout << "received message: " << buf << " :: byte count: " << recvln << std::endl;
+            std::cout << "received message: " << buf << " :: byte count: " << recvlen << std::endl;
         } else {
             std::cout << "Error receiving message" << std::endl;
             return 1;

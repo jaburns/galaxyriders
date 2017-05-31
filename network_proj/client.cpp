@@ -12,10 +12,11 @@
 #  include <unistd.h>
 #  include <netdb.h>
 #  include <sys/socket.h>
-#  include <netinet/in.h>
+#  include <arpa/inet.h>
 #endif
 
-const int LOCAL_PORT = 12345;
+const int BUFFER_LEN = 2048;
+const int LOCAL_PORT = 12346;
 const int REMOTE_PORT = 12345;
 
 int main(int argc, char **argv)
@@ -51,14 +52,14 @@ int main(int argc, char **argv)
     remaddr.sin_family = AF_INET;
     remaddr.sin_port = htons(REMOTE_PORT);
 
-    hostent *hp = gethostbyname("jaburns.net");
+    hostent *hp = gethostbyname("localhost");
     if (!hp) {
         std::cout << "Cannot get host address" << std::endl;
         return 1;
     }
     memcpy((void *)&remaddr.sin_addr, hp->h_addr_list[0], hp->h_length);
 
-    char buf[2048];
+    char buf[BUFFER_LEN];
     socklen_t slen=sizeof(remaddr);
 
     for (int i=0; i < 5; i++) {
@@ -68,7 +69,7 @@ int main(int argc, char **argv)
             std::cout << "Error sending message" << std::endl;
             return 1;
         }
-        int recvlen = recvfrom(fd, buf, BUFLEN, 0, (sockaddr *)&remaddr, &slen);
+        int recvlen = recvfrom(fd, buf, BUFFER_LEN, 0, (sockaddr *)&remaddr, &slen);
         if (recvlen >= 0) {
             buf[recvlen] = 0;
             std::cout << "Received message: " << buf << std::endl;
