@@ -1,11 +1,8 @@
-#include "glfw.hpp"
 #include "input.hpp"
 #include "render.hpp"
+#include "network.hpp"
 
 #include <iostream>
-
-extern int server_main(int argc, char** argv);
-extern int client_main(int argc, char** argv);
 
 using namespace std;
 
@@ -25,7 +22,8 @@ void run()
 
 int main(int argc, char** argv)
 {
-    client_main(argc, argv);
+    SocketConnection s(12344);
+    s.client_loop("jaburns.net", 12345);
 
 //  run();
 

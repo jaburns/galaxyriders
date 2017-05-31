@@ -20,6 +20,7 @@
     <ClInclude Include="src\glfw.hpp" />
     <ClInclude Include="src\input.hpp" />
     <ClInclude Include="src\models\teapot.hpp" />
+    <ClInclude Include="src\network.hpp" />
     <ClInclude Include="src\render.hpp" />
     <ClInclude Include="src\resources.hpp" />
     <ClInclude Include="src\world.hpp" />
@@ -32,13 +33,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\external\lodepng\lodepng.cpp" />
-    <ClCompile Include="src\client.cpp" />
     <ClCompile Include="src\input.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\network.cpp" />
     <ClCompile Include="src\render.cpp" />
     <ClCompile Include="src\models\teapot.cpp" />
     <ClCompile Include="src\resources.cpp" />
-    <ClCompile Include="src\server.cpp" />
     <ClCompile Include="src\world.cpp" />
   </ItemGroup>
   <ItemGroup>

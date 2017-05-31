@@ -19,6 +19,7 @@
     <ClInclude Include="src\render.hpp" />
     <ClInclude Include="src\resources.hpp" />
     <ClInclude Include="src\world.hpp" />
+    <ClInclude Include="src\network.hpp" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="lib\glew32.lib" />
@@ -34,8 +35,7 @@
     <ClCompile Include="src\models\teapot.cpp" />
     <ClCompile Include="src\resources.cpp" />
     <ClCompile Include="src\world.cpp" />
-    <ClCompile Include="src\server.cpp" />
-    <ClCompile Include="src\client.cpp" />
+    <ClCompile Include="src\network.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\main.frag" />
