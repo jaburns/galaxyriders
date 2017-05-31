@@ -34,6 +34,8 @@
     <ClCompile Include="src\models\teapot.cpp" />
     <ClCompile Include="src\resources.cpp" />
     <ClCompile Include="src\world.cpp" />
+    <ClCompile Include="src\server.cpp" />
+    <ClCompile Include="src\client.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="shaders\main.frag" />

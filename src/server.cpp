@@ -3,22 +3,23 @@
 #include <cstdio>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#  define WINDOWS 1
-#endif
+#   define WINDOWS 1
+#endif 
 
 #ifdef WINDOWS
-#  include <winsock2.h>
+#   include <winsock2.h>
+    typedef int socklen_t;
 #else
-#  include <unistd.h>
-#  include <netdb.h>
-#  include <sys/socket.h>
-#  include <arpa/inet.h>
+#   include <unistd.h>
+#   include <netdb.h>
+#   include <sys/socket.h>
+#   include <arpa/inet.h>
 #endif
 
 const int BUFFER_LEN = 2048;
 const int LOCAL_PORT = 12345;
 
-int main(int argc, char **argv)
+int server_main(int argc, char **argv)
 {
 #ifdef WINDOWS
     WSADATA wsa;
@@ -72,7 +73,7 @@ int main(int argc, char **argv)
     // Never gets here.
 
 #ifdef WINDOWS
-    closesocket(s);
+    closesocket(fd);
     WSACleanup();
 #else
     close(fd);

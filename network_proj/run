@@ -1,3 +1,0 @@
-#!/usr/bin/env bash
-
-g++ "$1" && ./a.out

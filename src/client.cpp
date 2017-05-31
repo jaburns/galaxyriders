@@ -3,24 +3,26 @@
 #include <cstdio>
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#  define WINDOWS 1
-#endif
+#   define WINDOWS 1
+#endif 
 
 #ifdef WINDOWS
-#  include <winsock2.h>
+#   include <winsock2.h>
+    typedef int socklen_t;
 #else
-#  include <unistd.h>
-#  include <netdb.h>
-#  include <sys/socket.h>
-#  include <arpa/inet.h>
+#   include <unistd.h>
+#   include <netdb.h>
+#   include <sys/socket.h>
+#   include <arpa/inet.h>
 #endif
 
 const int BUFFER_LEN = 2048;
 const int LOCAL_PORT = 12346;
 const int REMOTE_PORT = 12345;
 
-int main(int argc, char **argv)
+int client_main(int argc, char **argv)
 {
+
 #ifdef WINDOWS
     WSADATA wsa;
     std::cout << "Initialising Winsock..." << std::endl;
@@ -52,7 +54,7 @@ int main(int argc, char **argv)
     remaddr.sin_family = AF_INET;
     remaddr.sin_port = htons(REMOTE_PORT);
 
-    hostent *hp = gethostbyname("localhost");
+    hostent *hp = gethostbyname("jaburns.net");
     if (!hp) {
         std::cout << "Cannot get host address" << std::endl;
         return 1;
@@ -80,7 +82,7 @@ int main(int argc, char **argv)
     }
 
 #ifdef WINDOWS
-    closesocket(s);
+    closesocket(fd);
     WSACleanup();
 #else
     close(fd);

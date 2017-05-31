@@ -4,6 +4,9 @@
 
 #include <iostream>
 
+extern int server_main(int argc, char** argv);
+extern int client_main(int argc, char** argv);
+
 using namespace std;
 
 void run()
@@ -22,11 +25,13 @@ void run()
 
 int main(int argc, char** argv)
 {
-    run();
+    client_main(argc, argv);
 
-//  cout << "Enter a char to quit";
-//  char x;
-//  cin >> x;
+//  run();
+
+    cout << "Enter a char to quit";
+    char x;
+    cin >> x;
 
     return 0;
 }
