@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstring>
 #include "src/network.hpp"
 
 int main(int argc, char **argv)
