@@ -93,7 +93,24 @@ SocketConnection::~SocketConnection()
     #endif
 }
 
-static sockaddr_in get_host_address(const char *remote_host, unsigned short remote_port)
+static sockaddr_in to_sockaddr(const SocketAddress& socket_address)
+{
+    sockaddr_in addr;
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = socket_address.address;
+    addr.sin_port = socket_address.port;
+    return addr;
+}
+
+static SocketAddress from_sockaddr(const sockaddr_in& addr)
+{
+    SocketAddress result;
+    result.address = addr.sin_addr.s_addr;
+    result.port = addr.sin_port;
+    return result;
+}
+
+SocketAddress SocketConnection::get_host_address(const char *remote_host, unsigned short remote_port)
 {
     sockaddr_in remaddr;
     std::memset((char *) &remaddr, 0, sizeof(remaddr));
@@ -106,63 +123,69 @@ static sockaddr_in get_host_address(const char *remote_host, unsigned short remo
         exit(1);
     }
     std::memcpy((void *)&remaddr.sin_addr, hp->h_addr_list[0], hp->h_length);
+    
+    return from_sockaddr(remaddr);
+}
 
-    return remaddr;
+void SocketConnection::send(const SocketAddress& remote_address, const char *buffer, int buffer_len)
+{
+    sockaddr_in remaddr = to_sockaddr(remote_address);
+    socklen_t slen = sizeof(remaddr);
+
+    if (sendto(_socket, buffer, buffer_len, 0, (sockaddr *)&remaddr, slen) < 0) {
+        std::cout << "Error sending message" << std::endl;
+        exit(1);
+    }
+}
+
+bool SocketConnection::receive(SocketAddress& out_remote_address, char *buffer, int buffer_len)
+{
+    sockaddr_in remaddr;
+    socklen_t slen = sizeof(remaddr);
+
+    int recvlen = recvfrom(_socket, buffer, buffer_len, 0, (sockaddr*)&remaddr, &slen);
+    if (recvlen < 0) return false;
+
+    buffer[recvlen] = 0;
+
+    out_remote_address.address = remaddr.sin_addr.s_addr;
+    out_remote_address.port = remaddr.sin_port;
+
+    return true;
 }
 
 void SocketConnection::client_loop(const char *remote_host, unsigned short remote_port)
 {
-    sockaddr_in remaddr = get_host_address(remote_host, remote_port);
-    char buf[BUFFER_LEN];
-    socklen_t slen=sizeof(remaddr);
+    SocketAddress send_address = get_host_address(remote_host, remote_port);
+    SocketAddress receive_address;
+    char buffer[BUFFER_LEN];
 
     for (int i=0; i < 5; i++) {
         std::cout << "Sending packet " << i << " to server port " << remote_port << std::endl;
-        sprintf(buf, "This is packet %d", i);
-        if (sendto(_socket, buf, strlen(buf), 0, (sockaddr *)&remaddr, slen) < 0) {
-            std::cout << "Error sending message" << std::endl;
-            exit(1);
-        }
+        sprintf(buffer, "This is packet %d", i);
+        this->send(send_address, buffer, strlen(buffer));
 
         unsigned long cycles = 0;
-        int recvlen = -1;
-        while (recvlen < 0) {
-            cycles++;
-            recvlen = recvfrom(_socket, buf, BUFFER_LEN, 0, (sockaddr *)&remaddr, &slen);
-            if (recvlen >= 0) {
-                buf[recvlen] = 0;
-                std::cout << "Spun for: " << cycles << "   Received message: " << buf << std::endl;
-            } 
-        }
+        while (! this->receive(receive_address, buffer, BUFFER_LEN)) cycles++;
+        std::cout << "Spun for: " << cycles << "   Received message: " << buffer << std::endl;
     }
 }
 
 void SocketConnection::server_loop()
 {
-    int msgcnt = 0;
-    sockaddr_in remaddr;
-    char buf[BUFFER_LEN];
-    socklen_t slen = sizeof(remaddr);
+    SocketAddress client_address;
+    int counter = 0;
+    char buffer[BUFFER_LEN];
 
     for (;;) {
         std::cout << "Listening on port " << _port << std::endl;
 
         unsigned long cycles = 0;
-        int recvlen = -1;
-        while (recvlen < 0) {
-            cycles++;
-            recvlen = recvfrom(_socket, buf, BUFFER_LEN, 0, (sockaddr *)&remaddr, &slen);
-            if (recvlen > 0) {
-                buf[recvlen] = 0;
-                std::cout << "Spun for: " << cycles << "   Received message: " << buf << "   Byte count: " << recvlen << std::endl;
-            } 
-        }
+        while (! this->receive(client_address, buffer, BUFFER_LEN)) cycles++;
+        std::cout << "Spun for: " << cycles << "   Received message: " << buffer << std::endl;
 
-        sprintf(buf, "Ack %d", msgcnt++);
-        std::cout << "Sending response: " << buf << std::endl;
-        if (sendto(_socket, buf, strlen(buf), 0, (sockaddr *)&remaddr, slen) < 0) {
-            std::cout << "Error sending message" << std::endl;
-            exit(1);
-        }
+        sprintf(buffer, "Ack %d", counter++);
+        std::cout << "Sending response: " << buffer << std::endl;
+        this->send(client_address, buffer, strlen(buffer));
     }
 }
