@@ -4,32 +4,6 @@
 #include <cstring>
 #include <cstdio>
 
-/*
-
-src
-    shared
-        network.hpp
-        network.cpp
-        input.hpp
-        world.hpp
-        world.cpp
-    client
-        models
-            teapot.hpp
-            teapot.cpp
-        glfw.hpp
-        readinput.hpp
-        readinput.cpp
-        render.hpp
-        render.cpp
-        resources.hpp
-        resources.cpp
-        main.cpp
-    server
-        main.cpp
-
-*/
-
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
 #   define WINDOWS 1
 #endif 
@@ -45,12 +19,8 @@ src
 #   include <fcntl.h>
 #endif
 
-const int BUFFER_LEN = 2048;
-
 SocketConnection::SocketConnection(unsigned short port)
 {
-    _port = port;
-
     #ifdef WINDOWS
         WSADATA wsa;
         if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
@@ -110,14 +80,14 @@ static SocketAddress from_sockaddr(const sockaddr_in& addr)
     return result;
 }
 
-SocketAddress SocketConnection::get_host_address(const char *remote_host, unsigned short remote_port)
+SocketAddress SocketConnection::get_host_address(const std::string& remote_host, unsigned short remote_port)
 {
     sockaddr_in remaddr;
     std::memset((char *) &remaddr, 0, sizeof(remaddr));
     remaddr.sin_family = AF_INET;
     remaddr.sin_port = htons(remote_port);
 
-    hostent *hp = gethostbyname(remote_host);
+    hostent *hp = gethostbyname(remote_host.c_str());
     if (!hp) {
         std::cout << "Cannot get host address: " << remote_host << ":" << remote_port << std::endl;
         exit(1);
@@ -127,7 +97,7 @@ SocketAddress SocketConnection::get_host_address(const char *remote_host, unsign
     return from_sockaddr(remaddr);
 }
 
-void SocketConnection::send(const SocketAddress& remote_address, const char *buffer, int buffer_len)
+void SocketConnection::send(const SocketAddress& remote_address, const unsigned char *buffer, int buffer_len) const
 {
     sockaddr_in remaddr = to_sockaddr(remote_address);
     socklen_t slen = sizeof(remaddr);
@@ -138,7 +108,7 @@ void SocketConnection::send(const SocketAddress& remote_address, const char *buf
     }
 }
 
-bool SocketConnection::receive(SocketAddress& out_remote_address, char *buffer, int buffer_len)
+bool SocketConnection::receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len) const
 {
     sockaddr_in remaddr;
     socklen_t slen = sizeof(remaddr);
@@ -152,40 +122,4 @@ bool SocketConnection::receive(SocketAddress& out_remote_address, char *buffer, 
     out_remote_address.port = remaddr.sin_port;
 
     return true;
-}
-
-void SocketConnection::client_loop(const char *remote_host, unsigned short remote_port)
-{
-    SocketAddress send_address = get_host_address(remote_host, remote_port);
-    SocketAddress receive_address;
-    char buffer[BUFFER_LEN];
-
-    for (int i=0; i < 5; i++) {
-        std::cout << "Sending packet " << i << " to server port " << remote_port << std::endl;
-        sprintf(buffer, "This is packet %d", i);
-        this->send(send_address, buffer, strlen(buffer));
-
-        unsigned long cycles = 0;
-        while (! this->receive(receive_address, buffer, BUFFER_LEN)) cycles++;
-        std::cout << "Spun for: " << cycles << "   Received message: " << buffer << std::endl;
-    }
-}
-
-void SocketConnection::server_loop()
-{
-    SocketAddress client_address;
-    int counter = 0;
-    char buffer[BUFFER_LEN];
-
-    for (;;) {
-        std::cout << "Listening on port " << _port << std::endl;
-
-        unsigned long cycles = 0;
-        while (! this->receive(client_address, buffer, BUFFER_LEN)) cycles++;
-        std::cout << "Spun for: " << cycles << "   Received message: " << buffer << std::endl;
-
-        sprintf(buffer, "Ack %d", counter++);
-        std::cout << "Sending response: " << buffer << std::endl;
-        this->send(client_address, buffer, strlen(buffer));
-    }
 }
