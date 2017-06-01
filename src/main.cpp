@@ -36,7 +36,7 @@ void wait_for_char()
 
 int main(int argc, char** argv)
 {
-    run();
+    test_network_client();
 
     return 0;
 }
