@@ -7,12 +7,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="glfw3\include\GL\eglew.h" />
-    <ClInclude Include="glfw3\include\GL\glew.h" />
-    <ClInclude Include="glfw3\include\GL\glxew.h" />
-    <ClInclude Include="glfw3\include\GL\wglew.h" />
-    <ClInclude Include="glfw3\include\GLFW\glfw3.h" />
-    <ClInclude Include="glfw3\include\GLFW\glfw3native.h" />
     <ClInclude Include="src\glfw.hpp" />
     <ClInclude Include="src\input.hpp" />
     <ClInclude Include="src\models\teapot.hpp" />
@@ -20,12 +14,6 @@
     <ClInclude Include="src\resources.hpp" />
     <ClInclude Include="src\world.hpp" />
     <ClInclude Include="src\network.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="glfw3\lib\glew32.lib" />
-    <Library Include="glfw3\lib\glew32s.lib" />
-    <Library Include="glfw3\lib\glfw3.lib" />
-    <Library Include="glfw3\lib\glfw3dll.lib" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\external\lodepng\lodepng.cpp" />
@@ -42,5 +30,16 @@
     <None Include="..\res\shaders\main.vert" />
     <None Include="..\res\shaders\skybox.frag" />
     <None Include="..\res\shaders\skybox.vert" />
+    <None Include="shaders\main.frag" />
+    <None Include="shaders\main.vert" />
+    <None Include="shaders\skybox.frag" />
+    <None Include="shaders\skybox.vert" />
+    <None Include="link_src.bat" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="glfw3\lib\glew32.lib" />
+    <Library Include="glfw3\lib\glew32s.lib" />
+    <Library Include="glfw3\lib\glfw3.lib" />
+    <Library Include="glfw3\lib\glfw3dll.lib" />
   </ItemGroup>
 </Project>
