@@ -51,6 +51,7 @@ void wait_for_char()
 int main(int argc, char** argv)
 {
     test_network_client();
+    wait_for_char();
 
     return 0;
 }
