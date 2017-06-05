@@ -3,9 +3,10 @@ set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 g++ -o server \
-        server_main.cpp \
-        src/network.cpp \
-    -std=c++11 \
-    -lstdc++ \
+        src/server/*.cpp \
+        src/shared/*.cpp \
+    -Iexternal/glm \
+    -std=c++14 \
+    -lstdc++
 
 ./server

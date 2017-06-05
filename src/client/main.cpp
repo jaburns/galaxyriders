@@ -1,6 +1,6 @@
-#include "input.hpp"
+#include "readinput.hpp"
 #include "render.hpp"
-#include "network.hpp"
+#include "../shared/network.hpp"
 
 #include <iostream>
 
@@ -26,7 +26,7 @@ void test_network_client()
     const int PORT = 12345;
 
     SocketConnection socket;
-    SocketAddress send_address = SocketConnection::get_host_address("jaburns.net", PORT);
+    SocketAddress send_address = SocketConnection::get_host_address("localhost", PORT);
     SocketAddress receive_address;
     unsigned char buffer[BUFFER_LEN];
 
