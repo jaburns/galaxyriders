@@ -2,7 +2,7 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-g++ -o game \
+cc -o game \
         src/client/*.cpp \
         src/client/models/*.cpp \
         src/shared/*.cpp \
