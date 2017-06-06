@@ -5,6 +5,6 @@
 [submodule "external/lodepng"]
 	path = external/lodepng
 	url = git@github.com:lvandeve/lodepng
-[submodule "win_glfw3"]
-	path = win_glfw3
+[submodule "external/win_glfw3"]
+	path = external/win_glfw3
 	url = git@github.com:jaburns/win_glfw3
