@@ -11,40 +11,36 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\glfw.hpp" />
-    <ClInclude Include="src\input.hpp" />
-    <ClInclude Include="src\models\teapot.hpp" />
-    <ClInclude Include="src\network.hpp" />
-    <ClInclude Include="src\render.hpp" />
-    <ClInclude Include="src\resources.hpp" />
-    <ClInclude Include="src\world.hpp" />
+    <Library Include="external\win_glfw3\lib\glew32.lib" />
+    <Library Include="external\win_glfw3\lib\glew32s.lib" />
+    <Library Include="external\win_glfw3\lib\glfw3.lib" />
+    <Library Include="external\win_glfw3\lib\glfw3dll.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\external\lodepng\lodepng.cpp" />
-    <ClCompile Include="src\input.cpp" />
-    <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\network.cpp" />
-    <ClCompile Include="src\render.cpp" />
-    <ClCompile Include="src\models\teapot.cpp" />
-    <ClCompile Include="src\resources.cpp" />
-    <ClCompile Include="src\world.cpp" />
+    <ClInclude Include="src\client\glfw.hpp" />
+    <ClInclude Include="src\client\models\teapot.hpp" />
+    <ClInclude Include="src\client\readinput.hpp" />
+    <ClInclude Include="src\client\render.hpp" />
+    <ClInclude Include="src\client\resources.hpp" />
+    <ClInclude Include="src\shared\input.hpp" />
+    <ClInclude Include="src\shared\network.hpp" />
+    <ClInclude Include="src\shared\world.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\res\shaders\main.frag" />
-    <None Include="..\res\shaders\main.vert" />
-    <None Include="..\res\shaders\skybox.frag" />
-    <None Include="..\res\shaders\skybox.vert" />
-    <None Include="link_src.bat" />
-    <None Include="shaders\main.frag" />
-    <None Include="shaders\main.vert" />
-    <None Include="shaders\skybox.frag" />
-    <None Include="shaders\skybox.vert" />
+    <ClCompile Include="external\lodepng\lodepng.cpp" />
+    <ClCompile Include="src\client\main.cpp" />
+    <ClCompile Include="src\client\models\teapot.cpp" />
+    <ClCompile Include="src\client\readinput.cpp" />
+    <ClCompile Include="src\client\render.cpp" />
+    <ClCompile Include="src\client\resources.cpp" />
+    <ClCompile Include="src\shared\network.cpp" />
+    <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="glfw3\lib\glew32.lib" />
-    <Library Include="glfw3\lib\glew32s.lib" />
-    <Library Include="glfw3\lib\glfw3.lib" />
-    <Library Include="glfw3\lib\glfw3dll.lib" />
+    <None Include="res\shaders\main.frag" />
+    <None Include="res\shaders\main.vert" />
+    <None Include="res\shaders\skybox.frag" />
+    <None Include="res\shaders\skybox.vert" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
@@ -92,7 +88,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\..\external\glm;$(SolutionDir)\..\external\lodepng;$(SolutionDir)\glfw3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\win_glfw3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
