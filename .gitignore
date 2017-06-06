@@ -1,6 +1,6 @@
 game
-server
-windows/Debug
-windows/GLGame.vcxproj.user
-windows/.vs
-.vscode/
+Debug
+Release
+GLGame.vcxproj.user
+.vs
+.vscode
