@@ -5,6 +5,8 @@
 #include <glm/gtc/quaternion.hpp>
 #include <math.h>
 
+#include "serialization.hpp"
+
 static const float TIME_SPEED_UP = 1.5f;
 static const float TIME_SLOW_DOWN = 1.3f;
 static const int MAX_POTS = 600;
@@ -78,4 +80,13 @@ World World::step(InputState& input) const
     }
 
     return world;
+}
+
+SerializedWorld::SerializedWorld(const World& world)
+{
+    unsigned char *bk = &buffer.back();
+    buffer.resize(buffer.size() + 4);
+
+
+    world.camera_position;
 }

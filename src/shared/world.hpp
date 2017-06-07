@@ -1,10 +1,10 @@
 #pragma once
 
 #include <deque>
+#include <vector>
 #include <glm/vec3.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include "input.hpp"
-
 
 struct Transform
 {
@@ -34,3 +34,10 @@ struct World
     World();
     World step(InputState& input) const;
 };
+
+struct SerializedWorld
+{
+    std::vector<unsigned char> buffer;
+
+    SerializedWorld(const World& world);
+}
