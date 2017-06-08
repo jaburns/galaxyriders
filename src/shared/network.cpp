@@ -94,15 +94,13 @@ void SocketConnection::send(const SocketAddress& remote_address, const unsigned 
     }
 }
 
-bool SocketConnection::receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len) const
+bool SocketConnection::receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len, int& message_len) const
 {
     sockaddr_in remaddr;
     socklen_t slen = sizeof(remaddr);
 
-    int recvlen = recvfrom(_socket, (char*)buffer, buffer_len, 0, (sockaddr*)&remaddr, &slen);
-    if (recvlen < 0) return false;
-
-    buffer[recvlen] = 0;
+    message_len = recvfrom(_socket, (char*)buffer, buffer_len, 0, (sockaddr*)&remaddr, &slen);
+    if (message_len < 0) return false;
 
     out_remote_address.address = remaddr.sin_addr.s_addr;
     out_remote_address.port = remaddr.sin_port;

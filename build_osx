@@ -14,4 +14,6 @@ cc -o game \
     -lglfw \
     -framework OpenGL
 
+#   -O3 \
+
 ./game

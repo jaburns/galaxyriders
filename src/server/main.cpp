@@ -1,6 +1,9 @@
+#include <chrono>
+#include <thread>
 #include <iostream>
 #include <cstring>
 #include "../shared/network.hpp"
+#include "../shared/world.hpp"
 
 int main(int argc, char **argv)
 {
@@ -12,15 +15,29 @@ int main(int argc, char **argv)
     int counter = 0;
     unsigned char buffer[BUFFER_LEN];
 
+    std::cout << "Waiting for client on port " << PORT << std::endl;
+
+    unsigned long cycles = 0;
+    int message_len = 0;
+    while (! socket.receive(client_address, buffer, BUFFER_LEN, message_len)) cycles++;
+    std::cout << "Spun for: " << cycles << " Received message: " << buffer << std::endl;
+    std::cout << "Starting simulation!" << std::endl;
+
+    World world;
+    InputState input;
+
     for (;;) {
-        std::cout << "Listening on port " << PORT << std::endl;
+        auto frame_start = std::chrono::high_resolution_clock::now();
 
-        unsigned long cycles = 0;
-        while (! socket.receive(client_address, buffer, BUFFER_LEN)) cycles++;
-        std::cout << "Spun for: " << cycles << "   Received message: " << buffer << std::endl;
+        world = world.step(input);
+        auto buf = world.serialize();
+        socket.send(client_address, buf.data(), buf.size());
 
-        sprintf((char*)buffer, "Ack %d", counter++);
-        std::cout << "Sending response: " << buffer << std::endl;
-        socket.send(client_address, buffer, strlen((char*)buffer));
+        auto frame_end = std::chrono::high_resolution_clock::now();
+
+        auto frame_len = frame_end - frame_start;
+        auto sleep_time = std::chrono::nanoseconds(33333333) - frame_len;
+        std::this_thread::sleep_for(sleep_time);
+        std::cout << "slept for: " << sleep_time.count() / 1000  << " us" << std::endl;
     }
 }

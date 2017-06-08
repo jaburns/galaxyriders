@@ -1,0 +1,8 @@
+#!/bin/sh
+
+g++ -o server \
+    src/server/*.cpp \
+    src/shared/*.cpp \
+    -Iexternal/glm \
+    -std=c++14 \
+    -lstdc++

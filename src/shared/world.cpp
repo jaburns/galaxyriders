@@ -8,7 +8,7 @@
 
 static const float TIME_SPEED_UP = 1.5f;
 static const float TIME_SLOW_DOWN = 1.3f;
-static const int MAX_POTS = 600;
+static const int MAX_POTS = 10;
 
 void World::reset()
 {
@@ -30,7 +30,26 @@ World::World()
 std::vector<unsigned char> World::serialize()
 {
     SerializationBuffer buf;
+
     buf.write_vec3(camera_position);
+    buf.write_vec3(camera_up);
+    buf.write_vec3(camera_look);
+    buf.write_quat(parent_pot_tilt);
+    buf.write32(frame_counter);
+    buf.write32(time_factor);
+
+    int pots = teapots.size();
+    buf.write32(pots);
+
+    for (int i = 0; i < pots; ++i) {
+        buf.write_vec3(teapots[i].transform.position);
+        buf.write_quat(teapots[i].transform.rotation);
+        buf.write_vec3(teapots[i].transform.scale);
+        buf.write_vec3(teapots[i].velocity.position);
+        buf.write_quat(teapots[i].velocity.rotation);
+        buf.write_vec3(teapots[i].velocity.scale);
+    }
+    
     return buf.buffer;
 }
 
@@ -38,7 +57,26 @@ World::World(const unsigned char *serialized, int serialized_length)
 {
     reset();
     DeserializationBuffer buf(serialized, serialized_length);
+
     buf.read_vec3(camera_position);
+    buf.read_vec3(camera_up);
+    buf.read_vec3(camera_look);
+    buf.read_quat(parent_pot_tilt);
+    buf.read32(frame_counter);
+    buf.read32(time_factor);
+
+    int pots;
+    buf.read32(pots);
+    teapots.resize(pots);
+
+    for (int i = 0; i < pots; ++i) {
+        buf.read_vec3(teapots[i].transform.position);
+        buf.read_quat(teapots[i].transform.rotation);
+        buf.read_vec3(teapots[i].transform.scale);
+        buf.read_vec3(teapots[i].velocity.position);
+        buf.read_quat(teapots[i].velocity.rotation);
+        buf.read_vec3(teapots[i].velocity.scale);
+    }
 }
 
 World World::step(InputState& input) const
@@ -46,8 +84,8 @@ World World::step(InputState& input) const
     World world = *this;
 
     world.frame_counter++;
-    world.camera_position += 2.0f * input.movement;
-    world.camera_look = input.look_dir;
+//  world.camera_position += 2.0f * input.movement;
+//  world.camera_look = input.look_dir;
 
     if (frame_counter == 1 || frame_counter == 45 || frame_counter == 105) {
         world.parent_pot_tilt = glm::angleAxis(glm::linearRand(0.0f, 3.14159f), glm::sphericalRand(1.0f));
