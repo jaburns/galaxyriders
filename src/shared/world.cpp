@@ -38,7 +38,7 @@ World::World(const unsigned char *serialized, int serialized_length)
 {
     reset();
     DeserializationBuffer buf(serialized, serialized_length);
-    camera_position = buf.read_vec3();
+    buf.read_vec3(camera_position);
 }
 
 World World::step(InputState& input) const

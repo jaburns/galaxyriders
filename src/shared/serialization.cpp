@@ -3,22 +3,28 @@
 #include <cstring>
 #include "socks.hpp"
 
-void SerializationBuffer::write_float(float& f) 
+template<typename T> 
+void SerializationBuffer::write32(const T& val)
 {
     buffer.resize(buffer.size() + 4);
     unsigned char *buffer_back = buffer.data() + buffer.size() - 4;
-
-    unsigned int f_as_int;
-    std::memcpy(&f_as_int, &f, sizeof(f_as_int));
-    unsigned int f_net = htonl(f_as_int);
-    std::memcpy(buffer_back, &f_net, sizeof(f_net));
+    unsigned int i_val = htonl(*reinterpret_cast<const unsigned int*>(&val));
+    std::memcpy(buffer_back, &i_val, 4);
 }
 
-void SerializationBuffer::write_vec3(glm::vec3& v) 
+void SerializationBuffer::write_vec3(const glm::vec3& v) 
 {
-    write_float(v.x);
-    write_float(v.y);
-    write_float(v.z);
+    write32(v.x);
+    write32(v.y);
+    write32(v.z);
+}
+
+void SerializationBuffer::write_quat(const glm::quat& q) 
+{
+    write32(q.w);
+    write32(q.x);
+    write32(q.y);
+    write32(q.z);
 }
 
 DeserializationBuffer::DeserializationBuffer(const unsigned char *data, int len)
@@ -27,26 +33,26 @@ DeserializationBuffer::DeserializationBuffer(const unsigned char *data, int len)
     std::memcpy(_buffer.data(), data, len);
 }
 
-float DeserializationBuffer::read_float() 
+template<typename T> 
+void DeserializationBuffer::read32(T& val)
 {
     const unsigned char *buffer_back = _buffer.data() + _read_head;
-
-    unsigned int f_net;
-    std::memcpy(&f_net, buffer_back, sizeof(f_net));
-    unsigned int f_as_int = ntohl(f_net);
-    float result;
-    std::memcpy(&result, &f_as_int, sizeof(result));
-
+    unsigned int val_as_int = ntohl(*reinterpret_cast<const unsigned int*>(_buffer.data() + _read_head));
+    std::memcpy(&val, &val_as_int, 4);
     _read_head += 4;
-
-    return result;
 }
 
-glm::vec3 DeserializationBuffer::read_vec3() 
+void DeserializationBuffer::read_vec3(glm::vec3& v) 
 {
-    glm::vec3 ret;
-    ret.x = read_float();
-    ret.y = read_float();
-    ret.z = read_float();
-    return ret;
+    read32(v.x);
+    read32(v.y);
+    read32(v.z);
+}
+
+void DeserializationBuffer::read_quat(glm::quat& q) 
+{
+    read32(q.w);
+    read32(q.x);
+    read32(q.y);
+    read32(q.z);
 }

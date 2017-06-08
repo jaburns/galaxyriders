@@ -18,8 +18,14 @@ void run()
         world = world.step(input_state);
         renderer.render(world);
     }
+}
 
-// Testing serialization/deserialization
+void test_serialization()
+{
+    World world;
+
+    world.camera_position = { 1.0f, -2.5f, 9.3f };
+    world.frame_counter = 123;
 
     cout << world.camera_position.x << " " << world.camera_position.y << " " << world.camera_position.z << " " << endl;
 
@@ -63,7 +69,8 @@ void wait_for_char()
 
 int main(int argc, char** argv)
 {
-    run();
+//  run();
+    test_serialization();
 //  test_network_client();
     wait_for_char();
 
