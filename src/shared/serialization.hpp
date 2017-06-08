@@ -1,8 +1,11 @@
 #pragma once
 
+#include <cstring>
 #include <vector>
 #include <glm/vec3.hpp>
 #include <glm/gtc/quaternion.hpp>
+
+#include "socks.hpp"
 
 struct SerializationBuffer
 {

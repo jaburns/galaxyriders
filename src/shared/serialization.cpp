@@ -1,8 +1,5 @@
 #include "serialization.hpp"
 
-#include <cstring>
-#include "socks.hpp"
-
 void SerializationBuffer::write_vec3(const glm::vec3& v) 
 {
     write32(v.x);

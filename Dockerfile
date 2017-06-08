@@ -12,4 +12,6 @@ RUN apk add --no-cache --update tini libstdc++ g++ && \
     ./build_server && \
     apk del g++
 
+EXPOSE 12345
+
 CMD ["tini", "--", "./server"]
