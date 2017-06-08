@@ -9,7 +9,7 @@ COPY src/server ./src/server
 COPY build_server ./build_server
 
 RUN apk add --no-cache --update tini libstdc++ g++ && \
-    ./build_server &&
+    ./build_server && \
     apk del g++
 
 CMD ["tini", "--", "./server"]
