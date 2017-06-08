@@ -4,14 +4,13 @@
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <math.h>
-
 #include "serialization.hpp"
 
 static const float TIME_SPEED_UP = 1.5f;
 static const float TIME_SLOW_DOWN = 1.3f;
 static const int MAX_POTS = 600;
 
-World::World()
+void World::reset()
 {
     camera_position = { 0.0f, 0.0f, 0.0f };
     camera_up = { 0.0f, 1.0f, 0.0f };
@@ -21,6 +20,25 @@ World::World()
     ntp.transform.position.z = -3.0f;
     ntp.transform.scale = glm::vec3(0.01f);
     teapots.push_back(ntp);
+}
+
+World::World()
+{
+    reset();
+}
+
+std::vector<unsigned char> World::serialize()
+{
+    SerializationBuffer buf;
+    buf.write_vec3(camera_position);
+    return buf.buffer;
+}
+
+World::World(const unsigned char *serialized, int serialized_length)
+{
+    reset();
+    DeserializationBuffer buf(serialized, serialized_length);
+    camera_position = buf.read_vec3();
 }
 
 World World::step(InputState& input) const
@@ -82,11 +100,3 @@ World World::step(InputState& input) const
     return world;
 }
 
-SerializedWorld::SerializedWorld(const World& world)
-{
-    unsigned char *bk = &buffer.back();
-    buffer.resize(buffer.size() + 4);
-
-
-    world.camera_position;
-}

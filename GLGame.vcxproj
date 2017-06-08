@@ -24,6 +24,8 @@
     <ClInclude Include="src\client\resources.hpp" />
     <ClInclude Include="src\shared\input.hpp" />
     <ClInclude Include="src\shared\network.hpp" />
+    <ClInclude Include="src\shared\serialization.hpp" />
+    <ClInclude Include="src\shared\socks.hpp" />
     <ClInclude Include="src\shared\world.hpp" />
   </ItemGroup>
   <ItemGroup>
@@ -34,6 +36,7 @@
     <ClCompile Include="src\client\render.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
     <ClCompile Include="src\shared\network.cpp" />
+    <ClCompile Include="src\shared\serialization.cpp" />
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>
   <ItemGroup>

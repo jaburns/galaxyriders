@@ -18,6 +18,19 @@ void run()
         world = world.step(input_state);
         renderer.render(world);
     }
+
+// Testing serialization/deserialization
+
+    cout << world.camera_position.x << " " << world.camera_position.y << " " << world.camera_position.z << " " << endl;
+
+    auto buff = world.serialize();
+    for (int i = 0; i < buff.size(); ++i) {
+        cout << hex << (int)buff[i] << " ";
+    }
+    cout << endl;
+
+    World new_world(buff.data(), buff.size());
+    cout << new_world.camera_position.x << " " << new_world.camera_position.y << " " << new_world.camera_position.z << " " << endl;
 }
 
 void test_network_client()
@@ -52,7 +65,7 @@ int main(int argc, char** argv)
 {
     run();
 //  test_network_client();
-//  wait_for_char();
+    wait_for_char();
 
     return 0;
 }
