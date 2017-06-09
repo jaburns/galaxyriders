@@ -29,7 +29,7 @@ void render_from_server()
     const int PORT = 12345;
 
     SocketConnection socket;
-    SocketAddress send_address = SocketConnection::get_host_address("localhost", PORT);
+    SocketAddress send_address = SocketConnection::get_host_address("jaburns.net", PORT);
     SocketAddress receive_address;
     unsigned char buffer[BUFFER_LEN];
 
@@ -40,8 +40,8 @@ void render_from_server()
     while (!renderer.should_close_window()) {
         int message_len = 0;
         if (socket.receive(receive_address, buffer, BUFFER_LEN, message_len)) {
-            std::cout << "RECEIVED" << std::endl;
             world = World(buffer, message_len);
+            std::cout << "RECEIVED " << world.teapots.size() << std::endl;
         }
         renderer.render(world);
     }
@@ -59,7 +59,7 @@ int main(int argc, char** argv)
 //  run();
 //  test_serialization();
     render_from_server();
-//  wait_for_char();
+    wait_for_char();
 
     return 0;
 }

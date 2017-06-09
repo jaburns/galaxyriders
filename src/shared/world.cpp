@@ -1,5 +1,7 @@
 #include "world.hpp"
 
+#include <iostream>
+
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -84,8 +86,8 @@ World World::step(InputState& input) const
     World world = *this;
 
     world.frame_counter++;
-//  world.camera_position += 2.0f * input.movement;
-//  world.camera_look = input.look_dir;
+    world.camera_position += 2.0f * input.movement;
+    world.camera_look = input.look_dir;
 
     if (frame_counter == 1 || frame_counter == 45 || frame_counter == 105) {
         world.parent_pot_tilt = glm::angleAxis(glm::linearRand(0.0f, 3.14159f), glm::sphericalRand(1.0f));
@@ -137,4 +139,3 @@ World World::step(InputState& input) const
 
     return world;
 }
-

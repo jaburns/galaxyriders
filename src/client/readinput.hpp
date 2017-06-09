@@ -3,7 +3,6 @@
 #include "glfw.hpp"
 #include "../shared/input.hpp"
 
-
 namespace Input
 {
     void bind_handlers(GLFWwindow* window);
