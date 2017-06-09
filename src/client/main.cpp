@@ -21,10 +21,6 @@ void run()
 
 void render_from_server()
 {
-    Renderer renderer;
-    World world;
-    Input::bind_handlers(renderer.raw_glfw_window());
-
     const int BUFFER_LEN = 2048;
     const int PORT = 12345;
 
@@ -36,6 +32,10 @@ void render_from_server()
     std::cout << "Sending ack packet to server port " << PORT << std::endl;
     sprintf((char*)buffer, "This is packet");
     socket.send(send_address, buffer, strlen((char*)buffer));
+
+    Renderer renderer;
+    World world;
+    Input::bind_handlers(renderer.raw_glfw_window());
 
     while (!renderer.should_close_window()) {
         int message_len = 0;
