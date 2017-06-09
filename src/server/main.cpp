@@ -38,6 +38,6 @@ int main(int argc, char **argv)
         auto frame_len = frame_end - frame_start;
         auto sleep_time = std::chrono::nanoseconds(33333333) - frame_len;
         std::this_thread::sleep_for(sleep_time);
-        std::cout << "slept for: " << sleep_time.count() / 1000  << " us" << std::endl;
+//      std::cout << "slept for: " << sleep_time.count() / 1000  << " us" << std::endl;
     }
 }

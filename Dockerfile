@@ -14,4 +14,4 @@ RUN apk add --no-cache --update tini libstdc++ g++ && \
 
 EXPOSE 12345
 
-CMD ["tini", "--", "./server"]
+CMD ["tini", "--", "./server_bin"]

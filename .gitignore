@@ -1,4 +1,5 @@
 game
+server_bin
 Debug
 Release
 GLGame.vcxproj.user

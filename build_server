@@ -1,6 +1,6 @@
 #!/bin/sh
 
-g++ -o server \
+g++ -o server_bin \
     src/server/*.cpp \
     src/shared/*.cpp \
     -Iexternal/glm \
