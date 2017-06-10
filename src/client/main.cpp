@@ -21,7 +21,7 @@ void run()
 
 void render_from_server()
 {
-    const int BUFFER_LEN = 2048;
+    const int MAX_BUFFER_LEN = 8192; 
     const int PORT = 12345;
 
     SocketConnection socket;
@@ -40,6 +40,7 @@ void render_from_server()
     while (!renderer.should_close_window()) {
         int message_len = 0;
         if (socket.receive(receive_address, buffer, BUFFER_LEN, message_len)) {
+            std::cout << "Bytes received: " << message_len << std::endl;
             world = World(buffer, message_len);
         }
         renderer.render(world);
@@ -58,7 +59,7 @@ int main(int argc, char** argv)
 //  run();
 //  test_serialization();
     render_from_server();
-    wait_for_char();
+//  wait_for_char();
 
     return 0;
 }

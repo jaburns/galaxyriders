@@ -10,7 +10,7 @@
 
 static const float TIME_SPEED_UP = 1.5f;
 static const float TIME_SLOW_DOWN = 1.3f;
-static const int MAX_POTS = 10;
+static const int MAX_POTS = 60;
 
 void World::reset()
 {
