@@ -21,13 +21,13 @@ void run()
 
 void render_from_server()
 {
-    const int MAX_BUFFER_LEN = 8192; 
+    const int MAX_BUFFER_LEN = 8192;
     const int PORT = 12345;
 
     SocketConnection socket;
     SocketAddress send_address = SocketConnection::get_host_address("localhost", PORT);
     SocketAddress receive_address;
-    unsigned char buffer[BUFFER_LEN];
+    unsigned char buffer[MAX_BUFFER_LEN];
 
     std::cout << "Sending ack packet to server port " << PORT << std::endl;
     sprintf((char*)buffer, "This is packet");
@@ -39,7 +39,7 @@ void render_from_server()
 
     while (!renderer.should_close_window()) {
         int message_len = 0;
-        if (socket.receive(receive_address, buffer, BUFFER_LEN, message_len)) {
+        if (socket.receive(receive_address, buffer, MAX_BUFFER_LEN, message_len)) {
             std::cout << "Bytes received: " << message_len << std::endl;
             world = World(buffer, message_len);
         }
