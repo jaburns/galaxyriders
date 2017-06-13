@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     const int BUFFER_LEN = 2048;
     const int PORT = 12345;
 
-    SocketConnection socket(PORT);
+    UDPSocket socket(PORT);
     SocketAddress client_address;
     int counter = 0;
     unsigned char buffer[BUFFER_LEN];

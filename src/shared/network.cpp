@@ -3,9 +3,9 @@
 #include <iostream>
 #include <cstring>
 #include <cstdio>
-#include "socks.hpp"
+#include "sockets.hpp"
 
-SocketConnection::SocketConnection(unsigned short port)
+UDPSocket::UDPSocket(unsigned short port)
 {
     #ifdef WINDOWS
         WSADATA wsa;
@@ -39,7 +39,7 @@ SocketConnection::SocketConnection(unsigned short port)
     }
 }
 
-SocketConnection::~SocketConnection()
+UDPSocket::~UDPSocket()
 {
     #ifdef WINDOWS
         closesocket(_socket);
@@ -66,7 +66,7 @@ static SocketAddress from_sockaddr(const sockaddr_in& addr)
     return result;
 }
 
-SocketAddress SocketConnection::get_host_address(const std::string& remote_host, unsigned short remote_port)
+SocketAddress UDPSocket::get_host_address(const std::string& remote_host, unsigned short remote_port)
 {
     sockaddr_in remaddr;
     std::memset((char*)&remaddr, 0, sizeof(remaddr));
@@ -83,7 +83,7 @@ SocketAddress SocketConnection::get_host_address(const std::string& remote_host,
     return from_sockaddr(remaddr);
 }
 
-void SocketConnection::send(const SocketAddress& remote_address, const unsigned char *buffer, int buffer_len) const
+void UDPSocket::send(const SocketAddress& remote_address, const unsigned char *buffer, int buffer_len) const
 {
     sockaddr_in remaddr = to_sockaddr(remote_address);
     socklen_t slen = sizeof(remaddr);
@@ -94,7 +94,7 @@ void SocketConnection::send(const SocketAddress& remote_address, const unsigned 
     }
 }
 
-bool SocketConnection::receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len, int& message_len) const
+bool UDPSocket::receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len, int& message_len) const
 {
     sockaddr_in remaddr;
     socklen_t slen = sizeof(remaddr);

@@ -25,7 +25,7 @@
     <ClInclude Include="src\shared\input.hpp" />
     <ClInclude Include="src\shared\network.hpp" />
     <ClInclude Include="src\shared\serialization.hpp" />
-    <ClInclude Include="src\shared\socks.hpp" />
+    <ClInclude Include="src\shared\sockets.hpp" />
     <ClInclude Include="src\shared\world.hpp" />
   </ItemGroup>
   <ItemGroup>

@@ -33,23 +33,22 @@ std::vector<unsigned char> World::serialize()
 {
     SerializationBuffer buf;
 
-    buf.write_vec3(camera_position);
-    buf.write_vec3(camera_up);
-    buf.write_vec3(camera_look);
-    buf.write_quat(parent_pot_tilt);
-    buf.write32(frame_counter);
-    buf.write32(time_factor);
+    buf.vec3(camera_position);
+    buf.vec3(camera_up);
+    buf.vec3(camera_look);
+    buf.quat(parent_pot_tilt);
+    buf.val32(frame_counter);
+    buf.val32(time_factor);
 
-    int pots = teapots.size();
-    buf.write32(pots);
+    int pots = buf.container_size(teapots);
 
     for (int i = 0; i < pots; ++i) {
-        buf.write_vec3(teapots[i].transform.position);
-        buf.write_quat(teapots[i].transform.rotation);
-        buf.write_vec3(teapots[i].transform.scale);
-        buf.write_vec3(teapots[i].velocity.position);
-        buf.write_quat(teapots[i].velocity.rotation);
-        buf.write_vec3(teapots[i].velocity.scale);
+        buf.vec3(teapots[i].transform.position);
+        buf.quat(teapots[i].transform.rotation);
+        buf.vec3(teapots[i].transform.scale);
+        buf.vec3(teapots[i].velocity.position);
+        buf.quat(teapots[i].velocity.rotation);
+        buf.vec3(teapots[i].velocity.scale);
     }
     
     return buf.buffer;
@@ -60,24 +59,22 @@ World::World(const unsigned char *serialized, int serialized_length)
     reset();
     DeserializationBuffer buf(serialized, serialized_length);
 
-    buf.read_vec3(camera_position);
-    buf.read_vec3(camera_up);
-    buf.read_vec3(camera_look);
-    buf.read_quat(parent_pot_tilt);
-    buf.read32(frame_counter);
-    buf.read32(time_factor);
+    buf.vec3(camera_position);
+    buf.vec3(camera_up);
+    buf.vec3(camera_look);
+    buf.quat(parent_pot_tilt);
+    buf.val32(frame_counter);
+    buf.val32(time_factor);
 
-    int pots;
-    buf.read32(pots);
-    teapots.resize(pots);
+    int pots = buf.container_size(teapots);
 
     for (int i = 0; i < pots; ++i) {
-        buf.read_vec3(teapots[i].transform.position);
-        buf.read_quat(teapots[i].transform.rotation);
-        buf.read_vec3(teapots[i].transform.scale);
-        buf.read_vec3(teapots[i].velocity.position);
-        buf.read_quat(teapots[i].velocity.rotation);
-        buf.read_vec3(teapots[i].velocity.scale);
+        buf.vec3(teapots[i].transform.position);
+        buf.quat(teapots[i].transform.rotation);
+        buf.vec3(teapots[i].transform.scale);
+        buf.vec3(teapots[i].velocity.position);
+        buf.quat(teapots[i].velocity.rotation);
+        buf.vec3(teapots[i].velocity.scale);
     }
 }
 

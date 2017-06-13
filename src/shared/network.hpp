@@ -8,16 +8,16 @@ struct SocketAddress
     unsigned long address;
 };
 
-class SocketConnection
+class UDPSocket
 {
     int _socket;
 
-    SocketConnection(const SocketConnection&);
-    SocketConnection& operator=(const SocketConnection&);
+    UDPSocket(const UDPSocket&);
+    UDPSocket& operator=(const UDPSocket&);
 
 public:
-    SocketConnection(unsigned short port = 0);
-    ~SocketConnection();
+    UDPSocket(unsigned short port = 0);
+    ~UDPSocket();
 
     void send(const SocketAddress& remote_address, const unsigned char *buffer, int buffer_len) const;
     bool receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len, int& message_len) const;
