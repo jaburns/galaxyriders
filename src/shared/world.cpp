@@ -29,28 +29,32 @@ World::World()
     reset();
 }
 
+template<typename T>
+static void handle_serialization(World& world, T& buffer)
+{
+    buffer.vec3(world.camera_position);
+    buffer.vec3(world.camera_up);
+    buffer.vec3(world.camera_look);
+    buffer.quat(world.parent_pot_tilt);
+    buffer.val32(world.frame_counter);
+    buffer.val32(world.time_factor);
+
+    int pots = buffer.container_size(world.teapots);
+
+    for (int i = 0; i < pots; ++i) {
+        buffer.vec3(world.teapots[i].transform.position);
+        buffer.quat(world.teapots[i].transform.rotation);
+        buffer.vec3(world.teapots[i].transform.scale);
+        buffer.vec3(world.teapots[i].velocity.position);
+        buffer.quat(world.teapots[i].velocity.rotation);
+        buffer.vec3(world.teapots[i].velocity.scale);
+    }
+}
+
 std::vector<unsigned char> World::serialize()
 {
     SerializationBuffer buf;
-
-    buf.vec3(camera_position);
-    buf.vec3(camera_up);
-    buf.vec3(camera_look);
-    buf.quat(parent_pot_tilt);
-    buf.val32(frame_counter);
-    buf.val32(time_factor);
-
-    int pots = buf.container_size(teapots);
-
-    for (int i = 0; i < pots; ++i) {
-        buf.vec3(teapots[i].transform.position);
-        buf.quat(teapots[i].transform.rotation);
-        buf.vec3(teapots[i].transform.scale);
-        buf.vec3(teapots[i].velocity.position);
-        buf.quat(teapots[i].velocity.rotation);
-        buf.vec3(teapots[i].velocity.scale);
-    }
-    
+    handle_serialization(*this, buf);
     return buf.buffer;
 }
 
@@ -58,24 +62,7 @@ World::World(const unsigned char *serialized, int serialized_length)
 {
     reset();
     DeserializationBuffer buf(serialized, serialized_length);
-
-    buf.vec3(camera_position);
-    buf.vec3(camera_up);
-    buf.vec3(camera_look);
-    buf.quat(parent_pot_tilt);
-    buf.val32(frame_counter);
-    buf.val32(time_factor);
-
-    int pots = buf.container_size(teapots);
-
-    for (int i = 0; i < pots; ++i) {
-        buf.vec3(teapots[i].transform.position);
-        buf.quat(teapots[i].transform.rotation);
-        buf.vec3(teapots[i].transform.scale);
-        buf.vec3(teapots[i].velocity.position);
-        buf.quat(teapots[i].velocity.rotation);
-        buf.vec3(teapots[i].velocity.scale);
-    }
+    handle_serialization(*this, buf);
 }
 
 World World::step(InputState& input) const
