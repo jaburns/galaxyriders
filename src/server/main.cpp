@@ -38,7 +38,7 @@ int main(int argc, char **argv)
         auto frame_end = std::chrono::high_resolution_clock::now();
 
         auto frame_len = frame_end - frame_start;
-        auto sleep_time = std::chrono::nanoseconds(33333333) - frame_len;
+        auto sleep_time = std::chrono::nanoseconds(100000000) - frame_len;
         std::this_thread::sleep_for(sleep_time);
     }
 }

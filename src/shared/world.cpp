@@ -59,7 +59,22 @@ World::World(const unsigned char *serialized, int serialized_length)
 
 World World::lerp_to(const World& next, float t) const
 {
-    return next;
+    World world = *this;
+    world.camera_position = glm::mix(world.camera_position, next.camera_position, t);
+    world.camera_up = glm::mix(world.camera_up, next.camera_up, t);
+    world.camera_look = glm::mix(world.camera_look, next.camera_look, t);
+    world.parent_pot_tilt = glm::slerp(world.parent_pot_tilt, next.parent_pot_tilt, t);
+    world.time_factor = glm::mix(world.time_factor, next.time_factor, t);
+
+    for (auto i = 0; i < world.teapots.size() && i < next.teapots.size(); ++i) {
+        world.teapots[i].transform.position = glm::mix(world.teapots[i].transform.position, next.teapots[i].transform.position, t);
+        world.teapots[i].transform.rotation = glm::slerp(world.teapots[i].transform.rotation, next.teapots[i].transform.rotation, t);
+        world.teapots[i].transform.scale = glm::mix(world.teapots[i].transform.scale, next.teapots[i].transform.scale, t);
+        world.teapots[i].velocity.position = glm::mix(world.teapots[i].velocity.position, next.teapots[i].velocity.position, t);
+        world.teapots[i].velocity.rotation = glm::slerp(world.teapots[i].velocity.rotation, next.teapots[i].velocity.rotation, t);
+        world.teapots[i].velocity.scale = glm::mix(world.teapots[i].velocity.scale, next.teapots[i].velocity.scale, t);
+    }
+    return world;
 }
 
 World World::step(InputState& input) const
