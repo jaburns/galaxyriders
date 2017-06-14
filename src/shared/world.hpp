@@ -33,7 +33,7 @@ struct World
 
     World();
     World(const unsigned char *serialized, int serialized_length);
-    std::vector<unsigned char> serialize();
+    std::vector<unsigned char> serialize() const;
 
     World step(InputState& input) const;
 };

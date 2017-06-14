@@ -7,6 +7,7 @@
 
 #include "sockets.hpp"
 
+
 struct SerializationBuffer
 {
     std::vector<unsigned char> buffer;

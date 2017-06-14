@@ -24,8 +24,8 @@ World::World()
     teapots.push_back(ntp);
 }
 
-template<typename T>
-static void handle_serialization(World& world, T& buffer)
+template<typename W = World, typename B>
+static void handle_serialization(W& world, B& buffer)
 {
     serialize_vec3(buffer, world.camera_position);
     serialize_vec3(buffer, world.camera_up);
@@ -46,7 +46,7 @@ static void handle_serialization(World& world, T& buffer)
     }
 }
 
-std::vector<unsigned char> World::serialize()
+std::vector<unsigned char> World::serialize() const
 {
     SerializationBuffer buf;
     handle_serialization(*this, buf);
