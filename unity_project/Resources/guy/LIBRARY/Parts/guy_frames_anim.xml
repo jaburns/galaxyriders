@@ -1,0 +1,477 @@
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Parts/guy_frames_anim" itemID="57a2bf0c-00000044" symbolType="graphic" lastModified="1470283594" lastUniqueIdentifier="6">
+  <timeline>
+    <DOMTimeline name="guy_frames_anim" currentFrame="7">
+      <layers>
+        <DOMLayer name="Layer 1" color="#4F80FF">
+          <frames>
+            <DOMFrame index="0" duration="9" name="ollie" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" name="flip" labelType="name" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="6" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Head" color="#9933CC" current="true" isSelected="true" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Head">
+                  <matrix>
+                    <Matrix tx="5.2" ty="-32.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Head" centerPoint3DX="2.2" centerPoint3DY="-32.05">
+                  <matrix>
+                    <Matrix tx="2.2" ty="-32.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Head" centerPoint3DX="-0.8" centerPoint3DY="-32.05">
+                  <matrix>
+                    <Matrix tx="-0.8" ty="-32.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="1.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Head" centerPoint3DX="-0.25" centerPoint3DY="-33">
+                  <matrix>
+                    <Matrix tx="-0.8" ty="-32.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.75" y="0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Head" centerPoint3DX="-0.05" centerPoint3DY="-30.85">
+                  <matrix>
+                    <Matrix a="0.915435791015625" b="0.402450561523438" c="-0.402450561523438" d="0.915435791015625" tx="-1.15" ty="-29.7"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-5.75" y="0.4"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Arms" color="#FF800A" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="shape" keyMode="17922" acceleration="100">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-2.1953125, #1.3A" startPointB="#FFFFFC.F7, #0.3" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFE.41, #FFFFFF.A9" anchorPointA="#FFFFFF.FD, -0.5390625" controlPointB="#FFFFFD.19, -1.1484375" anchorPointB="#FFFFFF.69, #FFFFFF.8B"/>
+                    <MorphCurves controlPointA="#1.81, -0.296875" anchorPointA="#2.15, #1.1E" controlPointB="#1.63, -1.0078125" anchorPointB="#2.61, #FFFFFF.F3"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape selected="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!533 286[385 -76 -3 -138!-3 -138[-447 -87 -562 314"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" tweenType="shape" keyMode="17922" acceleration="-100">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="#FFFFFC.F7, #0.3" startPointB="-3.265625, #FFFFFE.B1" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFD.19, -1.1484375" anchorPointA="#FFFFFF.69, #FFFFFF.8B" controlPointB="#FFFFFD.79, -0.640625" anchorPointB="#FFFFFF.69, #FFFFFF.8B"/>
+                    <MorphCurves controlPointA="#1.63, -1.0078125" anchorPointA="#2.61, #FFFFFF.F3" controlPointB="#1.8B, -0.59375" anchorPointB="#2.A6, -1.5234375"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!609 -13[#162.E4 #FFFEFD.B5 -151 -117!-151 -117[#FFFD18.EA #FFFEDA.56 -777 48"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!678 -390[#18B.76 #FFFF67.F6 -151 -117!-151 -117[#FFFD78.C5 #FFFF5C.07 -836 -335"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-3.265625, #FFFFFE.B1" startPointB="-0.671875, #2.F1" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFD.79, -0.640625" anchorPointA="#FFFFFF.69, #FFFFFF.8B" controlPointB="#FFFFFD.79, -0.640625" anchorPointB="#FFFFFF.69, #FFFFFF.8B"/>
+                    <MorphCurves controlPointA="#1.8B, -0.59375" anchorPointA="#2.A6, -1.5234375" controlPointB="#1.8B, -0.59375" anchorPointB="#2.F2, -0.6484375"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!678 -390[#18B.76 #FFFF67.F6 -151 -117!-151 -117[#FFFD78.C5 #FFFF5C.07 -836 -335"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" tweenType="shape" keyMode="17922">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!754 -166[#18B.76 #FFFF67.F6 -151 -117!-151 -117[#FFFD78.C5 #FFFF5C.07 -172 753"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Body" color="#FF4FFF" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Body">
+                  <matrix>
+                    <Matrix tx="-0.55" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Body" centerPoint3DX="-3.55" centerPoint3DY="4.9">
+                  <matrix>
+                    <Matrix tx="-3.55" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Body" centerPoint3DX="-6.55" centerPoint3DY="4.9">
+                  <matrix>
+                    <Matrix tx="-6.55" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Body" centerPoint3DX="-6.55" centerPoint3DY="4.9">
+                  <matrix>
+                    <Matrix tx="-6.55" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Body" centerPoint3DX="-6.55" centerPoint3DY="4.9">
+                  <matrix>
+                    <Matrix tx="-6.55" ty="4.9"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Legs" color="#009999" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="shape" keyMode="17922" acceleration="100">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-1.875, #3.57" startPointB="-2.28125, #3.7A" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="-1.34375, #1.6B" anchorPointA="#FFFFFF.F5, #1.6A" controlPointB="#FFFFFE.41, #1.56" anchorPointB="#FFFFFF.AD, #1.74"/>
+                    <MorphCurves controlPointA="#1.56, #1.A1" anchorPointA="#1.AF, #3.54" controlPointB="#1.19, #1.92" anchorPointB="#0.D1, 1.75"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-480 855[-344 363 -11 362!-11 362[342 417 431 852"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" tweenType="shape" keyMode="17922" acceleration="-100">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-2.28125, #3.7A" startPointB="-2.1328125, #2.BC" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFE.41, #1.56" anchorPointA="#FFFFFF.AD, #1.74" controlPointB="#FFFFFC.F9, #1.6F" anchorPointB="#FFFFFF.07, #1.87"/>
+                    <MorphCurves controlPointA="#1.19, #1.92" anchorPointA="#0.D1, 1.75" controlPointB="#1.14, #1.9F" anchorPointB="#2.84, #2.6D"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape selected="true">
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-584 890[#FFFE41.14 #156.78 -83 372!-83 372[#118.F4 #191.88 209 448"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-546 700[#FFFCF8.D9 #16F.7B -249.5 391!-249.5 391[#114.37 #19E.8A 644 621"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" tweenType="shape" keyMode="17922">
+              <MorphShape>
+                <morphSegments>
+                  <MorphSegment startPointA="-2.1328125, #2.BC" startPointB="-1.0859375, #2.8C" strokeIndex1="0" strokeIndex2="0">
+                    <MorphCurves controlPointA="#FFFFFC.F9, #1.6F" anchorPointA="#FFFFFF.07, #1.87" controlPointB="-2.7734375, #1.7B" anchorPointB="#FFFFFF.33, #1.8F"/>
+                    <MorphCurves controlPointA="#1.14, #1.9F" anchorPointA="#2.84, #2.6D" controlPointB="#1.2B, #1.A3" anchorPointB="#2.3, #4.49"/>
+                  </MorphSegment>
+                </morphSegments>
+                <morphHintsList/>
+              </MorphShape>
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-546 700[#FFFCF8.D9 #16F.7B -249.5 391!-249.5 391[#114.37 #19E.8A 644 621"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" tweenType="shape" keyMode="17922">
+              <elements>
+                <DOMShape>
+                  <strokes>
+                    <StrokeStyle index="1">
+                      <SolidStroke scaleMode="normal" weight="10">
+                        <fill>
+                          <SolidColor color="#FFFFFF"/>
+                        </fill>
+                      </SolidStroke>
+                    </StrokeStyle>
+                  </strokes>
+                  <edges>
+                    <Edge strokeStyle="1" edges="!-278 652[#FFFD3A.5B #17B.65 -205.5 399!-205.5 399[#12A.AD #1A2.A4 560 1097"/>
+                  </edges>
+                </DOMShape>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="FlipBoard" color="#9933CC" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="5" duration="4" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/FlipBoard" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.774749755859375" b="-0.63226318359375" c="0.63226318359375" d="0.774749755859375" tx="4.25" ty="39.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-2.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="9" duration="4" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/FlipBoard" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999755859375" b="-0.0209197998046875" c="0.0209197998046875" d="0.999755859375" tx="4.65" ty="49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-2.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+        <DOMLayer name="Board" color="#808080" autoNamed="false">
+          <frames>
+            <DOMFrame index="0" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Board">
+                  <matrix>
+                    <Matrix tx="2.65" ty="52.1"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="5" tweenType="motion" motionTweenSnap="true" keyMode="22017" acceleration="-100">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Board" centerPoint3DX="4.5" centerPoint3DY="39.85">
+                  <matrix>
+                    <Matrix a="0.774749755859375" b="-0.63226318359375" c="0.63226318359375" d="0.774749755859375" tx="4.25" ty="39.45"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="-0.05" y="-2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="6" duration="7" keyMode="9728">
+              <elements/>
+            </DOMFrame>
+            <DOMFrame index="13" duration="5" tweenType="motion" motionTweenSnap="true" keyMode="22017">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/FlipBoard" symbolType="graphic" loop="loop">
+                  <matrix>
+                    <Matrix a="0.999755859375" b="-0.0209197998046875" c="0.0209197998046875" d="0.999755859375" tx="4.65" ty="49"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point x="0.05" y="-2.45"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+            <DOMFrame index="18" keyMode="9728">
+              <elements>
+                <DOMSymbolInstance libraryItemName="Parts/Board" centerPoint3DX="-5.85" centerPoint3DY="49.05">
+                  <matrix>
+                    <Matrix a="0.814498901367188" b="0.580154418945312" c="-0.580154418945312" d="0.814498901367188" tx="-5.85" ty="49.05"/>
+                  </matrix>
+                  <transformationPoint>
+                    <Point y="-2.5"/>
+                  </transformationPoint>
+                </DOMSymbolInstance>
+              </elements>
+            </DOMFrame>
+          </frames>
+        </DOMLayer>
+      </layers>
+    </DOMTimeline>
+  </timeline>
+</DOMSymbolItem>
