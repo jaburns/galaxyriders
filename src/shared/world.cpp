@@ -12,7 +12,7 @@ static const float TIME_SPEED_UP = 1.5f;
 static const float TIME_SLOW_DOWN = 1.3f;
 static const int MAX_POTS = 60;
 
-void World::reset()
+World::World()
 {
     camera_position = { 0.0f, 0.0f, 0.0f };
     camera_up = { 0.0f, 1.0f, 0.0f };
@@ -22,11 +22,6 @@ void World::reset()
     ntp.transform.position.z = -3.0f;
     ntp.transform.scale = glm::vec3(0.01f);
     teapots.push_back(ntp);
-}
-
-World::World()
-{
-    reset();
 }
 
 template<typename T>
@@ -60,7 +55,6 @@ std::vector<unsigned char> World::serialize()
 
 World::World(const unsigned char *serialized, int serialized_length)
 {
-    reset();
     DeserializationBuffer buf(serialized, serialized_length);
     handle_serialization(*this, buf);
 }

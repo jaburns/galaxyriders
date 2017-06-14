@@ -31,8 +31,6 @@ struct World
     int frame_counter = 0;
     float time_factor = 1.0f;
 
-    void reset();
-
     World();
     World(const unsigned char *serialized, int serialized_length);
     std::vector<unsigned char> serialize();
