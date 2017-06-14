@@ -6,3 +6,5 @@ g++ -o server_bin \
     -Iexternal/glm \
     -std=c++14 \
     -lstdc++
+
+[ -z "$1" ] || ./server_bin

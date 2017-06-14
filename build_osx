@@ -13,7 +13,6 @@ cc -o game \
     -lstdc++ \
     -lglfw \
     -framework OpenGL
-
 #   -O3 \
 
 ./game
