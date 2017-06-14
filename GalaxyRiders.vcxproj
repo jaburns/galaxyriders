@@ -36,7 +36,6 @@
     <ClCompile Include="src\client\render.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
     <ClCompile Include="src\shared\network.cpp" />
-    <ClCompile Include="src\shared\serialization.cpp" />
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>
   <ItemGroup>

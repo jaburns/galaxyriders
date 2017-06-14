@@ -27,9 +27,6 @@ struct SerializationBuffer
         val32(size);
         return size;
     }
-
-    void vec3(const glm::vec3& v);
-    void quat(const glm::quat& q);
 };
 
 class DeserializationBuffer
@@ -38,7 +35,11 @@ class DeserializationBuffer
     int _read_head = 0;
 
 public:
-    DeserializationBuffer(const unsigned char *data, int len);
+    DeserializationBuffer(const unsigned char *data, int len) 
+    {
+        _buffer.resize(len);
+        std::memcpy(_buffer.data(), data, len);
+    }
 
     template<typename T> 
     void val32(T& val)
@@ -57,7 +58,21 @@ public:
         v.resize(size);
         return size;
     }
-
-    void vec3(glm::vec3& v);
-    void quat(glm::quat& q);
 };
+
+template<typename T>
+static void serialize_vec3(T& buffer, glm::vec3& v)
+{
+    buffer.val32(v.x);
+    buffer.val32(v.y);
+    buffer.val32(v.z);
+}
+
+template<typename T>
+static void serialize_quat(T& buffer, glm::quat& q)
+{
+    buffer.val32(q.w);
+    buffer.val32(q.x);
+    buffer.val32(q.y);
+    buffer.val32(q.z);
+}

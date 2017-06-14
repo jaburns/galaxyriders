@@ -27,22 +27,22 @@ World::World()
 template<typename T>
 static void handle_serialization(World& world, T& buffer)
 {
-    buffer.vec3(world.camera_position);
-    buffer.vec3(world.camera_up);
-    buffer.vec3(world.camera_look);
-    buffer.quat(world.parent_pot_tilt);
+    serialize_vec3(buffer, world.camera_position);
+    serialize_vec3(buffer, world.camera_up);
+    serialize_vec3(buffer, world.camera_look);
+    serialize_quat(buffer, world.parent_pot_tilt);
     buffer.val32(world.frame_counter);
     buffer.val32(world.time_factor);
 
     int pots = buffer.container_size(world.teapots);
 
     for (int i = 0; i < pots; ++i) {
-        buffer.vec3(world.teapots[i].transform.position);
-        buffer.quat(world.teapots[i].transform.rotation);
-        buffer.vec3(world.teapots[i].transform.scale);
-        buffer.vec3(world.teapots[i].velocity.position);
-        buffer.quat(world.teapots[i].velocity.rotation);
-        buffer.vec3(world.teapots[i].velocity.scale);
+        serialize_vec3(buffer, world.teapots[i].transform.position);
+        serialize_quat(buffer, world.teapots[i].transform.rotation);
+        serialize_vec3(buffer, world.teapots[i].transform.scale);
+        serialize_vec3(buffer, world.teapots[i].velocity.position);
+        serialize_quat(buffer, world.teapots[i].velocity.rotation);
+        serialize_vec3(buffer, world.teapots[i].velocity.scale);
     }
 }
 
