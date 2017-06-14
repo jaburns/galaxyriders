@@ -1,7 +1,5 @@
 #include "world.hpp"
 
-#include <iostream>
-
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
 #include <glm/gtc/quaternion.hpp>
@@ -24,32 +22,32 @@ World::World()
     teapots.push_back(ntp);
 }
 
-template<typename W = World, typename B>
-static void handle_serialization(W& world, B& buffer)
+template<typename T>
+static void handle_serialization(World& world, T& buffer)
 {
-    serialize_vec3(buffer, world.camera_position);
-    serialize_vec3(buffer, world.camera_up);
-    serialize_vec3(buffer, world.camera_look);
-    serialize_quat(buffer, world.parent_pot_tilt);
+    SDBuffer::vec3(buffer, world.camera_position);
+    SDBuffer::vec3(buffer, world.camera_up);
+    SDBuffer::vec3(buffer, world.camera_look);
+    SDBuffer::quat(buffer, world.parent_pot_tilt);
     buffer.val32(world.frame_counter);
     buffer.val32(world.time_factor);
 
     int pots = buffer.container_size(world.teapots);
 
     for (int i = 0; i < pots; ++i) {
-        serialize_vec3(buffer, world.teapots[i].transform.position);
-        serialize_quat(buffer, world.teapots[i].transform.rotation);
-        serialize_vec3(buffer, world.teapots[i].transform.scale);
-        serialize_vec3(buffer, world.teapots[i].velocity.position);
-        serialize_quat(buffer, world.teapots[i].velocity.rotation);
-        serialize_vec3(buffer, world.teapots[i].velocity.scale);
+        SDBuffer::vec3(buffer, world.teapots[i].transform.position);
+        SDBuffer::quat(buffer, world.teapots[i].transform.rotation);
+        SDBuffer::vec3(buffer, world.teapots[i].transform.scale);
+        SDBuffer::vec3(buffer, world.teapots[i].velocity.position);
+        SDBuffer::quat(buffer, world.teapots[i].velocity.rotation);
+        SDBuffer::vec3(buffer, world.teapots[i].velocity.scale);
     }
 }
 
 std::vector<unsigned char> World::serialize() const
 {
     SerializationBuffer buf;
-    handle_serialization(*this, buf);
+    handle_serialization(*const_cast<World*>(this), buf);
     return buf.buffer;
 }
 
@@ -57,6 +55,11 @@ World::World(const unsigned char *serialized, int serialized_length)
 {
     DeserializationBuffer buf(serialized, serialized_length);
     handle_serialization(*this, buf);
+}
+
+World World::lerp_to(const World& next, float t) const
+{
+    return next;
 }
 
 World World::step(InputState& input) const

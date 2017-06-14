@@ -36,4 +36,5 @@ struct World
     std::vector<unsigned char> serialize() const;
 
     World step(InputState& input) const;
+    World lerp_to(const World& next, float t) const;
 };
