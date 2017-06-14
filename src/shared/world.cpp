@@ -24,39 +24,32 @@ World::World()
     teapots.push_back(ntp);
 }
 
-static World *world_for_resize_teapots;
-static void resize_teapots(int32_t size)
+template<typename W = World, typename B>
+static void handle_serialization(W& world, B& buffer)
 {
-    world_for_resize_teapots->teapots.resize(size);
-}
+    serialize_vec3(buffer, world.camera_position);
+    serialize_vec3(buffer, world.camera_up);
+    serialize_vec3(buffer, world.camera_look);
+    serialize_quat(buffer, world.parent_pot_tilt);
+    buffer.val32(world.frame_counter);
+    buffer.val32(world.time_factor);
 
-static void handle_serialization(World& world, SDBuffer& buffer)
-{
-    buffer.vec3_val(world.camera_position);
-    buffer.vec3_val(world.camera_up);
-    buffer.vec3_val(world.camera_look);
-    buffer.quat_val(world.parent_pot_tilt);
-    buffer.int32_val(world.frame_counter);
-    buffer.float_val(world.time_factor);
-
-    world_for_resize_teapots = &world;
-    int pots = buffer.deque_size(world.teapots.size(), resize_teapots);
-    world_for_resize_teapots = nullptr;
+    int pots = buffer.container_size(world.teapots);
 
     for (int i = 0; i < pots; ++i) {
-        buffer.vec3_val(world.teapots[i].transform.position);
-        buffer.quat_val(world.teapots[i].transform.rotation);
-        buffer.vec3_val(world.teapots[i].transform.scale);
-        buffer.vec3_val(world.teapots[i].velocity.position);
-        buffer.quat_val(world.teapots[i].velocity.rotation);
-        buffer.vec3_val(world.teapots[i].velocity.scale);
+        serialize_vec3(buffer, world.teapots[i].transform.position);
+        serialize_quat(buffer, world.teapots[i].transform.rotation);
+        serialize_vec3(buffer, world.teapots[i].transform.scale);
+        serialize_vec3(buffer, world.teapots[i].velocity.position);
+        serialize_quat(buffer, world.teapots[i].velocity.rotation);
+        serialize_vec3(buffer, world.teapots[i].velocity.scale);
     }
 }
 
 std::vector<unsigned char> World::serialize() const
 {
     SerializationBuffer buf;
-    handle_serialization(*const_cast<World*>(this), buf);
+    handle_serialization(*this, buf);
     return buf.buffer;
 }
 
