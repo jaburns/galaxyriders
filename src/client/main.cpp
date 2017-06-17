@@ -49,6 +49,6 @@ int main(int argc, char** argv)
         }
     }
 
-//  std::cout << "Enter a char to quit";char xxx; td::cin >> xxx;
+    std::cout << "Enter a char to quit";char xxx; std::cin >> xxx;
     return 0;
 }

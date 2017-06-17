@@ -16,6 +16,8 @@ class Renderer
 
     GLuint vao, skyboxVAO;
 
+    Mesh _teapot;
+
 public:
     Renderer();
     ~Renderer();

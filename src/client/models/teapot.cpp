@@ -1,6 +1,6 @@
 #include "teapot.hpp"
 
-extern const glm::vec3 teapot_vertices[531] = {
+const glm::vec3 teapot_vertices[531] = {
     { 0.0, 0.0, 0.0 },
     { 40.6266, 28.3457, -1.10804 },
     { 40.0714, 30.4443, -1.10804 },
@@ -534,8 +534,7 @@ extern const glm::vec3 teapot_vertices[531] = {
     { 34.9202, 28.3457, -15.6121 }
 };
 
-
-extern const glm::vec3 teapot_normals[531] = {
+const glm::vec3 teapot_normals[531] = {
     { 0.0, 0.0, 0.0 },
     { -0.966742, -0.255752, 0.0 },
     { -0.966824, 0.255443, 0.0 },
@@ -1069,7 +1068,7 @@ extern const glm::vec3 teapot_normals[531] = {
     { 0.48559, 0.850653, -0.201474 },
 };
 
-extern const unsigned int teapot_indices[3072] = {
+const unsigned int teapot_indices[3072] = {
     7, 6, 1,
     1, 2, 7,
     8, 7, 2,
@@ -2095,3 +2094,5 @@ extern const unsigned int teapot_indices[3072] = {
     470, 469, 529,
     529, 530, 470,
 };
+
+Mesh get_teapot_mesh() { return Mesh(531, 531, 3072, teapot_vertices, teapot_normals, teapot_indices); }

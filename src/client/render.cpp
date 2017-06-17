@@ -113,6 +113,18 @@ Renderer::Renderer()
         "res/hw_crater/craterlake_ft.png"
     );
 
+    _teapot = get_teapot_mesh();
+
+    const unsigned char *bytesA = reinterpret_cast<const unsigned char*>(&teapot_vertices) + 50;
+    const unsigned char *bytesB = reinterpret_cast<const unsigned char*>(_teapot.vertices.data()) + 50;
+
+    std::cout << (int)bytesA[0] << (int)bytesA[1] << (int)bytesA[2] << (int)bytesA[3] << (int)bytesA[4] << (int)bytesA[5] << (int)bytesA[6] << (int)bytesA[7] << std::endl;
+    std::cout << (int)bytesB[0] << (int)bytesB[1] << (int)bytesB[2] << (int)bytesB[3] << (int)bytesB[4] << (int)bytesB[5] << (int)bytesB[6] << (int)bytesB[7] << std::endl;
+
+    std::cout << _teapot.indices.size() * sizeof(unsigned int) << std::endl;
+    std::cout << sizeof(teapot_indices) << std::endl;
+
+
     // Setup teapot VAO
 //  GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -120,18 +132,18 @@ Renderer::Renderer()
     GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_vertices), teapot_vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, _teapot.vertices.size() * sizeof(glm::vec3), _teapot.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*program, "position"));
     glVertexAttribPointer(glGetAttribLocation(*program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
     GLuint normal_buffer;
     glGenBuffers(1, &normal_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(teapot_normals), teapot_normals, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, _teapot.normals.size() * sizeof(glm::vec3), _teapot.normals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*program, "normal"));
     glVertexAttribPointer(glGetAttribLocation(*program, "normal"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
     glGenBuffers(1, &index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(teapot_indices), teapot_indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _teapot.indices.size() * sizeof(unsigned int), _teapot.indices.data(), GL_STATIC_DRAW);
 
     // Setup skybox VAO
 //  GLuint skyboxVAO;
@@ -150,7 +162,6 @@ void Renderer::render(const World& world)
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
     auto v = glm::translate(
@@ -197,7 +208,7 @@ void Renderer::render(const World& world)
 
             glUniformMatrix4fv(glGetUniformLocation(*program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-            glDrawElements(GL_TRIANGLES, sizeof(teapot_indices) / sizeof(unsigned int), GL_UNSIGNED_INT, (void*)0);
+            glDrawElements(GL_TRIANGLES, _teapot.indices.size(), GL_UNSIGNED_INT, (void*)0);
         }
     }
 
