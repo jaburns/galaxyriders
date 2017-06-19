@@ -74,7 +74,7 @@ Renderer::Renderer()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//  glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
+    glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 4); // MSAA
 
     window = glfwCreateWindow(1280, 720, "Hello world", NULL, NULL);
@@ -115,16 +115,6 @@ Renderer::Renderer()
 
     _teapot = get_teapot_mesh();
 
-    const unsigned char *bytesA = reinterpret_cast<const unsigned char*>(&teapot_vertices) + 50;
-    const unsigned char *bytesB = reinterpret_cast<const unsigned char*>(_teapot.vertices.data()) + 50;
-
-    std::cout << (int)bytesA[0] << (int)bytesA[1] << (int)bytesA[2] << (int)bytesA[3] << (int)bytesA[4] << (int)bytesA[5] << (int)bytesA[6] << (int)bytesA[7] << std::endl;
-    std::cout << (int)bytesB[0] << (int)bytesB[1] << (int)bytesB[2] << (int)bytesB[3] << (int)bytesB[4] << (int)bytesB[5] << (int)bytesB[6] << (int)bytesB[7] << std::endl;
-
-    std::cout << _teapot.indices.size() * sizeof(unsigned int) << std::endl;
-    std::cout << sizeof(teapot_indices) << std::endl;
-
-
     // Setup teapot VAO
 //  GLuint vao;
     glGenVertexArrays(1, &vao);
@@ -162,6 +152,7 @@ void Renderer::render(const World& world)
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
     auto v = glm::translate(
