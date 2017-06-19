@@ -165,22 +165,6 @@ void Renderer::render(const World& world)
     glBindTexture(GL_TEXTURE_2D, *texture);
 
     {
-        auto new_v = glm::mat4(glm::mat3(v));
-
-        glDepthMask(GL_FALSE);
-
-        glUseProgram(*skyboxShader);
-        glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "view"), 1, GL_FALSE, glm::value_ptr(new_v));
-        glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "projection"), 1, GL_FALSE, glm::value_ptr(p));
-        glUniform1i(glGetUniformLocation(*skyboxShader, "skybox"), 0);
-
-        glBindVertexArray(skyboxVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-
-        glDepthMask(GL_TRUE);
-    }
-
-    {
         glUseProgram(*program);
         glUniform3fv(glGetUniformLocation(*program, "camera_pos"), 1, glm::value_ptr(world.camera_position));
         glUniformMatrix4fv(glGetUniformLocation(*program, "view"), 1, GL_FALSE, glm::value_ptr(v));
@@ -199,6 +183,22 @@ void Renderer::render(const World& world)
 
             glDrawElements(GL_TRIANGLES, get_teapot_mesh().indices.size(), GL_UNSIGNED_INT, (void*)0);
         }
+    }
+
+    {
+        auto new_v = glm::mat4(glm::mat3(v));
+
+        glDepthFunc(GL_LEQUAL);
+
+        glUseProgram(*skyboxShader);
+        glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "view"), 1, GL_FALSE, glm::value_ptr(new_v));
+        glUniformMatrix4fv(glGetUniformLocation(*skyboxShader, "projection"), 1, GL_FALSE, glm::value_ptr(p));
+        glUniform1i(glGetUniformLocation(*skyboxShader, "skybox"), 0);
+
+        glBindVertexArray(skyboxVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+
+        glDepthFunc(GL_LESS);
     }
 
     glfwSwapBuffers(window);
