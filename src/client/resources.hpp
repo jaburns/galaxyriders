@@ -25,9 +25,12 @@ struct Mesh
 
 class GLuintResource
 {
+    GLuintResource(const GLuintResource&) = delete;
+    GLuintResource& operator=(const GLuintResource&) = delete;
 protected:
     GLuint _id = 0;
 public:
+    GLuintResource() {}
     operator GLuint() const { return _id; }
 };
 

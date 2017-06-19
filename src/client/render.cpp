@@ -113,30 +113,28 @@ Renderer::Renderer()
         "res/hw_crater/craterlake_ft.png"
     );
 
-    _teapot = get_teapot_mesh();
 
     // Setup teapot VAO
-//  GLuint vao;
+    const Mesh& teapot = get_teapot_mesh();
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
     GLuint vertex_buffer;
     glGenBuffers(1, &vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, _teapot.vertices.size() * sizeof(glm::vec3), _teapot.vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, teapot.vertices.size() * sizeof(glm::vec3), teapot.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*program, "position"));
     glVertexAttribPointer(glGetAttribLocation(*program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
     GLuint normal_buffer;
     glGenBuffers(1, &normal_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
-    glBufferData(GL_ARRAY_BUFFER, _teapot.normals.size() * sizeof(glm::vec3), _teapot.normals.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, teapot.normals.size() * sizeof(glm::vec3), teapot.normals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*program, "normal"));
     glVertexAttribPointer(glGetAttribLocation(*program, "normal"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
     glGenBuffers(1, &index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _teapot.indices.size() * sizeof(unsigned int), _teapot.indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, teapot.indices.size() * sizeof(unsigned int), teapot.indices.data(), GL_STATIC_DRAW);
 
     // Setup skybox VAO
-//  GLuint skyboxVAO;
     glGenVertexArrays(1, &skyboxVAO);
     glBindVertexArray(skyboxVAO);
     GLuint skyboxVBO;
@@ -199,7 +197,7 @@ void Renderer::render(const World& world)
 
             glUniformMatrix4fv(glGetUniformLocation(*program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-            glDrawElements(GL_TRIANGLES, _teapot.indices.size(), GL_UNSIGNED_INT, (void*)0);
+            glDrawElements(GL_TRIANGLES, get_teapot_mesh().indices.size(), GL_UNSIGNED_INT, (void*)0);
         }
     }
 

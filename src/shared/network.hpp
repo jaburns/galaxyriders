@@ -12,8 +12,8 @@ class UDPSocket
 {
     int _socket;
 
-    UDPSocket(const UDPSocket&);
-    UDPSocket& operator=(const UDPSocket&);
+    UDPSocket(const UDPSocket&) = delete;
+    UDPSocket& operator=(const UDPSocket&) = delete;
 
 public:
     UDPSocket(unsigned short port = 0);

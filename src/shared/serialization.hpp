@@ -21,7 +21,7 @@ struct SerializationBuffer
     }
 
     template<typename T>
-    int container_size(T& v)
+    int container_size(const T& v)
     {
         int size = v.size();
         val32(size);
