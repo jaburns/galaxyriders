@@ -1,5 +1,4 @@
-#include "teapot.hpp"
-
+#include "../resources.hpp"
 #include <glm/vec3.hpp>
 
 static const glm::vec3 teapot_vertices[531] = {
@@ -2097,6 +2096,4 @@ static const unsigned int teapot_indices[3072] = {
     529, 530, 470,
 };
 
-static Mesh teapot = Mesh(531, 531, 3072, teapot_vertices, teapot_normals, teapot_indices);
-
-const Mesh& get_teapot_mesh() { return teapot; }
+static Mesh teapot_mesh = Mesh(531, 531, 3072, teapot_vertices, teapot_normals, teapot_indices);

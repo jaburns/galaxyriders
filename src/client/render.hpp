@@ -3,17 +3,17 @@
 #include <memory>
 #include "glfw.hpp"
 #include "resources.hpp"
+#include "renderer/teapot.hpp"
+#include "renderer/skybox.hpp"
 #include "../shared/world.hpp"
 
 class Renderer
 {
     GLFWwindow* window;
-    std::unique_ptr<ShaderProgram> program;
-    std::unique_ptr<Texture> texture;
-    std::unique_ptr<ShaderProgram> skyboxShader;
-    std::unique_ptr<CubeMap> skyboxTexture;
-    GLuint index_buffer;
-    GLuint vao, skyboxVAO;
+    std::unique_ptr<SkyboxRenderer> _skybox_renderer;
+    std::unique_ptr<TeapotRenderer> _teapot_renderer;
+
+    // TODO prevent copy of this class
 
 public:
     Renderer();
