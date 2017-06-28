@@ -25,12 +25,19 @@ SkyboxRenderer::SkyboxRenderer()
 
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
-    GLuint vbo;
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
+    glGenBuffers(1, &_vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(skybox_vertices), &skybox_vertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*_program, "position"));
     glVertexAttribPointer(glGetAttribLocation(*_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+}
+
+SkyboxRenderer::~SkyboxRenderer()
+{
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &_vao);
+    glDeleteBuffers(1, &_vertex_buffer);
 }
 
 void SkyboxRenderer::draw(const glm::mat4x4& view, const glm::mat4x4& projection)

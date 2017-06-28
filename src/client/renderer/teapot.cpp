@@ -13,16 +13,14 @@ TeapotRenderer::TeapotRenderer(std::shared_ptr<const CubeMap> skybox_cubemap)
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
 
-    GLuint vertex_buffer;
-    glGenBuffers(1, &vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertex_buffer);
+    glGenBuffers(1, &_vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, teapot_mesh.vertices.size() * sizeof(glm::vec3), teapot_mesh.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*_program, "position"));
     glVertexAttribPointer(glGetAttribLocation(*_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
 
-    GLuint normal_buffer;
-    glGenBuffers(1, &normal_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, normal_buffer);
+    glGenBuffers(1, &_normal_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, _normal_buffer);
     glBufferData(GL_ARRAY_BUFFER, teapot_mesh.normals.size() * sizeof(glm::vec3), teapot_mesh.normals.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*_program, "normal"));
     glVertexAttribPointer(glGetAttribLocation(*_program, "normal"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
@@ -30,6 +28,15 @@ TeapotRenderer::TeapotRenderer(std::shared_ptr<const CubeMap> skybox_cubemap)
     glGenBuffers(1, &_index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, teapot_mesh.indices.size() * sizeof(unsigned int), teapot_mesh.indices.data(), GL_STATIC_DRAW);
+}
+
+TeapotRenderer::~TeapotRenderer()
+{
+    glBindVertexArray(0);
+    glDeleteVertexArrays(1, &_vao);
+    glDeleteBuffers(1, &_vertex_buffer);
+    glDeleteBuffers(1, &_normal_buffer);
+    glDeleteBuffers(1, &_index_buffer);
 }
 
 void TeapotRenderer::use(const glm::vec3& camera_pos, const glm::mat4x4& view, const glm::mat4x4& projection)
