@@ -21,14 +21,14 @@ struct Mesh
         : vertices(vertices, vertices + vertex_count), normals(normals, normals + normal_count), indices(indices, indices + index_count) {}
 };
 
-// TODO should separate the concepts of OpenGL resources from more general resources above.
-
 class GLuintResource
 {
-    GLuintResource(const GLuintResource&) = delete;
-    GLuintResource& operator=(const GLuintResource&) = delete;
+    GLuintResource(const GLuintResource&) =delete;
+    GLuintResource& operator=(const GLuintResource&) =delete;
+
 protected:
     GLuint _id = 0;
+
 public:
     GLuintResource() {}
     operator GLuint() const { return _id; }

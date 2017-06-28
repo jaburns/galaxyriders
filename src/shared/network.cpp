@@ -7,7 +7,7 @@
 
 UDPSocket::UDPSocket(unsigned short port)
 {
-    #ifdef WINDOWS
+    #ifdef _WIN32
         WSADATA wsa;
         if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
             std::cout << "Failed to init winsock, error code: " << WSAGetLastError() << std::endl;
@@ -20,7 +20,7 @@ UDPSocket::UDPSocket(unsigned short port)
         exit(1);
     }
 
-    #ifdef WINDOWS
+    #ifdef _WIN32
         unsigned long sock_mode_nonblocking = 1;
         ioctlsocket(_socket, FIONBIO, &sock_mode_nonblocking);
     #else 
@@ -41,7 +41,7 @@ UDPSocket::UDPSocket(unsigned short port)
 
 UDPSocket::~UDPSocket()
 {
-    #ifdef WINDOWS
+    #ifdef _WIN32
         closesocket(_socket);
         WSACleanup();
     #else

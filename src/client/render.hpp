@@ -13,7 +13,8 @@ class Renderer
     std::unique_ptr<SkyboxRenderer> _skybox_renderer;
     std::unique_ptr<TeapotRenderer> _teapot_renderer;
 
-    // TODO prevent copy of this class
+    Renderer(const Renderer&) =delete;
+    Renderer& operator=(const Renderer&) =delete;
 
 public:
     Renderer();

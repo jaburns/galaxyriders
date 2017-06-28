@@ -81,7 +81,6 @@ Texture::~Texture()
 }
 
 
-
 CubeMap::CubeMap(const char *r, const char *l, const char *t, const char *bo, const char *ba, const char *f)
 {
     glGenTextures(1, &_id);

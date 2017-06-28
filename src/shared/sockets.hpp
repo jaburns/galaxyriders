@@ -1,10 +1,6 @@
 #pragma once
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) && !defined(__CYGWIN__)
-#   define WINDOWS 1
-#endif 
-
-#ifdef WINDOWS
+#ifdef _WIN32
 #   include <winsock2.h>
     typedef int socklen_t;
 #else

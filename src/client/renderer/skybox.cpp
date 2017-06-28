@@ -38,12 +38,11 @@ void SkyboxRenderer::draw(const glm::mat4x4& view, const glm::mat4x4& projection
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, *_cubemap);
 
-    auto new_v = glm::mat4(glm::mat3(view));
-
     glDepthFunc(GL_LEQUAL);
 
     glUseProgram(*_program);
-    glUniformMatrix4fv(glGetUniformLocation(*_program, "view"), 1, GL_FALSE, glm::value_ptr(new_v));
+    auto trunc_view = glm::mat4(glm::mat3(view));
+    glUniformMatrix4fv(glGetUniformLocation(*_program, "view"), 1, GL_FALSE, glm::value_ptr(trunc_view));
     glUniformMatrix4fv(glGetUniformLocation(*_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform1i(glGetUniformLocation(*_program, "skybox"), 0);
 

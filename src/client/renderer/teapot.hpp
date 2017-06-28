@@ -15,6 +15,9 @@ class TeapotRenderer
     std::shared_ptr<const CubeMap> _skybox_cubemap;
     GLuint _index_buffer;
 
+    TeapotRenderer(const TeapotRenderer&) =delete;
+    TeapotRenderer& operator=(const TeapotRenderer&) =delete;
+
 public:
     TeapotRenderer(std::shared_ptr<const CubeMap> skybox_cubemap);
     void use(const glm::vec3& camera_pos, const glm::mat4x4& view, const glm::mat4x4& projection);

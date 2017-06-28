@@ -49,6 +49,9 @@ int main(int argc, char** argv)
         }
     }
 
-//  std::cout << "Enter a char to quit";char xxx; std::cin >> xxx;
+    #ifdef _WIN32
+        std::cout<<"Enter a char to quit";char _;std::cin>>_;
+    #endif
+
     return 0;
 }

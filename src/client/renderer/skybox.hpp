@@ -12,6 +12,9 @@ class SkyboxRenderer
     std::unique_ptr<const ShaderProgram> _program;
     std::shared_ptr<const CubeMap> _cubemap;
 
+    SkyboxRenderer(const SkyboxRenderer&) =delete;
+    SkyboxRenderer& operator=(const SkyboxRenderer&) =delete;
+
 public:
     SkyboxRenderer();
     void draw(const glm::mat4x4& view, const glm::mat4x4& projection);
