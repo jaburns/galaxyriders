@@ -77,7 +77,7 @@ World World::lerp_to(const World& next, float t) const
     return world;
 }
 
-World World::step(InputState& input) const
+World World::step(const InputState& input) const
 {
     World world = *this;
 
