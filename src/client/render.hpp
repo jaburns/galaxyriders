@@ -12,6 +12,7 @@ class Renderer
     GLFWwindow* window;
     std::unique_ptr<SkyboxRenderer> _skybox_renderer;
     std::unique_ptr<TeapotRenderer> _teapot_renderer;
+    std::unique_ptr<SpriteRenderer> _sprite_renderer;
 
     Renderer(const Renderer&) =delete;
     Renderer& operator=(const Renderer&) =delete;

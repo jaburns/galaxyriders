@@ -51,6 +51,7 @@ Renderer::Renderer()
 
     _skybox_renderer = std::make_unique<SkyboxRenderer>();
     _teapot_renderer = std::make_unique<TeapotRenderer>(_skybox_renderer->get_skybox_cubemap());
+    _sprite_renderer = std::make_unique<SpriteRenderer>();
 }
 
 void Renderer::render(const World& world)
@@ -70,6 +71,10 @@ void Renderer::render(const World& world)
     for (auto tp : world.teapots) {
         _teapot_renderer->draw(tp.transform);
     }
+
+    Transform tr;
+    _sprite_renderer->use(v, p);
+    _sprite_renderer->render(tr);
 
     _skybox_renderer->draw(v, p);
 

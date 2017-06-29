@@ -4,6 +4,7 @@
 #include "readinput.hpp"
 #include "render.hpp"
 #include "../shared/network.hpp"
+#include "../shared/config.hpp"
 
 static const int MAX_BUFFER_LEN = 8192;
 static const int PORT = 12345;
@@ -60,7 +61,6 @@ void main_local()
 
     auto current_time = std::chrono::high_resolution_clock::now();
     float accumulator = 0.0f;
-    const float MILLIS_PER_TICK = 100.0f;
 
     while (!renderer.should_close_window()) {
         const auto new_time = std::chrono::high_resolution_clock::now();
@@ -68,13 +68,13 @@ void main_local()
         current_time = new_time;
         accumulator += frame_millis;
 
-        while (accumulator >= MILLIS_PER_TICK) {
+        while (accumulator >= Config::MILLIS_PER_TICK) {
             last_world = new_world;
             new_world = new_world.step(Input::read_state());
-            accumulator -= MILLIS_PER_TICK;
+            accumulator -= Config::MILLIS_PER_TICK;
         }
 
-        renderer.render(last_world.lerp_to(new_world, accumulator / MILLIS_PER_TICK));
+        renderer.render(last_world.lerp_to(new_world, accumulator / Config::MILLIS_PER_TICK));
     }
 }
 

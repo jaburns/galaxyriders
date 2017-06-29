@@ -2,8 +2,10 @@
 #include <thread>
 #include <iostream>
 #include <cstring>
+#include <cstdint>
 #include "../shared/network.hpp"
 #include "../shared/world.hpp"
+#include "../shared/config.hpp"
 
 int main(int argc, char **argv)
 {
@@ -32,13 +34,11 @@ int main(int argc, char **argv)
         world = world.step(input);
         auto buf = world.serialize();
         socket.send(client_address, buf.data(), buf.size());
-
         std::cout << "Bytes sent: " << buf.size() << std::endl;
 
-        auto frame_end = std::chrono::high_resolution_clock::now();
-
-        auto frame_len = frame_end - frame_start;
-        auto sleep_time = std::chrono::nanoseconds(100000000) - frame_len;
+        auto frame_len = std::chrono::high_resolution_clock::now() - frame_start;
+        auto nanos = static_cast<int64_t>(1000000 * Config::MILLIS_PER_TICK);
+        auto sleep_time = std::chrono::nanoseconds(nanos) - frame_len;
         std::this_thread::sleep_for(sleep_time);
     }
 }
