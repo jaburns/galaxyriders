@@ -5,6 +5,7 @@
 #include <glm/mat4x4.hpp>
 #include "../glfw.hpp"
 #include "../resources.hpp"
+#include "../../shared/world.hpp"
 
 class SpriteRenderer
 {

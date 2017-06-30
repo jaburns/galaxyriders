@@ -5,6 +5,7 @@
 #include "resources.hpp"
 #include "renderer/teapot.hpp"
 #include "renderer/skybox.hpp"
+#include "renderer/sprite.hpp"
 #include "../shared/world.hpp"
 
 class Renderer

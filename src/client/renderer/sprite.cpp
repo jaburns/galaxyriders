@@ -1,7 +1,15 @@
 #include "sprite.hpp"
 
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 static GLfloat quad_vertices[] = {
-    -1.0f,  1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f,  1.0f, -1.0f, 1.0f,  1.0f, -1.0f
+    -1.0f,  1.0f, 0.0f, 
+     1.0f, -1.0f, 0.0f,
+    -1.0f, -1.0f, 0.0f,
+     1.0f, -1.0f, 0.0f, 
+    -1.0f,  1.0f, 0.0f, 
+     1.0f,  1.0f, 0.0f
 };
 
 SpriteRenderer::SpriteRenderer()
@@ -41,5 +49,5 @@ void SpriteRenderer::draw(const Transform& transform)
 
     glUniformMatrix4fv(glGetUniformLocation(*_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-    glDrawArrays(GL_TRIANGLES, 0, 2);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
 }

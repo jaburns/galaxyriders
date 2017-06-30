@@ -67,14 +67,16 @@ void Renderer::render(const World& world)
         -world.camera_position
     );
 
-    _teapot_renderer->use(world.camera_position, v, p);
-    for (auto tp : world.teapots) {
-        _teapot_renderer->draw(tp.transform);
-    }
+//  _teapot_renderer->use(world.camera_position, v, p);
+//  for (auto tp : world.teapots) {
+//      _teapot_renderer->draw(tp.transform);
+//  }
 
     Transform tr;
+    tr.position.z = -3.0f;
+    tr.scale = { 1.0f, 1.0f, 1.0f };
     _sprite_renderer->use(v, p);
-    _sprite_renderer->render(tr);
+    _sprite_renderer->draw(tr);
 
     _skybox_renderer->draw(v, p);
 
