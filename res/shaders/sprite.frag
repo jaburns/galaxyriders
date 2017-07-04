@@ -9,5 +9,5 @@ uniform sampler2D sprite_texture;
 
 void main()
 {
-    color = vec4(v_tex_coords, 1.0, 1.0);
+    color = texture(sprite_texture, v_tex_coords);
 }

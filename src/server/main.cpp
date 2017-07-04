@@ -9,19 +9,16 @@
 
 int main(int argc, char **argv)
 {
-    const int BUFFER_LEN = 2048;
-    const int PORT = 12345;
-
-    UDPSocket socket(PORT);
+    UDPSocket socket(Config::DEFAULT_PORT);
     SocketAddress client_address;
     int counter = 0;
-    unsigned char buffer[BUFFER_LEN];
+    unsigned char buffer[Config::MAX_PACKET_SIZE];
 
-    std::cout << "Waiting for client on port " << PORT << std::endl;
+    std::cout << "Waiting for client on port " << Config::DEFAULT_PORT << std::endl;
 
     unsigned long cycles = 0;
     int message_len = 0;
-    while (! socket.receive(client_address, buffer, BUFFER_LEN, message_len)) cycles++;
+    while (! socket.receive(client_address, buffer, Config::MAX_PACKET_SIZE, message_len)) cycles++;
     std::cout << "Spun for: " << cycles << " Received message: " << buffer << std::endl;
     std::cout << "Starting simulation!" << std::endl;
 

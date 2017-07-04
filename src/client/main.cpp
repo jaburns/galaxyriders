@@ -6,20 +6,17 @@
 #include "../shared/network.hpp"
 #include "../shared/config.hpp"
 
-static const int MAX_BUFFER_LEN = 8192;
-static const int PORT = 12345;
-
 void main_net()
 {
     Renderer renderer;
     Input::bind_handlers(renderer.raw_glfw_window());
 
     UDPSocket socket;
-    SocketAddress send_address = UDPSocket::get_host_address("localhost", PORT);
+    SocketAddress send_address = UDPSocket::get_host_address("localhost", Config::DEFAULT_PORT);
     SocketAddress receive_address;
-    unsigned char buffer[MAX_BUFFER_LEN];
+    unsigned char buffer[Config::MAX_PACKET_SIZE];
 
-    std::cout << "Sending ack packet to server port " << PORT << std::endl;
+    std::cout << "Sending ack packet to server port " << Config::DEFAULT_PORT << std::endl;
     sprintf((char*)buffer, "This is packet");
     socket.send(send_address, buffer, strlen((char*)buffer));
 
@@ -31,7 +28,7 @@ void main_net()
 
     while (!renderer.should_close_window()) {
         int message_len = 0;
-        if (socket.receive(receive_address, buffer, MAX_BUFFER_LEN, message_len)) {
+        if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
             last_world = new_world;
             new_world = World(buffer, message_len);
 

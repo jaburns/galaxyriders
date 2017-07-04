@@ -1,5 +1,6 @@
 #include "sprite.hpp"
 
+#include <tinyxml2.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -15,6 +16,8 @@ static GLfloat quad_vertices[] = {
 SpriteRenderer::SpriteRenderer()
 {
     _program = std::make_unique<const ShaderProgram>("res/shaders/sprite.vert", "res/shaders/sprite.frag");;
+    _texture = std::make_unique<const Texture>("res/sprites/guy_frames.png");
+    this->load_frames();
 
     glGenVertexArrays(1, &_vao);
     glBindVertexArray(_vao);
@@ -26,6 +29,32 @@ SpriteRenderer::SpriteRenderer()
     glVertexAttribPointer(glGetAttribLocation(*_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 }
 
+void SpriteRenderer::load_frames()
+{
+    using namespace tinyxml2;
+    const float SPRITE_SHEET_SIZE = 512.0f;
+
+    XMLDocument doc;
+    doc.LoadFile("res/sprites/guy_frames.xml");
+
+    auto *atlas = doc.FirstChildElement();
+    for (auto *child = atlas->FirstChildElement(); child != nullptr; child = child->NextSiblingElement()) {
+        SpriteFrame new_frame;
+
+        new_frame.sprite_source.x = child->FloatAttribute("x") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_source.y = child->FloatAttribute("y") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_source.z = child->FloatAttribute("width") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_source.w = child->FloatAttribute("height") / SPRITE_SHEET_SIZE;
+
+        new_frame.sprite_frame.x = child->FloatAttribute("frameX") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_frame.y = child->FloatAttribute("frameY") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_frame.z = child->FloatAttribute("frameWidth") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_frame.w = child->FloatAttribute("frameHeight") / SPRITE_SHEET_SIZE;
+
+        _frames.push_back(new_frame);
+    }
+}
+
 SpriteRenderer::~SpriteRenderer()
 {
     glBindVertexArray(0);
@@ -35,9 +64,15 @@ SpriteRenderer::~SpriteRenderer()
 
 void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
 {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, *_texture);
+
     glUseProgram(*_program);
     glUniformMatrix4fv(glGetUniformLocation(*_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(*_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform4fv(glGetUniformLocation(*_program, "sprite_source"), 1, glm::value_ptr(_frames[0].sprite_source));
+    glUniform4fv(glGetUniformLocation(*_program, "sprite_frame"), 1, glm::value_ptr(_frames[0].sprite_frame));
+    glUniform1i(glGetUniformLocation(*_program, "sprite_texture"), 0);
 
     glBindVertexArray(_vao);
 }

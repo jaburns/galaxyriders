@@ -2,10 +2,17 @@
 
 #include <memory>
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
 #include "../glfw.hpp"
 #include "../resources.hpp"
 #include "../../shared/world.hpp"
+
+struct SpriteFrame
+{
+    glm::vec4 sprite_source;
+    glm::vec4 sprite_frame;
+};
 
 class SpriteRenderer
 {
@@ -13,9 +20,13 @@ class SpriteRenderer
     GLuint _vertex_buffer;
 
     std::unique_ptr<const ShaderProgram> _program;
+    std::unique_ptr<const Texture> _texture;
+    std::vector<SpriteFrame> _frames;
 
     SpriteRenderer(const SpriteRenderer&) =delete;
     SpriteRenderer& operator=(const SpriteRenderer&) =delete;
+
+    void load_frames();
 
 public:
     SpriteRenderer();

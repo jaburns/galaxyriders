@@ -8,7 +8,8 @@ out vec2 v_tex_coords;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform vec4 sprite_window;
+uniform vec4 sprite_source;
+uniform vec4 sprite_frame;
 
 void main()
 {
