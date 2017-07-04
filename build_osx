@@ -7,8 +7,10 @@ cc -o game \
         src/client/renderer/*.cpp \
         src/shared/*.cpp \
         external/lodepng/lodepng.cpp \
+        external/tinyxml2/tinyxml2.cpp \
     -Iexternal/lodepng \
     -Iexternal/glm \
+    -Iexternal/tinyxml2 \
     -std=c++14 \
     -lstdc++ \
     -lglfw \

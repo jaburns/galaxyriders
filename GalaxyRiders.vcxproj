@@ -30,6 +30,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\lodepng\lodepng.cpp" />
+    <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\client\main.cpp" />
     <ClCompile Include="src\client\models\teapot.cpp" />
     <ClCompile Include="src\client\readinput.cpp" />
@@ -90,7 +91,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\win_glfw3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\win_glfw3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
