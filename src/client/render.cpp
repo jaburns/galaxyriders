@@ -53,8 +53,6 @@ Renderer::Renderer()
     _sprite_renderer = std::make_unique<SpriteRenderer>();
 }
 
-static int frame = 0;
-
 void Renderer::render(const World& world)
 {
     int width, height;
@@ -71,7 +69,7 @@ void Renderer::render(const World& world)
     _skybox_renderer->draw_once(v, p);
 
     _sprite_renderer->use(v, p);
-    _sprite_renderer->draw({ 0.0f, 0.0f, -3.0f }, frame++);
+    _sprite_renderer->draw({ 0.0f, 0.0f, -3.0f }, world.frame_counter);
     _sprite_renderer->done();
 
     glfwSwapBuffers(window);

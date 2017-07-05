@@ -6,30 +6,13 @@
 #include <glm/gtc/quaternion.hpp>
 #include "input.hpp"
 
-struct Transform
-{
-    glm::vec3 position;
-    glm::quat rotation;
-    glm::vec3 scale;
-};
-
-struct Teapot
-{
-    Transform transform;
-    Transform velocity;
-};
-
 struct World
 {
     glm::vec3 camera_position;
     glm::vec3 camera_up;
     glm::vec3 camera_look;
 
-    glm::quat parent_pot_tilt;
-    std::deque<Teapot> teapots;
-
-    int frame_counter = 0;
-    float time_factor = 1.0f;
+    int frame_counter;
 
     World();
     World(const unsigned char *serialized, int serialized_length);
