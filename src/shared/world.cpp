@@ -8,7 +8,7 @@
 
 World::World()
 {
-    camera_position = { 0.0f, 0.0f, 0.0f };
+    camera_position = { 0.0f, 0.0f, 3.0f };
     camera_up = { 0.0f, 1.0f, 0.0f };
     camera_look = { 0.0f, 0.0f, -1.0f };
     frame_counter = 0;

@@ -51,6 +51,7 @@ Renderer::Renderer()
 
     _skybox_renderer = std::make_unique<SkyboxRenderer>();
     _sprite_renderer = std::make_unique<SpriteRenderer>();
+    _line_renderer = std::make_unique<LineRenderer>();
 }
 
 void Renderer::render(const World& world)
@@ -69,8 +70,12 @@ void Renderer::render(const World& world)
     _skybox_renderer->draw_once(v, p);
 
     _sprite_renderer->use(v, p);
-    _sprite_renderer->draw({ 0.0f, 0.0f, -3.0f }, world.frame_counter);
+    _sprite_renderer->draw({ 0.0f, 0.0f, 0.0f }, world.frame_counter);
     _sprite_renderer->done();
+
+    _line_renderer->use(v, p);
+    _line_renderer->draw({ 2.0f, 0.0f, 0.0f });
+    _line_renderer->done();
 
     glfwSwapBuffers(window);
     glfwPollEvents();

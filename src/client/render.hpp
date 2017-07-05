@@ -5,6 +5,7 @@
 #include "resources.hpp"
 #include "renderer/skybox.hpp"
 #include "renderer/sprite.hpp"
+#include "renderer/line.hpp"
 #include "../shared/world.hpp"
 
 class Renderer
@@ -12,6 +13,7 @@ class Renderer
     GLFWwindow* window;
     std::unique_ptr<SkyboxRenderer> _skybox_renderer;
     std::unique_ptr<SpriteRenderer> _sprite_renderer;
+    std::unique_ptr<LineRenderer> _line_renderer;
 
     Renderer(const Renderer&) =delete;
     Renderer& operator=(const Renderer&) =delete;

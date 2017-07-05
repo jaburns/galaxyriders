@@ -5,12 +5,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 static GLfloat quad_vertices[] = {
-     0.0f,  1.0f, 0.0f, 
-     1.0f,  0.0f, 0.0f,
-     0.0f,  0.0f, 0.0f,
-     1.0f,  0.0f, 0.0f, 
-     0.0f,  1.0f, 0.0f, 
-     1.0f,  1.0f, 0.0f
+     0.0f, 1.0f, 0.0f, 
+     1.0f, 0.0f, 0.0f,
+     0.0f, 0.0f, 0.0f,
+     1.0f, 0.0f, 0.0f, 
+     0.0f, 1.0f, 0.0f, 
+     1.0f, 1.0f, 0.0f
 };
 
 SpriteRenderer::SpriteRenderer()
