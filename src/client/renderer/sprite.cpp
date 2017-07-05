@@ -51,13 +51,15 @@ void SpriteRenderer::load_frames()
 
         // Character stretches on x-axis through animation for some reason
 
-        new_frame.sprite_source.x = sprite_x;
-        new_frame.sprite_source.y = sprite_y;
-        new_frame.sprite_source.z = sprite_x + sprite_width;
-        new_frame.sprite_source.w = sprite_y + sprite_height;
+        float one = 1.0f / SPRITE_SHEET_SIZE;
 
-        new_frame.sprite_frame.x = sprite_x + frame_offset_x;
-        new_frame.sprite_frame.y = sprite_y + frame_offset_y;
+        new_frame.sprite_source.x = sprite_x - one;
+        new_frame.sprite_source.y = sprite_y - one;
+        new_frame.sprite_source.z = sprite_x + sprite_width;
+        new_frame.sprite_source.w = sprite_y + sprite_height; //- 1.0f / SPRITE_SHEET_SIZE;
+
+        new_frame.sprite_frame.x = sprite_x - one + frame_offset_x;
+        new_frame.sprite_frame.y = sprite_y - one + frame_offset_y;
         new_frame.sprite_frame.z = new_frame.sprite_source.x + frame_width;
         new_frame.sprite_frame.w = new_frame.sprite_source.y + frame_height;
 
@@ -75,7 +77,7 @@ SpriteRenderer::~SpriteRenderer()
 }
 
 static int frame = 0;
-const int slowness = 10;
+const int slowness = 5;
 
 void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
 {
@@ -101,7 +103,7 @@ void SpriteRenderer::draw(const glm::vec3& position)
 
     glUniformMatrix4fv(glGetUniformLocation(*_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-    glEnable(GL_BLEND);
+//  glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glDisable(GL_BLEND);

@@ -11,7 +11,7 @@ void main()
 {
     if (v_tex_coords.x < sprite_source.x || v_tex_coords.x > sprite_source.z
     ||  v_tex_coords.y < sprite_source.y || v_tex_coords.y > sprite_source.w) {
-        color = vec4(0);
+        color = vec4(1,0,0,1);
     } else {
         color = texture(sprite_texture, v_tex_coords);
     }
