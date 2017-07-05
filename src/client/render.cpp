@@ -25,7 +25,7 @@ Renderer::Renderer()
 //  glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 4); // MSAA
 
-    window = glfwCreateWindow(1280, 720, "Hello world", NULL, NULL);
+    window = glfwCreateWindow(1280, 720, "Galaxy Riders", NULL, NULL);
     if (!window) {
         glfwTerminate();
         exit(EXIT_FAILURE);
@@ -50,7 +50,6 @@ Renderer::Renderer()
     glClearColor(0.16f, 0.17f, 0.18f, 1.0f);
 
     _skybox_renderer = std::make_unique<SkyboxRenderer>();
-    _teapot_renderer = std::make_unique<TeapotRenderer>(_skybox_renderer->get_skybox_cubemap());
     _sprite_renderer = std::make_unique<SpriteRenderer>();
 }
 
@@ -68,12 +67,6 @@ void Renderer::render(const World& world)
         glm::lookAt(glm::vec3(0.0f), world.camera_look, world.camera_up),
         -world.camera_position
     );
-
-    Transform tp;
-    tp.position = { 0.0f, 0.0f, -3.0f };
-    tp.scale = { 0.001f, 0.001f, 0.001f };
-    _teapot_renderer->use(world.camera_position, v, p);
-    _teapot_renderer->draw(tp);
 
     _skybox_renderer->draw_once(v, p);
 

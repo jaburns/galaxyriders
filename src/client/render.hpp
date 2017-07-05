@@ -3,7 +3,6 @@
 #include <memory>
 #include "glfw.hpp"
 #include "resources.hpp"
-#include "renderer/teapot.hpp"
 #include "renderer/skybox.hpp"
 #include "renderer/sprite.hpp"
 #include "../shared/world.hpp"
@@ -12,7 +11,6 @@ class Renderer
 {
     GLFWwindow* window;
     std::unique_ptr<SkyboxRenderer> _skybox_renderer;
-    std::unique_ptr<TeapotRenderer> _teapot_renderer;
     std::unique_ptr<SpriteRenderer> _sprite_renderer;
 
     Renderer(const Renderer&) =delete;
