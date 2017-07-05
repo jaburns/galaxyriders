@@ -74,11 +74,8 @@ void Renderer::render(const World& world)
 
     _skybox_renderer->draw(v, p);
 
-    Transform tr;
-    tr.position.z = -3.0f;
-    tr.scale = { 1.0f, 1.0f, 1.0f };
     _sprite_renderer->use(v, p);
-    _sprite_renderer->draw(tr);
+    _sprite_renderer->draw({ 0.0f, 0.0f, -3.0f });
 
     glfwSwapBuffers(window);
     glfwPollEvents();

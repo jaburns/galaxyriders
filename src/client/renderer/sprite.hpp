@@ -22,6 +22,8 @@ class SpriteRenderer
     std::unique_ptr<const ShaderProgram> _program;
     std::unique_ptr<const Texture> _texture;
     std::vector<SpriteFrame> _frames;
+    
+    float _scale_x;
 
     SpriteRenderer(const SpriteRenderer&) =delete;
     SpriteRenderer& operator=(const SpriteRenderer&) =delete;
@@ -33,5 +35,5 @@ public:
     ~SpriteRenderer();
 
     void use(const glm::mat4x4& view, const glm::mat4x4& projection);
-    void draw(const Transform& transform);
+    void draw(const glm::vec3& position);
 };
