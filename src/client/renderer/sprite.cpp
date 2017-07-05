@@ -37,35 +37,38 @@ void SpriteRenderer::load_frames()
     SpriteFrame new_frame;
     XMLDocument doc;
     doc.LoadFile("res/sprites/guy_frames.xml");
+    bool first_iter = true;
 
     auto *atlas = doc.FirstChildElement();
     for (auto *child = atlas->FirstChildElement(); child != nullptr; child = child->NextSiblingElement()) {
-        float sprite_x = child->FloatAttribute("x") / SPRITE_SHEET_SIZE;
-        float sprite_y = child->FloatAttribute("y") / SPRITE_SHEET_SIZE;
-        float sprite_width = child->FloatAttribute("width") / SPRITE_SHEET_SIZE;
-        float sprite_height = child->FloatAttribute("height") / SPRITE_SHEET_SIZE;
-        float frame_offset_x = child->FloatAttribute("frameX") / SPRITE_SHEET_SIZE;
-        float frame_offset_y = child->FloatAttribute("frameY") / SPRITE_SHEET_SIZE;
-        float frame_width = child->FloatAttribute("frameWidth") / SPRITE_SHEET_SIZE;
-        float frame_height = child->FloatAttribute("frameHeight") / SPRITE_SHEET_SIZE;
+        float sprite_x = child->FloatAttribute("x");
+        float sprite_y = child->FloatAttribute("y");
+        float sprite_width = child->FloatAttribute("width");
+        float sprite_height = child->FloatAttribute("height");
+        float frame_offset_x = child->FloatAttribute("frameX");
+        float frame_offset_y = child->FloatAttribute("frameY");
+        float frame_width = child->FloatAttribute("frameWidth");
+        float frame_height = child->FloatAttribute("frameHeight");
 
-        // Character stretches on x-axis through animation for some reason
+        new_frame.sprite_source.x = sprite_x / SPRITE_SHEET_SIZE;
+        new_frame.sprite_source.y = sprite_y / SPRITE_SHEET_SIZE; 
+        new_frame.sprite_source.z = new_frame.sprite_source.x + sprite_width / SPRITE_SHEET_SIZE;
+        new_frame.sprite_source.w = new_frame.sprite_source.y + sprite_height / SPRITE_SHEET_SIZE;
 
-        float one = 1.0f / SPRITE_SHEET_SIZE;
+        new_frame.scale.x = sprite_width / frame_width;
+        new_frame.scale.y = sprite_height / frame_height;
 
-        new_frame.sprite_source.x = sprite_x - one;
-        new_frame.sprite_source.y = sprite_y - one;
-        new_frame.sprite_source.z = sprite_x + sprite_width;
-        new_frame.sprite_source.w = sprite_y + sprite_height; //- 1.0f / SPRITE_SHEET_SIZE;
-
-        new_frame.sprite_frame.x = sprite_x - one + frame_offset_x;
-        new_frame.sprite_frame.y = sprite_y - one + frame_offset_y;
-        new_frame.sprite_frame.z = new_frame.sprite_source.x + frame_width;
-        new_frame.sprite_frame.w = new_frame.sprite_source.y + frame_height;
+        new_frame.offset.x = -frame_offset_x / frame_height; // Sprite frame is one world unit tall.
+        new_frame.offset.y = -(frame_offset_y + sprite_height) / frame_height;
 
         _frames.push_back(new_frame);
 
-        _scale_x = frame_width / frame_height;
+        if (first_iter) {
+            _aspect = frame_width / frame_height;
+            _origin.x = sprite_width / frame_height / 2.0f;
+            _origin.y = -sprite_height / frame_height;
+            first_iter = false;
+        }
     }
 }
 
@@ -76,7 +79,6 @@ SpriteRenderer::~SpriteRenderer()
     glDeleteBuffers(1, &_vertex_buffer);
 }
 
-static int frame = 0;
 const int slowness = 5;
 
 void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
@@ -87,24 +89,30 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glUseProgram(*_program);
     glUniformMatrix4fv(glGetUniformLocation(*_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(*_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform4fv(glGetUniformLocation(*_program, "sprite_source"), 1, glm::value_ptr(_frames[frame / slowness].sprite_source));
-    glUniform4fv(glGetUniformLocation(*_program, "sprite_frame"), 1, glm::value_ptr(_frames[frame / slowness].sprite_frame));
     glUniform1i(glGetUniformLocation(*_program, "sprite_texture"), 0);
 
     glBindVertexArray(_vao);
 
-    frame += 1;
-    frame %= _frames.size() * slowness;
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void SpriteRenderer::draw(const glm::vec3& position)
+void SpriteRenderer::draw(const glm::vec3& position, int frame)
 {
-    auto m = glm::scale(glm::translate(glm::mat4(1.0f), position), { _scale_x, 1.0f, 1.0f });
+    frame %= _frames.size() * slowness;
+    frame /= slowness;
 
+    glm::vec3 new_pos = position + glm::vec3(_frames[frame].offset, 0.0f) - glm::vec3(_origin, 0.0f);
+
+    auto m = glm::scale(glm::translate(glm::mat4(1.0f), new_pos), { _aspect * _frames[frame].scale.x, _frames[frame].scale.y, 1.0f });
+
+    glUniform4fv(glGetUniformLocation(*_program, "sprite_source"), 1, glm::value_ptr(_frames[frame].sprite_source));
     glUniformMatrix4fv(glGetUniformLocation(*_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-//  glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+}
+
+void SpriteRenderer::done()
+{
     glDisable(GL_BLEND);
 }

@@ -40,7 +40,7 @@ SkyboxRenderer::~SkyboxRenderer()
     glDeleteBuffers(1, &_vertex_buffer);
 }
 
-void SkyboxRenderer::draw(const glm::mat4x4& view, const glm::mat4x4& projection)
+void SkyboxRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection)
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_CUBE_MAP, *_cubemap);

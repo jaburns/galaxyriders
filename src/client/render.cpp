@@ -54,6 +54,8 @@ Renderer::Renderer()
     _sprite_renderer = std::make_unique<SpriteRenderer>();
 }
 
+static int frame = 0;
+
 void Renderer::render(const World& world)
 {
     int width, height;
@@ -67,15 +69,17 @@ void Renderer::render(const World& world)
         -world.camera_position
     );
 
-//  _teapot_renderer->use(world.camera_position, v, p);
-//  for (auto tp : world.teapots) {
-//      _teapot_renderer->draw(tp.transform);
-//  }
+    Transform tp;
+    tp.position = { 0.0f, 0.0f, -3.0f };
+    tp.scale = { 0.001f, 0.001f, 0.001f };
+    _teapot_renderer->use(world.camera_position, v, p);
+    _teapot_renderer->draw(tp);
 
-    _skybox_renderer->draw(v, p);
+    _skybox_renderer->draw_once(v, p);
 
     _sprite_renderer->use(v, p);
-    _sprite_renderer->draw({ 0.0f, 0.0f, -3.0f });
+    _sprite_renderer->draw({ 0.0f, 0.0f, -3.0f }, frame++);
+    _sprite_renderer->done();
 
     glfwSwapBuffers(window);
     glfwPollEvents();
