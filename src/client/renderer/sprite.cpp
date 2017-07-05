@@ -5,11 +5,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 static GLfloat quad_vertices[] = {
-    -1.0f,  1.0f, 0.0f, 
-     1.0f, -1.0f, 0.0f,
-    -1.0f, -1.0f, 0.0f,
-     1.0f, -1.0f, 0.0f, 
-    -1.0f,  1.0f, 0.0f, 
+     0.0f,  1.0f, 0.0f, 
+     1.0f,  0.0f, 0.0f,
+     0.0f,  0.0f, 0.0f,
+     1.0f,  0.0f, 0.0f, 
+     0.0f,  1.0f, 0.0f, 
      1.0f,  1.0f, 0.0f
 };
 
@@ -43,8 +43,8 @@ void SpriteRenderer::load_frames()
 
         new_frame.sprite_source.x = child->FloatAttribute("x") / SPRITE_SHEET_SIZE;
         new_frame.sprite_source.y = child->FloatAttribute("y") / SPRITE_SHEET_SIZE;
-        new_frame.sprite_source.z = child->FloatAttribute("width") / SPRITE_SHEET_SIZE;
-        new_frame.sprite_source.w = child->FloatAttribute("height") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_source.z = new_frame.sprite_source.x + child->FloatAttribute("width") / SPRITE_SHEET_SIZE;
+        new_frame.sprite_source.w = new_frame.sprite_source.y + child->FloatAttribute("height") / SPRITE_SHEET_SIZE;
 
         new_frame.sprite_frame.x = child->FloatAttribute("frameX") / SPRITE_SHEET_SIZE;
         new_frame.sprite_frame.y = child->FloatAttribute("frameY") / SPRITE_SHEET_SIZE;
@@ -75,6 +75,8 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glUniform1i(glGetUniformLocation(*_program, "sprite_texture"), 0);
 
     glBindVertexArray(_vao);
+
+    glEnable(GL_BLEND);
 }
 
 void SpriteRenderer::draw(const Transform& transform)
@@ -84,5 +86,8 @@ void SpriteRenderer::draw(const Transform& transform)
 
     glUniformMatrix4fv(glGetUniformLocation(*_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDisable(GL_BLEND);
 }

@@ -72,13 +72,13 @@ void Renderer::render(const World& world)
 //      _teapot_renderer->draw(tp.transform);
 //  }
 
+    _skybox_renderer->draw(v, p);
+
     Transform tr;
     tr.position.z = -3.0f;
     tr.scale = { 1.0f, 1.0f, 1.0f };
     _sprite_renderer->use(v, p);
     _sprite_renderer->draw(tr);
-
-    _skybox_renderer->draw(v, p);
 
     glfwSwapBuffers(window);
     glfwPollEvents();
