@@ -18,9 +18,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\client\glfw.hpp" />
-    <ClInclude Include="src\client\models\teapot.hpp" />
     <ClInclude Include="src\client\readinput.hpp" />
     <ClInclude Include="src\client\render.hpp" />
+    <ClInclude Include="src\client\renderer\skybox.hpp" />
+    <ClInclude Include="src\client\renderer\teapot.hpp" />
+    <ClInclude Include="src\client\renderer\teapot_mesh.hpp" />
     <ClInclude Include="src\client\resources.hpp" />
     <ClInclude Include="src\shared\input.hpp" />
     <ClInclude Include="src\shared\network.hpp" />
@@ -32,9 +34,10 @@
     <ClCompile Include="external\lodepng\lodepng.cpp" />
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\client\main.cpp" />
-    <ClCompile Include="src\client\models\teapot.cpp" />
     <ClCompile Include="src\client\readinput.cpp" />
     <ClCompile Include="src\client\render.cpp" />
+    <ClCompile Include="src\client\renderer\skybox.cpp" />
+    <ClCompile Include="src\client\renderer\teapot.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
     <ClCompile Include="src\shared\network.cpp" />
     <ClCompile Include="src\shared\world.cpp" />
