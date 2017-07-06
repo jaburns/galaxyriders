@@ -15,7 +15,9 @@ WireRenderer::WireRenderer(const WireMesh& mesh)
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, mesh.size, mesh.points, GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*m_program, "position"));
-    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*3, (void*)0);
+
+    m_lines_size = mesh.size / sizeof(GLfloat) / 3;
 }
 
 WireRenderer::~WireRenderer()
@@ -39,7 +41,7 @@ void WireRenderer::draw(const glm::vec3& position, const glm::vec3& color)
     auto m = glm::translate(glm::mat4(1.0f), position);
     glUniform3fv(glGetUniformLocation(*m_program, "line_color"), 1, glm::value_ptr(color));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
-    glDrawArrays(GL_LINE_STRIP, 0, 5);
+    glDrawArrays(GL_LINES, 0, m_lines_size);
 }
 
 void WireRenderer::done()

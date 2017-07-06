@@ -12,6 +12,7 @@ class WireRenderer
     GLuint m_vao;
     GLuint m_vertex_buffer;
     std::unique_ptr<const ShaderProgram> m_program;
+    GLsizei m_lines_size;
 
     WireRenderer(const WireRenderer&) =delete;
     WireRenderer& operator=(const WireRenderer&) =delete;
