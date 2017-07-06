@@ -20,7 +20,7 @@
     <ClInclude Include="src\client\glfw.hpp" />
     <ClInclude Include="src\client\readinput.hpp" />
     <ClInclude Include="src\client\render.hpp" />
-    <ClInclude Include="src\client\renderer\line.hpp" />
+    <ClInclude Include="src\client\renderer\wire.hpp" />
     <ClInclude Include="src\client\renderer\skybox.hpp" />
     <ClInclude Include="src\client\renderer\sprite.hpp" />
     <ClInclude Include="src\client\resources.hpp" />
@@ -37,7 +37,7 @@
     <ClCompile Include="src\client\main.cpp" />
     <ClCompile Include="src\client\readinput.cpp" />
     <ClCompile Include="src\client\render.cpp" />
-    <ClCompile Include="src\client\renderer\line.cpp" />
+    <ClCompile Include="src\client\renderer\wire.cpp" />
     <ClCompile Include="src\client\renderer\skybox.cpp" />
     <ClCompile Include="src\client\renderer\sprite.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
@@ -45,8 +45,8 @@
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="res\shaders\line.frag" />
-    <None Include="res\shaders\line.vert" />
+    <None Include="res\shaders\wire.frag" />
+    <None Include="res\shaders\wire.vert" />
     <None Include="res\shaders\main.frag" />
     <None Include="res\shaders\main.vert" />
     <None Include="res\shaders\skybox.frag" />

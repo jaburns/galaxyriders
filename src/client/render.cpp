@@ -48,10 +48,11 @@ Renderer::Renderer()
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
     glClearColor(0.16f, 0.17f, 0.18f, 1.0f);
+    glLineWidth(9.0f);
 
     _skybox_renderer = std::make_unique<SkyboxRenderer>();
     _sprite_renderer = std::make_unique<SpriteRenderer>();
-    _line_renderer = std::make_unique<LineRenderer>();
+    _wire_sphere_renderer = std::make_unique<WireRenderer>(WireRenderer::BOX_VERTICES);
 }
 
 void Renderer::render(const World& world)
@@ -67,15 +68,15 @@ void Renderer::render(const World& world)
         -world.camera_position
     );
 
+    _wire_sphere_renderer->use(v, p);
+    _wire_sphere_renderer->draw({ 2.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f });
+    _wire_sphere_renderer->done();
+
     _skybox_renderer->draw_once(v, p);
 
     _sprite_renderer->use(v, p);
     _sprite_renderer->draw({ 0.0f, 0.0f, 0.0f }, world.frame_counter);
     _sprite_renderer->done();
-
-    _line_renderer->use(v, p);
-    _line_renderer->draw({ 2.0f, 0.0f, 0.0f });
-    _line_renderer->done();
 
     glfwSwapBuffers(window);
     glfwPollEvents();

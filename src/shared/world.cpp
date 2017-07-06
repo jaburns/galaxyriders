@@ -25,7 +25,7 @@ static void handle_serialization(World& world, T& buffer)
 
 World World::lerp_to(const World& next, float t) const
 {
-    World world;
+    World world = *this;
     world.camera_position = glm::mix(world.camera_position, next.camera_position, t);
     world.camera_up = glm::mix(world.camera_up, next.camera_up, t);
     world.camera_look = glm::mix(world.camera_look, next.camera_look, t);
