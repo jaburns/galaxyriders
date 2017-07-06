@@ -3,18 +3,6 @@
 #include <tinyxml2.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-    
-
-static glm::vec3 BOX_VERTICES_points[] = {
-    { 0.0f, 0.0f, 0.0f },
-    { 0.0f, 1.0f, 0.0f }, 
-    { 1.0f, 1.0f, 0.0f },
-    { 1.0f, 0.0f, 0.0f }, 
-    { 0.0f, 0.0f, 0.0f }
-};
-
-const WireMesh WireRenderer::BOX_VERTICES = { BOX_VERTICES_points, sizeof(BOX_VERTICES_points) };
-
 
 WireRenderer::WireRenderer(const WireMesh& mesh)
 {

@@ -7,12 +7,6 @@
 #include "../glfw.hpp"
 #include "../resources.hpp"
 
-struct WireMesh
-{
-    const glm::vec3 *points;
-    size_t size;
-};
-
 class WireRenderer
 {
     GLuint m_vao;
@@ -29,6 +23,4 @@ public:
     void use(const glm::mat4x4& view, const glm::mat4x4& projection);
     void draw(const glm::vec3& position, const glm::vec3& color);
     void done();
-
-    static const WireMesh BOX_VERTICES;
 };

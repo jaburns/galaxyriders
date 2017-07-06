@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "gen/wire_meshes.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -52,7 +53,7 @@ Renderer::Renderer()
 
     _skybox_renderer = std::make_unique<SkyboxRenderer>();
     _sprite_renderer = std::make_unique<SpriteRenderer>();
-    _wire_sphere_renderer = std::make_unique<WireRenderer>(WireRenderer::BOX_VERTICES);
+    _wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::BOX_VERTICES);
 }
 
 void Renderer::render(const World& world)

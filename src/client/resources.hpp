@@ -6,6 +6,7 @@
 #include <string>
 #include <glm/vec3.hpp>
 
+
 struct Mesh
 {
     std::vector<glm::vec3> vertices;
@@ -20,6 +21,13 @@ struct Mesh
     Mesh(int vertex_count, int normal_count, int index_count, const glm::vec3 vertices[], const glm::vec3 normals[], const unsigned int indices[])
         : vertices(vertices, vertices + vertex_count), normals(normals, normals + normal_count), indices(indices, indices + index_count) {}
 };
+
+struct WireMesh
+{
+    const float *points;
+    size_t size;
+};
+
 
 class GLuintResource
 {
