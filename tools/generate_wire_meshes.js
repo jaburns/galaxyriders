@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 const fs = require('fs');
 const path = require('path');
 
@@ -10,13 +11,13 @@ const getCubeVerts = () => {
     const result = [];
     for (let t = -0.5; t < 5.1; t += 1.0) {
         result.push(
-            -0.5, -0.5, t, 
-            -0.5,  0.5, t, 
-            -0.5,  0.5, t, 
-             0.5,  0.5, t, 
-             0.5,  0.5, t, 
+            -0.5, -0.5, t,
+            -0.5,  0.5, t,
+            -0.5,  0.5, t,
+             0.5,  0.5, t,
+             0.5,  0.5, t,
              0.5, -0.5, t,
-             0.5, -0.5, t, 
+             0.5, -0.5, t,
             -0.5, -0.5, t,
              t,  t, -0.5,
              t,  t,  0.5,

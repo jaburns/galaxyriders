@@ -6,3 +6,4 @@ GLGame.vcxproj.user
 .vs
 .vscode
 src/client/gen
+tools/node_modules
