@@ -12,7 +12,7 @@ static std::vector<float> get_cube_vertices()
 {
     std::vector<float> verts;
 
-    for (float t = -0.5f; t < 5.1f; t += 1.0f) {
+    for (auto t = -0.5f; t < 5.1f; t += 1.0f) {
         verts.insert(verts.end(), {
             -0.5f, -0.5f, t, 
             -0.5f,  0.5f, t, 
@@ -40,8 +40,8 @@ static std::vector<float> get_sphere_vertices()
 {
     std::vector<float> verts;
 
-    for (int i = 0; i < 3; ++i) {
-        for (float t = 0.0f; t < 2*3.14159f; t += 0.1f) {
+    for (auto i = 0; i < 3; ++i) {
+        for (auto t = 0.0f; t < 2*3.14159f; t += 0.1f) {
             if (i == 0) verts.push_back(0.0f);
             verts.push_back(sinf(t - 0.1f));
             if (i == 1) verts.push_back(0.0f);
@@ -62,7 +62,7 @@ static std::vector<float> get_sphere_vertices()
 static std::string join_floats(const std::vector<float>& floats)
 {
     std::stringstream result;
-    for (int i = 0; i < floats.size(); ++i) {
+    for (auto i = 0; i < floats.size(); ++i) {
         result << floats[i] << "f";
         if (i < floats.size() - 1) result << ",";
     }
@@ -96,8 +96,8 @@ int main(int argc, char **argv)
 
     hpp_stream << "};" << std::endl;
 
-    std::string hpp_file = BASE_FILENAME + ".hpp";
-    std::string cpp_file = BASE_FILENAME + ".cpp";
+    auto hpp_file = BASE_FILENAME + ".hpp";
+    auto cpp_file = BASE_FILENAME + ".cpp";
     std::ofstream out_hpp(hpp_file.c_str(), std::ofstream::out);
     std::ofstream out_cpp(cpp_file.c_str(), std::ofstream::out);
     out_hpp << hpp_stream.rdbuf();
