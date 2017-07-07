@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "tsc && chmod +x *.js"
+    "build": "tsc && chmod +x *.js"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.68",
