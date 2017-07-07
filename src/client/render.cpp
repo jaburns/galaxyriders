@@ -53,7 +53,7 @@ Renderer::Renderer()
 
     _skybox_renderer = std::make_unique<SkyboxRenderer>();
     _sprite_renderer = std::make_unique<SpriteRenderer>();
-    _wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::BOX_VERTICES);
+    _wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::SPHERE);
 }
 
 void Renderer::render(const World& world)
