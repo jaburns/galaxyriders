@@ -1,6 +1,11 @@
 {
   "private": true,
+  "scripts": {
+    "start": "tsc && node $1.js"
+  },
   "devDependencies": {
-    "lodash": "^4.17.4"
+    "@types/node": "^8.0.8",
+    "lodash": "^4.17.4",
+    "typescript": "^2.4.1"
   }
 }
