@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+set -e
+cd "$(dirname "${BASH_SOURCE[0]}")"
+
+g++ -o compute_sdfs \
+        compute_sdfs.cpp \
+        ../external/lodepng/lodepng.cpp \
+    -I../external/lodepng \
+    -std=c++11
+
+g++ -o generate_wire_meshes \
+        generate_wire_meshes.cpp \
+    -std=c++11
+
