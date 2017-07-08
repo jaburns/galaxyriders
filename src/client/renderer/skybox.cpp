@@ -15,12 +15,12 @@ SkyboxRenderer::SkyboxRenderer()
 {
     _program = std::make_unique<const ShaderProgram>("res/shaders/skybox.vert", "res/shaders/skybox.frag");;
     _cubemap = std::make_unique<const CubeMap>(
-        "res/hw_crater/craterlake_rt.png",
-        "res/hw_crater/craterlake_lf.png",
-        "res/hw_crater/craterlake_up.png",
-        "res/hw_crater/craterlake_dn.png",
-        "res/hw_crater/craterlake_bk.png",
-        "res/hw_crater/craterlake_ft.png"
+        "res/skybox/right.png",
+        "res/skybox/left.png",
+        "res/skybox/up.png",
+        "res/skybox/down.png",
+        "res/skybox/back.png",
+        "res/skybox/front.png"
     );
 
     glGenVertexArrays(1, &_vao);
