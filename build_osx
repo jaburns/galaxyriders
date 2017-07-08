@@ -16,4 +16,5 @@ cc -o game \
     -lstdc++ \
     -lglfw \
     -framework OpenGL
-#   -O3
+
+[ -z "$1" ] || ./game
