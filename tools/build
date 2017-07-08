@@ -2,13 +2,16 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
+OPTIMIZE='-O3'
+
 g++ -o compute_sdfs \
         compute_sdfs.cpp \
         ../external/lodepng/lodepng.cpp \
+    $OPTIMIZE \
     -I../external/lodepng \
     -std=c++11
 
 g++ -o generate_wire_meshes \
         generate_wire_meshes.cpp \
+    $OPTIMIZE \
     -std=c++11
-

@@ -8,5 +8,8 @@ uniform sampler2D sprite_texture;
 
 void main()
 {
-    color = texture(sprite_texture, v_tex_coords);
+    vec4 tex_color = texture(sprite_texture, v_tex_coords);
+
+    if (tex_color.r > 0.5) color = vec4(1); 
+    else color = vec4(0);
 }

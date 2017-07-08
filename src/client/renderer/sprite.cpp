@@ -16,7 +16,7 @@ static GLfloat quad_vertices[] = {
 SpriteRenderer::SpriteRenderer()
 {
     _program = std::make_unique<const ShaderProgram>("res/shaders/sprite.vert", "res/shaders/sprite.frag");;
-    _texture = std::make_unique<const Texture>("res/sprites/guy_frames.png");
+    _texture = std::make_unique<const Texture>("res/sprites/guy_frames.sdf.png");
     this->load_frames();
 
     glGenVertexArrays(1, &_vao);

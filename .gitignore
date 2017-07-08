@@ -9,3 +9,4 @@ src/client/gen
 tools/*
 !tools/build
 !tools/*.cpp
+*.sdf.png
