@@ -5,18 +5,18 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 static GLfloat quad_vertices[] = {
-     0.0f, 1.0f, 0.0f, 
+     0.0f, 1.0f, 0.0f,
      1.0f, 0.0f, 0.0f,
      0.0f, 0.0f, 0.0f,
-     1.0f, 0.0f, 0.0f, 
-     0.0f, 1.0f, 0.0f, 
+     1.0f, 0.0f, 0.0f,
+     0.0f, 1.0f, 0.0f,
      1.0f, 1.0f, 0.0f
 };
 
 SpriteRenderer::SpriteRenderer()
 {
     _program = std::make_unique<const ShaderProgram>("res/shaders/sprite.vert", "res/shaders/sprite.frag");;
-    _texture = std::make_unique<const Texture>("res/sprites/guy_frames.sdf.png");
+    _texture = std::make_unique<const Texture>("res/sprites/guy.sdf.png");
     this->load_frames();
 
     glGenVertexArrays(1, &_vao);
@@ -32,11 +32,11 @@ SpriteRenderer::SpriteRenderer()
 void SpriteRenderer::load_frames()
 {
     using namespace tinyxml2;
-    const float SPRITE_SHEET_SIZE = 512.0f;
+    const float SPRITE_SHEET_SIZE = 4096.0f;
 
     SpriteFrame new_frame;
     XMLDocument doc;
-    doc.LoadFile("res/sprites/guy_frames.xml");
+    doc.LoadFile("res/sprites/guy.xml");
     bool first_iter = true;
 
     auto *atlas = doc.FirstChildElement();
@@ -51,7 +51,7 @@ void SpriteRenderer::load_frames()
         float frame_height = child->FloatAttribute("frameHeight");
 
         new_frame.sprite_source.x = sprite_x / SPRITE_SHEET_SIZE;
-        new_frame.sprite_source.y = sprite_y / SPRITE_SHEET_SIZE; 
+        new_frame.sprite_source.y = sprite_y / SPRITE_SHEET_SIZE;
         new_frame.sprite_source.z = new_frame.sprite_source.x + sprite_width / SPRITE_SHEET_SIZE;
         new_frame.sprite_source.w = new_frame.sprite_source.y + sprite_height / SPRITE_SHEET_SIZE;
 
@@ -79,7 +79,7 @@ SpriteRenderer::~SpriteRenderer()
     glDeleteBuffers(1, &_vertex_buffer);
 }
 
-const int slowness = 5;
+const int slowness = 2;
 
 void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
 {

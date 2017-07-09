@@ -8,8 +8,8 @@ uniform sampler2D sprite_texture;
 
 void main()
 {
-    vec4 tex_color = texture(sprite_texture, v_tex_coords);
-
-    if (tex_color.r > 0.5) color = vec4(1); 
-    else color = vec4(0);
+    float dist = texture(sprite_texture, v_tex_coords).r;
+    float antialias = 0.5*fwidth(dist);
+    float alpha = smoothstep(0.5 - antialias, 0.5 + antialias, dist);
+    color = vec4(alpha);
 }

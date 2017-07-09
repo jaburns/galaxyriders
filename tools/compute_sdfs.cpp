@@ -4,9 +4,9 @@
 #include <cmath>
 #include <iostream>
 
-static const uint32_t DOWNSCALE = 4;
+static const uint32_t DOWNSCALE = 8;
 
-class Image 
+class Image
 {
     std::vector<uint8_t> m_data;
     uint32_t m_width;
@@ -38,7 +38,7 @@ public:
         }
 
         auto test = [&](int32_t x, int32_t y) {
-            if (is_pixel_on(x, y, 0)) { 
+            if (is_pixel_on(x, y, 0)) {
                 out_x = x;
                 out_y = y;
                 return true;
@@ -72,7 +72,10 @@ public:
         find_edge(x, y, out_x, out_y);
         float dx = static_cast<float>(x) - static_cast<float>(out_x);
         float dy = static_cast<float>(y) - static_cast<float>(out_y);
-        return 2.0f * sqrtf(dx*dx + dy*dy);
+        float d = sqrtf(dx*dx + dy*dy);
+        if (d < -100.0f) d = -100.0f;
+        if (d >  100.0f) d =  100.0f;
+        return d;
     }
 
     bool is_pixel_on(int32_t x, int32_t y, size_t field = 3) {
@@ -99,14 +102,14 @@ public:
     }
 };
 
-static uint8_t distance_to_shade(int8_t d) 
+static uint8_t distance_to_shade(int8_t d)
 {
     return 127 + d;
 }
 
-int main(int argc, char **argv) 
+int main(int argc, char **argv)
 {
-    Image input("../res/sprites/guy_frames.png");
+    Image input("../res/sprites/guy.png");
     Image edges(input.width(), input.height());
     Image output(input.width() / DOWNSCALE, input.height() / DOWNSCALE);
 
@@ -125,6 +128,6 @@ int main(int argc, char **argv)
         }
     }
 
-    output.save_to_file("../res/sprites/guy_frames.sdf.png");
+    output.save_to_file("../res/sprites/guy.sdf.png");
     return 0;
 }
