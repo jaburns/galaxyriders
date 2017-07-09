@@ -1,14 +1,14 @@
-<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="exports/guy_frames" itemID="57a2be70-00000041" lastModified="1470283430">
+<DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="exports/guy_frames" itemID="57a2be70-00000041" lastModified="1499554788">
   <timeline>
-    <DOMTimeline name="guy_frames" currentFrame="18">
+    <DOMTimeline name="guy_frames">
       <layers>
         <DOMLayer name="Layer 1" color="#4F80FF" current="true" isSelected="true">
           <frames>
             <DOMFrame index="0" duration="19" keyMode="9728">
               <elements>
-                <DOMSymbolInstance libraryItemName="Parts/guy_frames_anim" selected="true" symbolType="graphic" loop="loop">
+                <DOMSymbolInstance libraryItemName="Parts/guy_frames_anim" selected="true" symbolType="graphic" centerPoint3DX="30.55" centerPoint3DY="114.85" loop="loop">
                   <matrix>
-                    <Matrix tx="-2.65" ty="-5.55"/>
+                    <Matrix a="8" d="8" tx="-2.65" ty="-5.55"/>
                   </matrix>
                   <transformationPoint>
                     <Point/>

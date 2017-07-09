@@ -1,6 +1,6 @@
 <DOMSymbolItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" name="Parts/guy_frames_anim" itemID="57a2bf0c-00000044" symbolType="graphic" lastModified="1470283594" lastUniqueIdentifier="6">
   <timeline>
-    <DOMTimeline name="guy_frames_anim" currentFrame="7">
+    <DOMTimeline name="guy_frames_anim">
       <layers>
         <DOMLayer name="Layer 1" color="#4F80FF">
           <frames>

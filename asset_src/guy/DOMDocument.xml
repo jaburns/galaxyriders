@@ -1,10 +1,10 @@
-<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#1A1C2A" frameRate="60" currentTimeline="1" xflVersion="2.7" creatorInfo="Adobe Animate CC" platform="Macintosh" versionInfo="Saved by Animate Macintosh 15.1 build 13" majorVersion="15" minorVersion="1" buildNumber="13" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" filetypeGUID="DD0DDBBF-5BEF-45B2-9F24-A3048D2A676F">
+<DOMDocument xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://ns.adobe.com/xfl/2008/" backgroundColor="#1A1C2A" frameRate="60" currentTimeline="1" xflVersion="2.9" creatorInfo="Adobe Animate CC" platform="Macintosh" versionInfo="Saved by Animate Macintosh 16.2 build 24" majorVersion="16" minorVersion="2" buildNumber="24" objectsSnapTo="false" nextSceneIdentifier="2" playOptionsPlayLoop="false" playOptionsPlayPages="false" playOptionsPlayFrameActions="false" filetypeGUID="DD0DDBBF-5BEF-45B2-9F24-A3048D2A676F" fileGUID="F9E24A0E6CAF44088F87FDDE245FD4FF">
      <folders>
           <DOMFolderItem name="exports" itemID="57a00108-0000008b" isExpanded="true"/>
           <DOMFolderItem name="Parts" itemID="57a000f5-00000087" isExpanded="true"/>
      </folders>
      <symbols>
-          <Include href="exports/guy_frames.xml" loadImmediate="false" itemID="57a2be70-00000041" lastModified="1470283430"/>
+          <Include href="exports/guy_frames.xml" loadImmediate="false" itemID="57a2be70-00000041" lastModified="1499554788"/>
           <Include href="Parts/Board.xml" itemIcon="1" loadImmediate="false" itemID="579ffa22-00000022" lastModified="1470283441"/>
           <Include href="Parts/Body.xml" itemIcon="1" loadImmediate="false" itemID="579ffa34-00000026" lastModified="1470283456"/>
           <Include href="Parts/FlipBoard.xml" itemIcon="1" loadImmediate="false" itemID="579ffbed-00000033" lastModified="1470283499"/>
@@ -18,12 +18,12 @@
                          <frames>
                               <DOMFrame index="0" keyMode="9728">
                                    <elements>
-                                        <DOMSymbolInstance libraryItemName="exports/guy_frames">
+                                        <DOMSymbolInstance libraryItemName="exports/guy_frames" centerPoint3DX="278.8" centerPoint3DY="175">
                                              <matrix>
-                                                  <Matrix tx="131.15" ty="322.85"/>
+                                                  <Matrix a="0.125" d="0.125" tx="276.45" ty="170.15"/>
                                              </matrix>
                                              <transformationPoint>
-                                                  <Point x="-3.05"/>
+                                                  <Point x="-2.8"/>
                                              </transformationPoint>
                                         </DOMSymbolInstance>
                                    </elements>
@@ -33,6 +33,7 @@
                </layers>
           </DOMTimeline>
      </timelines>
+     <scripts/>
      <persistentData>
           <PD n="com.air.sdk.path"/>
      </persistentData>
