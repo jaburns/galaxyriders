@@ -75,6 +75,8 @@ void main_local()
     }
 }
 
+#include "../shared/fixed32.hpp"
+
 int main(int argc, char** argv)
 {
     if (argc >= 2 && std::strcmp(argv[1], "net") == 0) {
