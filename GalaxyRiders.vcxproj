@@ -29,6 +29,7 @@
     <ClInclude Include="src\shared\fixed32.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
     <ClInclude Include="src\shared\input.hpp" />
+    <ClInclude Include="src\shared\level.hpp" />
     <ClInclude Include="src\shared\network.hpp" />
     <ClInclude Include="src\shared\serialization.hpp" />
     <ClInclude Include="src\shared\sockets.hpp" />
@@ -47,6 +48,7 @@
     <ClCompile Include="src\client\resources.cpp" />
     <ClCompile Include="src\shared\fixed32.cpp" />
     <ClCompile Include="src\shared\geometry.cpp" />
+    <ClCompile Include="src\shared\level.cpp" />
     <ClCompile Include="src\shared\network.cpp" />
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>

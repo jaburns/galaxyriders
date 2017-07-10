@@ -13,7 +13,7 @@ static std::vector<float> get_cube_vertices()
 {
     std::vector<float> verts;
 
-    for (auto t = -0.5f; t < 5.1f; t += 1.0f) {
+    for (auto t = -0.5f; t < 0.6f; t += 1.0f) {
         verts.insert(verts.end(), {
             -0.5f, -0.5f, t,
             -0.5f,  0.5f, t,
