@@ -9,7 +9,7 @@
 
 #define PI 3.14159f
 
-const float MOVE_SPEED = 0.05f;
+const fixed32 MOVE_SPEED = fixed32::from_float(0.05f);
 
 static bool key_w = false;
 static bool key_s = false;
@@ -31,20 +31,20 @@ static InputState state;
 static void update_state()
 {
     state.look_dir = {
-        cos(facing - glm::half_pi<float>()),
-        0.0f,
-        sin(facing - glm::half_pi<float>())
+        fixed32::from_float(cos(facing - glm::half_pi<float>())),
+        fixed32::ZERO,
+        fixed32::from_float(sin(facing - glm::half_pi<float>()))
     };
-    glm::vec3 side_dir = { -state.look_dir.z, 0.0f, state.look_dir.x };
+    fixed32::vec3 side_dir = { -state.look_dir.z, fixed32::ZERO, state.look_dir.x };
 
-    state.movement = { 0.0f, 0.0f, 0.0f };
+    state.movement = { fixed32::ZERO, fixed32::ZERO, fixed32::ZERO };
 
     if (key_w) state.movement += MOVE_SPEED * state.look_dir;
     if (key_s) state.movement -= MOVE_SPEED * state.look_dir;
     if (key_a) state.movement -= MOVE_SPEED * side_dir;
     if (key_d) state.movement += MOVE_SPEED * side_dir;
 
-    state.look_dir.y = tilt;
+    state.look_dir.y = fixed32::from_float(tilt);
     if (key_space)  state.movement.y += MOVE_SPEED;
     if (key_lshift) state.movement.y -= MOVE_SPEED;
 }

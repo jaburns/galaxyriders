@@ -65,8 +65,8 @@ void Renderer::render(const World& world)
 
     auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
     auto v = glm::translate(
-        glm::lookAt(glm::vec3(0.0f), world.camera_look, world.camera_up),
-        -world.camera_position
+        glm::lookAt(glm::vec3(0.0f), fixed32::to_float(world.camera_look), { 0.0f, 1.0f, 0.0f }),
+        -fixed32::to_float(world.camera_position)
     );
 
     _wire_sphere_renderer->use(v, p);

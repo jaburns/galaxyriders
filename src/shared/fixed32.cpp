@@ -51,6 +51,26 @@ float fixed32::to_float() const
     return static_cast<float>(m_int) / 65536.0f;
 }
 
+glm::vec2 fixed32::to_float(vec2 v)
+{
+    return { v.x.to_float(), v.y.to_float() };
+}
+
+glm::vec3 fixed32::to_float(vec3 v)
+{
+    return { v.x.to_float(), v.y.to_float(), v.z.to_float() };
+}
+
+fixed32::vec2 fixed32::from_float(glm::vec2 v)
+{
+    return { from_float(v.x), from_float(v.y) };
+}
+
+fixed32::vec3 fixed32::from_float(glm::vec3 v)
+{
+    return { from_float(v.x), from_float(v.y), from_float(v.z) };
+}
+
 fixed32& fixed32::operator +=(fixed32 rhs)
 {
     m_int += rhs.m_int;

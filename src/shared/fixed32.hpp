@@ -9,9 +9,6 @@ class fixed32
     int32_t m_int = 0;
 
 public:
-    typedef glm::tvec2<fixed32> vec2;
-    typedef glm::tvec3<fixed32> vec3;
-
     static const fixed32 ZERO;
     static const fixed32 ONE;
     static const fixed32 MINUS_ONE;
@@ -28,6 +25,14 @@ public:
     static fixed32 from_float(float x);
     int32_t to_raw_int() const;
     float to_float() const;
+
+    typedef glm::tvec2<fixed32> vec2;
+    typedef glm::tvec3<fixed32> vec3;
+
+    static glm::vec2 to_float(vec2 v);
+    static glm::vec3 to_float(vec3 v);
+    static vec2 from_float(glm::vec2 v);
+    static vec3 from_float(glm::vec3 v);
 
     fixed32& operator +=(fixed32 rhs);
     fixed32& operator -=(fixed32 rhs);

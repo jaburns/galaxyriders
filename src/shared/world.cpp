@@ -2,33 +2,53 @@
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
-#include <glm/gtc/quaternion.hpp>
 #include <math.h>
 #include "serialization.hpp"
 
 World::World()
 {
-    camera_position = { 0.0f, 0.0f, 3.0f };
-    camera_up = { 0.0f, 1.0f, 0.0f };
-    camera_look = { 0.0f, 0.0f, -1.0f };
+    camera_position = { fixed32::ZERO, fixed32::ZERO, fixed32(3) };
+    camera_look = { fixed32::ZERO, fixed32::ZERO, fixed32::MINUS_ONE };
     frame_counter = 0;
 }
 
-template<typename T>
-static void handle_serialization(World& world, T& buffer)
+std::vector<unsigned char> World::serialize() const
 {
-    SDBuffer::vec3(buffer, world.camera_position);
-    SDBuffer::vec3(buffer, world.camera_up);
-    SDBuffer::vec3(buffer, world.camera_look);
-    buffer.val32(world.frame_counter);
+    SerializationBuffer buf;
+
+    buf.write_val32(camera_position.x.to_raw_int());
+    buf.write_val32(camera_position.y.to_raw_int());
+    buf.write_val32(camera_position.z.to_raw_int());
+    buf.write_val32(camera_look.x.to_raw_int());
+    buf.write_val32(camera_look.y.to_raw_int());
+    buf.write_val32(camera_look.z.to_raw_int());
+    buf.write_val32(frame_counter);
+
+    return buf.buffer;
+}
+
+World::World(const unsigned char *serialized, int serialized_length)
+{
+    DeserializationBuffer buf(serialized, serialized_length);
+
+    camera_position.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    camera_position.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    camera_position.z = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    camera_look.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    camera_look.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    camera_look.z = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    frame_counter = buf.read_val32<int32_t>();
 }
 
 World World::lerp_to(const World& next, float t) const
 {
+    auto mix = [&t](const auto& a, const auto& b) {
+        return a + fixed32::from_float(t) * (b - a);
+    };
+
     World world = *this;
-    world.camera_position = glm::mix(world.camera_position, next.camera_position, t);
-    world.camera_up = glm::mix(world.camera_up, next.camera_up, t);
-    world.camera_look = glm::mix(world.camera_look, next.camera_look, t);
+    world.camera_position = mix(world.camera_position, next.camera_position);
+    world.camera_look = mix(world.camera_look, next.camera_look);
     world.frame_counter = next.frame_counter;
     return world;
 }
@@ -37,7 +57,7 @@ World World::step(const InputState& input) const
 {
     World world = *this;
 
-    world.camera_position += 2.0f * input.movement;
+    world.camera_position += fixed32::TWO * input.movement;
     world.camera_look = input.look_dir;
 
     if (! input.clicking) {
@@ -45,17 +65,4 @@ World World::step(const InputState& input) const
     }
 
     return world;
-}
-
-std::vector<unsigned char> World::serialize() const
-{
-    SerializationBuffer buf;
-    handle_serialization(*const_cast<World*>(this), buf);
-    return buf.buffer;
-}
-
-World::World(const unsigned char *serialized, int serialized_length)
-{
-    DeserializationBuffer buf(serialized, serialized_length);
-    handle_serialization(*this, buf);
 }
