@@ -4,8 +4,9 @@
 
 static const int32_t DECIMAL_BITS = 16;
 static const fixed32 FOUR_FACTORIAL = fixed32(24);
-static const fixed32 COS_SCALE = fixed32::from_raw_int(66439); // fixed32::from_float(1.0137854328228146f).to_raw_int();
+static const fixed32 SIX_FACTORIAL = fixed32(720);
 
+const fixed32 fixed32::ZERO = fixed32(0);
 const fixed32 fixed32::ONE = fixed32(1);
 const fixed32 fixed32::MINUS_ONE = fixed32(-1);
 const fixed32 fixed32::TWO = fixed32(2);
@@ -80,12 +81,19 @@ fixed32& fixed32::operator /=(fixed32 rhs)
     return *this;
 }
 
+fixed32& fixed32::operator %=(fixed32 rhs)
+{
+    m_int %= rhs.m_int;
+    return *this;
+}
+
 fixed32 fixed32::operator +(fixed32 rhs) const { fixed32 ret = *this; ret += rhs; return ret; }
 fixed32 fixed32::operator -(fixed32 rhs) const { fixed32 ret = *this; ret -= rhs; return ret; }
 fixed32 fixed32::operator *(fixed32 rhs) const { fixed32 ret = *this; ret *= rhs; return ret; }
 fixed32 fixed32::operator /(fixed32 rhs) const { fixed32 ret = *this; ret /= rhs; return ret; }
+fixed32 fixed32::operator %(fixed32 rhs) const { fixed32 ret = *this; ret %= rhs; return ret; }
 
-fixed32 fixed32::operator -() const { return (*this) * MINUS_ONE; }
+fixed32 fixed32::operator -() const { return from_raw_int(-m_int); }
 
 bool fixed32::operator < (fixed32 rhs) const { return m_int <  rhs.m_int; }
 bool fixed32::operator > (fixed32 rhs) const { return m_int >  rhs.m_int; }
@@ -93,6 +101,11 @@ bool fixed32::operator <=(fixed32 rhs) const { return m_int <= rhs.m_int; }
 bool fixed32::operator >=(fixed32 rhs) const { return m_int >= rhs.m_int; }
 bool fixed32::operator ==(fixed32 rhs) const { return m_int == rhs.m_int; }
 bool fixed32::operator !=(fixed32 rhs) const { return m_int != rhs.m_int; }
+
+fixed32 fixed32::abs() const
+{
+    return m_int < 0 ? -(*this) : *this;
+}
 
 fixed32 fixed32::sqrt() const
 {
@@ -111,12 +124,10 @@ fixed32 fixed32::sin() const
 fixed32 fixed32::cos() const
 {
     auto x = *this;
+    auto negate = false;
 
-    // TODO Replace with modular arithmetic.
-    while (x > PI) x -= TWO_PI;
-    while (x < -PI) x += TWO_PI;
+    x %= TWO_PI;
 
-    bool negate = false;
     if (x < -PI_OVER_TWO) {
         x += PI;
         negate = true;
@@ -125,9 +136,9 @@ fixed32 fixed32::cos() const
         negate = true;
     }
 
-    const auto ax = COS_SCALE * x;
-    const auto ax2 = ax * ax;
-    return negate 
-        ? MINUS_ONE + ax2 / TWO - (ax2 * ax2) / FOUR_FACTORIAL
-        :       ONE - ax2 / TWO + (ax2 * ax2) / FOUR_FACTORIAL;
+    const auto x2 = x * x;
+    const auto x4 = x2 * x2;
+    const auto x6 = x4 * x2;
+    const auto ret = ONE - x2 / TWO + x4 / FOUR_FACTORIAL - x6 / SIX_FACTORIAL;
+    return negate ? -ret : ret;
 }

@@ -1,15 +1,18 @@
 #pragma once
 
 #include <cstdint>
-
-// #include <glm/vec2.hpp>
-// typedef glm::tvec2<fixed32> vec2f;
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 
 class fixed32 
 {
     int32_t m_int = 0;
 
 public:
+    typedef glm::tvec2<fixed32> vec2;
+    typedef glm::tvec3<fixed32> vec3;
+
+    static const fixed32 ZERO;
     static const fixed32 ONE;
     static const fixed32 MINUS_ONE;
     static const fixed32 TWO;
@@ -30,11 +33,13 @@ public:
     fixed32& operator -=(fixed32 rhs);
     fixed32& operator *=(fixed32 rhs);
     fixed32& operator /=(fixed32 rhs);
+    fixed32& operator %=(fixed32 rhs);
 
     fixed32 operator +(fixed32 rhs) const;
     fixed32 operator -(fixed32 rhs) const;
     fixed32 operator *(fixed32 rhs) const;
     fixed32 operator /(fixed32 rhs) const;
+    fixed32 operator %(fixed32 rhs) const;
 
     fixed32 operator -() const;
 
@@ -45,6 +50,7 @@ public:
     bool operator ==(fixed32 rhs) const;
     bool operator !=(fixed32 rhs) const;
 
+    fixed32 abs() const;
     fixed32 sqrt() const;
     fixed32 sin() const;
     fixed32 cos() const;
