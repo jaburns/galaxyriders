@@ -12,7 +12,7 @@ World::World()
     frame_counter = 0;
 }
 
-std::vector<unsigned char> World::serialize() const
+std::vector<uint8_t> World::serialize() const
 {
     SerializationBuffer buf;
 
@@ -27,7 +27,7 @@ std::vector<unsigned char> World::serialize() const
     return buf.buffer;
 }
 
-World::World(const unsigned char *serialized, int serialized_length)
+World::World(const uint8_t *serialized, int serialized_length)
 {
     DeserializationBuffer buf(serialized, serialized_length);
 

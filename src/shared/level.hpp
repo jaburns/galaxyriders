@@ -1,9 +1,10 @@
 #pragma once
 
 #include <vector>
+#include <cstdint>
 #include "fixed32.hpp"
 
-struct Level
+struct BakedLevel
 {
     struct Poly {
         std::vector<fixed32::vec2> points;
@@ -12,11 +13,18 @@ struct Level
     std::vector<Poly> polys;
 };
 
-struct BakedLevel
+struct Level
 {
-    struct Line {
-        fixed32::vec2 a, b;
+    struct Handle {
+        fixed32::vec2 point;
+        uint8_t quality;
     };
 
-    std::vector<Line> lines;
+    struct Poly {
+        std::vector<Handle> handles;
+    };
+
+    std::vector<Poly> polys;
+
+    void bake(BakedLevel& result);
 };

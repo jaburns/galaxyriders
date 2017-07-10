@@ -5,7 +5,7 @@
 #include <cstdio>
 #include "sockets.hpp"
 
-UDPSocket::UDPSocket(unsigned short port)
+UDPSocket::UDPSocket(uint16_t port)
 {
     #ifdef _WIN32
         WSADATA wsa;
@@ -21,11 +21,11 @@ UDPSocket::UDPSocket(unsigned short port)
     }
 
     #ifdef _WIN32
-        unsigned long sock_mode_nonblocking = 1;
+        uint32_t sock_mode_nonblocking = 1;
         ioctlsocket(m_socket, FIONBIO, &sock_mode_nonblocking);
-    #else 
-        fcntl(_socket, F_SETFL, O_NONBLOCK);
-    #endif 
+    #else
+        fcntl(m_socket, F_SETFL, O_NONBLOCK);
+    #endif
 
     sockaddr_in myaddr;
     std::memset((char*)&myaddr, 0, sizeof(myaddr));
@@ -45,7 +45,7 @@ UDPSocket::~UDPSocket()
         closesocket(m_socket);
         WSACleanup();
     #else
-        close(_socket);
+        close(m_socket);
     #endif
 }
 
@@ -66,7 +66,7 @@ static SocketAddress from_sockaddr(const sockaddr_in& addr)
     return result;
 }
 
-SocketAddress UDPSocket::get_host_address(const std::string& remote_host, unsigned short remote_port)
+SocketAddress UDPSocket::get_host_address(const std::string& remote_host, uint16_t remote_port)
 {
     sockaddr_in remaddr;
     std::memset((char*)&remaddr, 0, sizeof(remaddr));
@@ -79,11 +79,11 @@ SocketAddress UDPSocket::get_host_address(const std::string& remote_host, unsign
         exit(1);
     }
     std::memcpy((void*)&remaddr.sin_addr, hp->h_addr_list[0], hp->h_length);
-    
+
     return from_sockaddr(remaddr);
 }
 
-void UDPSocket::send(const SocketAddress& remote_address, const unsigned char *buffer, int buffer_len) const
+void UDPSocket::send(const SocketAddress& remote_address, const uint8_t *buffer, int buffer_len) const
 {
     sockaddr_in remaddr = to_sockaddr(remote_address);
     socklen_t slen = sizeof(remaddr);
@@ -94,7 +94,7 @@ void UDPSocket::send(const SocketAddress& remote_address, const unsigned char *b
     }
 }
 
-bool UDPSocket::receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len, int& message_len) const
+bool UDPSocket::receive(SocketAddress& out_remote_address, uint8_t *buffer, int buffer_len, int& message_len) const
 {
     sockaddr_in remaddr;
     socklen_t slen = sizeof(remaddr);

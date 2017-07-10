@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include <cstring>
+#include <cstdint>
 #include "readinput.hpp"
 #include "render.hpp"
 #include "../shared/network.hpp"
@@ -14,7 +15,7 @@ void main_net()
     UDPSocket socket;
     SocketAddress send_address = UDPSocket::get_host_address("localhost", Config::DEFAULT_PORT);
     SocketAddress receive_address;
-    unsigned char buffer[Config::MAX_PACKET_SIZE];
+    uint8_t buffer[Config::MAX_PACKET_SIZE];
 
     std::cout << "Sending ack packet to server port " << Config::DEFAULT_PORT << std::endl;
     sprintf((char*)buffer, "This is packet");

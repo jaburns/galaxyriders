@@ -6,7 +6,7 @@
 #include <iostream>
 #include <lodepng.h>
 
-static GLuint shader_compile_from_file(const char *shader_path, GLenum shader_type)
+static GLuint shader_compile_from_file(const std::string& shader_path, GLenum shader_type)
 {
     std::ifstream file(shader_path);
     std::stringstream buffer;
@@ -33,7 +33,7 @@ static GLuint shader_compile_from_file(const char *shader_path, GLenum shader_ty
     return shader;
 }
 
-ShaderProgram::ShaderProgram(const char *vert_path, const char *frag_path)
+ShaderProgram::ShaderProgram(const std::string& vert_path, const std::string& frag_path)
 {
     m_id = glCreateProgram();
     GLuint vert = shader_compile_from_file(vert_path, GL_VERTEX_SHADER);
@@ -54,12 +54,11 @@ ShaderProgram::~ShaderProgram()
     }
 }
 
-
-Texture::Texture(const char *png_path)
+Texture::Texture(const std::string& png_path)
 {
-    std::vector<unsigned char> image;
-    unsigned width, height;
-    unsigned error = lodepng::decode(image, width, height, png_path);
+    std::vector<uint8_t> image;
+    uint32_t width, height;
+    uint32_t error = lodepng::decode(image, width, height, png_path);
 
     if (error != 0) {
         std::cout << "Error " << error << ": " << lodepng_error_text(error) << std::endl;
@@ -80,19 +79,18 @@ Texture::~Texture()
     }
 }
 
-
-CubeMap::CubeMap(const char *r, const char *l, const char *t, const char *bo, const char *ba, const char *f)
+CubeMap::CubeMap(const std::string& r, const std::string& l, const std::string& t, const std::string& bo, const std::string& ba, const std::string& f)
 {
     glGenTextures(1, &m_id);
     glActiveTexture(GL_TEXTURE0);
-
-    const char* sides[6] = { r, l, t, bo, ba, f };
-
     glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
+
+    const std::string* sides[6] = { &r, &l, &t, &bo, &ba, &f };
+
     for (int i = 0; i < 6; ++i) {
-        std::vector<unsigned char> image;
-        unsigned width, height;
-        unsigned error = lodepng::decode(image, width, height, sides[i]);
+        std::vector<uint8_t> image;
+        uint32_t width, height;
+        uint32_t error = lodepng::decode(image, width, height, *sides[i]);
         if (error != 0) {
             std::cout << "Error " << error << ": " << lodepng_error_text(error) << std::endl;
             return;

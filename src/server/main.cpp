@@ -12,11 +12,11 @@ int main(int argc, char **argv)
     UDPSocket socket(Config::DEFAULT_PORT);
     SocketAddress client_address;
     int counter = 0;
-    unsigned char buffer[Config::MAX_PACKET_SIZE];
+    uint8_t buffer[Config::MAX_PACKET_SIZE];
 
     std::cout << "Waiting for client on port " << Config::DEFAULT_PORT << std::endl;
 
-    unsigned long cycles = 0;
+    uint32_t cycles = 0;
     int message_len = 0;
     while (! socket.receive(client_address, buffer, Config::MAX_PACKET_SIZE, message_len)) cycles++;
     std::cout << "Spun for: " << cycles << " Received message: " << buffer << std::endl;

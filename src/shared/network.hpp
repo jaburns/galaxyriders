@@ -1,11 +1,12 @@
 #pragma once
 
 #include <string>
+#include <cstdint>
 
 struct SocketAddress
 {
-    unsigned short port;
-    unsigned long address;
+    uint16_t port;
+    uint32_t address;
 };
 
 class UDPSocket
@@ -16,11 +17,11 @@ class UDPSocket
     UDPSocket& operator=(const UDPSocket&) = delete;
 
 public:
-    UDPSocket(unsigned short port = 0);
+    UDPSocket(uint16_t port = 0);
     ~UDPSocket();
 
-    void send(const SocketAddress& remote_address, const unsigned char *buffer, int buffer_len) const;
-    bool receive(SocketAddress& out_remote_address, unsigned char *buffer, int buffer_len, int& message_len) const;
+    void send(const SocketAddress& remote_address, const uint8_t *buffer, int buffer_len) const;
+    bool receive(SocketAddress& out_remote_address, uint8_t *buffer, int buffer_len, int& message_len) const;
 
-    static SocketAddress get_host_address(const std::string& remote_host, unsigned short remote_port);
+    static SocketAddress get_host_address(const std::string& remote_host, uint16_t remote_port);
 };
