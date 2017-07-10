@@ -15,14 +15,14 @@ UDPSocket::UDPSocket(unsigned short port)
         }
     #endif
 
-    if ((_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
+    if ((m_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
         std::cout << "Failed to create socket." << std::endl;
         exit(1);
     }
 
     #ifdef _WIN32
         unsigned long sock_mode_nonblocking = 1;
-        ioctlsocket(_socket, FIONBIO, &sock_mode_nonblocking);
+        ioctlsocket(m_socket, FIONBIO, &sock_mode_nonblocking);
     #else 
         fcntl(_socket, F_SETFL, O_NONBLOCK);
     #endif 
@@ -33,7 +33,7 @@ UDPSocket::UDPSocket(unsigned short port)
     myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
     myaddr.sin_port = htons(port);
 
-    if (bind(_socket, (sockaddr*)&myaddr, sizeof(myaddr)) < 0) {
+    if (bind(m_socket, (sockaddr*)&myaddr, sizeof(myaddr)) < 0) {
         std::cout << "Failed to bind socket to port " << port << std::endl;
         exit(1);
     }
@@ -42,7 +42,7 @@ UDPSocket::UDPSocket(unsigned short port)
 UDPSocket::~UDPSocket()
 {
     #ifdef _WIN32
-        closesocket(_socket);
+        closesocket(m_socket);
         WSACleanup();
     #else
         close(_socket);
@@ -88,7 +88,7 @@ void UDPSocket::send(const SocketAddress& remote_address, const unsigned char *b
     sockaddr_in remaddr = to_sockaddr(remote_address);
     socklen_t slen = sizeof(remaddr);
 
-    if (sendto(_socket, (const char*)buffer, buffer_len, 0, (sockaddr *)&remaddr, slen) < 0) {
+    if (sendto(m_socket, (const char*)buffer, buffer_len, 0, (sockaddr *)&remaddr, slen) < 0) {
         std::cout << "Error sending message" << std::endl;
         exit(1);
     }
@@ -99,7 +99,7 @@ bool UDPSocket::receive(SocketAddress& out_remote_address, unsigned char *buffer
     sockaddr_in remaddr;
     socklen_t slen = sizeof(remaddr);
 
-    message_len = recvfrom(_socket, (char*)buffer, buffer_len, 0, (sockaddr*)&remaddr, &slen);
+    message_len = recvfrom(m_socket, (char*)buffer, buffer_len, 0, (sockaddr*)&remaddr, &slen);
     if (message_len < 0) return false;
 
     out_remote_address.address = remaddr.sin_addr.s_addr;

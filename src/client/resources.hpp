@@ -35,11 +35,11 @@ class GLuintResource
     GLuintResource& operator=(const GLuintResource&) =delete;
 
 protected:
-    GLuint _id = 0;
+    GLuint m_id = 0;
 
 public:
     GLuintResource() {}
-    operator GLuint() const { return _id; }
+    operator GLuint() const { return m_id; }
 };
 
 struct ShaderProgram : public GLuintResource

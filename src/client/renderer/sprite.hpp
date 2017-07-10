@@ -18,15 +18,15 @@ struct SpriteFrame
 
 class SpriteRenderer
 {
-    GLuint _vao;
-    GLuint _vertex_buffer;
+    GLuint m_vao;
+    GLuint m_vertex_buffer;
 
-    std::unique_ptr<const ShaderProgram> _program;
-    std::unique_ptr<const Texture> _texture;
-    std::vector<SpriteFrame> _frames;
+    std::unique_ptr<const ShaderProgram> m_program;
+    std::unique_ptr<const Texture> m_texture;
+    std::vector<SpriteFrame> m_frames;
     
-    glm::vec2 _origin;
-    float _aspect;
+    glm::vec2 m_origin;
+    float m_aspect;
 
     SpriteRenderer(const SpriteRenderer&) =delete;
     SpriteRenderer& operator=(const SpriteRenderer&) =delete;

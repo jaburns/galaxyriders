@@ -10,7 +10,7 @@ struct SocketAddress
 
 class UDPSocket
 {
-    int _socket;
+    int m_socket;
 
     UDPSocket(const UDPSocket&) = delete;
     UDPSocket& operator=(const UDPSocket&) = delete;

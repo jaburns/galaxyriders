@@ -13,8 +13,8 @@ static GLfloat skybox_vertices[] = {
 
 SkyboxRenderer::SkyboxRenderer()
 {
-    _program = std::make_unique<const ShaderProgram>("res/shaders/skybox.vert", "res/shaders/skybox.frag");;
-    _cubemap = std::make_unique<const CubeMap>(
+    m_program = std::make_unique<const ShaderProgram>("res/shaders/skybox.vert", "res/shaders/skybox.frag");;
+    m_cubemap = std::make_unique<const CubeMap>(
         "res/skybox_small/right.png",
         "res/skybox_small/left.png",
         "res/skybox_small/up.png",
@@ -23,37 +23,37 @@ SkyboxRenderer::SkyboxRenderer()
         "res/skybox_small/front.png"
     );
 
-    glGenVertexArrays(1, &_vao);
-    glBindVertexArray(_vao);
+    glGenVertexArrays(1, &m_vao);
+    glBindVertexArray(m_vao);
 
-    glGenBuffers(1, &_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, _vertex_buffer);
+    glGenBuffers(1, &m_vertex_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(skybox_vertices), &skybox_vertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(*_program, "position"));
-    glVertexAttribPointer(glGetAttribLocation(*_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "position"));
+    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 }
 
 SkyboxRenderer::~SkyboxRenderer()
 {
     glBindVertexArray(0);
-    glDeleteVertexArrays(1, &_vao);
-    glDeleteBuffers(1, &_vertex_buffer);
+    glDeleteVertexArrays(1, &m_vao);
+    glDeleteBuffers(1, &m_vertex_buffer);
 }
 
 void SkyboxRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection)
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, *_cubemap);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, *m_cubemap);
 
     glDepthFunc(GL_LEQUAL);
 
-    glUseProgram(*_program);
+    glUseProgram(*m_program);
     auto trunc_view = glm::mat4(glm::mat3(view));
-    glUniformMatrix4fv(glGetUniformLocation(*_program, "view"), 1, GL_FALSE, glm::value_ptr(trunc_view));
-    glUniformMatrix4fv(glGetUniformLocation(*_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform1i(glGetUniformLocation(*_program, "skybox"), 0);
+    glUniformMatrix4fv(glGetUniformLocation(*m_program, "view"), 1, GL_FALSE, glm::value_ptr(trunc_view));
+    glUniformMatrix4fv(glGetUniformLocation(*m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform1i(glGetUniformLocation(*m_program, "skybox"), 0);
 
-    glBindVertexArray(_vao);
+    glBindVertexArray(m_vao);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     glDepthFunc(GL_LESS);

@@ -8,11 +8,11 @@
 
 class SkyboxRenderer
 {
-    GLuint _vao;
-    GLuint _vertex_buffer;
+    GLuint m_vao;
+    GLuint m_vertex_buffer;
 
-    std::unique_ptr<const ShaderProgram> _program;
-    std::shared_ptr<const CubeMap> _cubemap;
+    std::unique_ptr<const ShaderProgram> m_program;
+    std::shared_ptr<const CubeMap> m_cubemap;
 
     SkyboxRenderer(const SkyboxRenderer&) =delete;
     SkyboxRenderer& operator=(const SkyboxRenderer&) =delete;
@@ -23,5 +23,5 @@ public:
 
     void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection);
 
-    std::shared_ptr<const CubeMap> get_skybox_cubemap() { return _cubemap; }
+    std::shared_ptr<const CubeMap> get_skybox_cubemap() { return m_cubemap; }
 };
