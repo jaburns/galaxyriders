@@ -3,8 +3,6 @@
 #include <cmath>
 
 static const int32_t DECIMAL_BITS = 16;
-static const fixed32 FOUR_FACTORIAL = fixed32(24);
-static const fixed32 SIX_FACTORIAL = fixed32(720);
 
 const fixed32 fixed32::ZERO = fixed32(0);
 const fixed32 fixed32::ONE = fixed32(1);
@@ -14,17 +12,17 @@ const fixed32 fixed32::TWO_PI = fixed32::from_raw_int(411774); // fixed32::from_
 const fixed32 fixed32::PI = TWO_PI / TWO;
 const fixed32 fixed32::PI_OVER_TWO = PI / TWO;
 
-fixed32::fixed32() 
+fixed32::fixed32()
 {
     m_int = 0;
 }
 
-fixed32::fixed32(int16_t init) 
+fixed32::fixed32(int16_t init)
 {
     m_int = init << DECIMAL_BITS;
 }
 
-fixed32 fixed32::from_raw_int(int32_t raw) 
+fixed32 fixed32::from_raw_int(int32_t raw)
 {
     fixed32 ret;
     ret.m_int = raw;
@@ -129,17 +127,25 @@ fixed32 fixed32::abs() const
 
 fixed32 fixed32::sqrt() const
 {
+#   define INT_ABS(x) ((x) < 0 ? -(x) : (x))
     fixed32 guess = *this / TWO;
-    for (auto i = 0; i < 10; ++i) {
-        guess = (guess + *this / guess) / TWO;
-    }
+    int32_t int_diff;
+    do {
+        fixed32 new_guess = (guess + *this / guess) / TWO;
+        int_diff = new_guess.m_int - guess.m_int;
+        guess.m_int = new_guess.m_int;
+    } while(INT_ABS(int_diff) > 0x10); // within 16 / 65536 = 0.00024 of previous guess
     return guess;
+#   undef INT_ABS
 }
 
 fixed32 fixed32::sin() const
 {
     return (*this - PI_OVER_TWO).cos();
 }
+
+static const fixed32 FOUR_FACTORIAL = fixed32(24);
+static const fixed32 SIX_FACTORIAL = fixed32(720);
 
 fixed32 fixed32::cos() const
 {

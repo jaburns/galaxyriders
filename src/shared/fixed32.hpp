@@ -4,7 +4,7 @@
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 
-class fixed32 
+class fixed32
 {
     int32_t m_int = 0;
 
