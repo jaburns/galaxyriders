@@ -10,7 +10,7 @@
 class LevelRenderer
 {
     struct Mesh {
-        std::vector<glm::vec3> vertices;
+        std::vector<glm::vec2> vertices;
         std::vector<float> vdepths;
         std::vector<uint32_t> indices;
     };
@@ -32,5 +32,5 @@ public:
     LevelRenderer(const BakedLevel& level);
     ~LevelRenderer();
 
-    void draw_once(const glm::vec3& camera_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position);
+    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position);
 };

@@ -2,6 +2,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <algorithm>
+#include "../triangulator.hpp"
 
 LevelRenderer::LevelRenderer(const BakedLevel& level)
 {
@@ -13,15 +15,15 @@ LevelRenderer::LevelRenderer(const BakedLevel& level)
 
     glGenBuffers(1, &m_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.vertices.size() * sizeof(glm::vec3), m_mesh.vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, m_mesh.vertices.size() * sizeof(glm::vec2), m_mesh.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*m_program, "position"));
-    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
+    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*) 0);
 
     glGenBuffers(1, &m_vdepth_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_vdepth_buffer);
     glBufferData(GL_ARRAY_BUFFER, m_mesh.vdepths.size() * sizeof(float), m_mesh.vdepths.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "normal"));
-    glVertexAttribPointer(glGetAttribLocation(*m_program, "normal"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*) 0);
+    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "vdepth"));
+    glVertexAttribPointer(glGetAttribLocation(*m_program, "vdepth"), 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*) 0);
 
     glGenBuffers(1, &m_index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
@@ -41,12 +43,26 @@ LevelRenderer::Mesh LevelRenderer::load_mesh(const BakedLevel& level)
 {
     LevelRenderer::Mesh mesh;
 
-    // TODO triangulate polys
+    for (auto& poly : level.polys) {
+        for (auto& pt : poly.points) {
+            mesh.vertices.push_back(fixed32::to_float(pt));
+            mesh.vdepths.push_back(0.0f);
+        }
+    }
+
+    uint32_t base_index = 0;
+    for (auto& poly : level.polys) {
+        auto tris = Triangulator::triangulate(poly.points);
+        for (auto tri : tris) {
+            mesh.indices.push_back(base_index + tri);
+        }
+        base_index += poly.points.size();
+    }
 
     return mesh;
 }
 
-void LevelRenderer::draw_once(const glm::vec3& camera_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position)
+void LevelRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position)
 {
     glUseProgram(*m_program);
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));

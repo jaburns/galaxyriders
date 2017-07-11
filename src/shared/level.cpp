@@ -4,6 +4,8 @@ BakedLevel BakedLevel::from_level(const Level& level)
 {
     BakedLevel baked;
 
+    // TODO This should actually render out the Bezier curves.
+
     for (auto& poly : level.polys) {
         BakedLevel::Poly this_poly;
         for (auto& handle : poly.handles) {

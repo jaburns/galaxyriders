@@ -5,6 +5,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include "gen/wire_meshes.hpp"
+#include "../shared/level.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -51,9 +52,13 @@ Renderer::Renderer()
     glClearColor(0.16f, 0.17f, 0.18f, 1.0f);
     glLineWidth(9.0f);
 
+    std::vector<int32_t> raw_level = {1,12,0,10000,10000,10,19100,43800,10,50200,43200,0,63000,28500,10,72600,17700,10,75100,19900,0,93500,28400,0,103600,33900,0,124900,33900,0,124900,71200,0,1000,71400,0,1200,10000};
+    auto baked_level = BakedLevel::from_level(Level::from_data(raw_level));
+
     m_skybox_renderer = std::make_unique<SkyboxRenderer>();
     m_sprite_renderer = std::make_unique<SpriteRenderer>();
     m_wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::CUBE);
+    m_level_renderer = std::make_unique<LevelRenderer>(baked_level);
 }
 
 void Renderer::render(const World& world)
@@ -68,6 +73,8 @@ void Renderer::render(const World& world)
         glm::lookAt(glm::vec3(0.0f), fixed32::to_float(world.camera_look), { 0.0f, 1.0f, 0.0f }),
         -fixed32::to_float(world.camera_position)
     );
+
+    m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, 0.0f });
 
     m_wire_sphere_renderer->use(v, p);
     m_wire_sphere_renderer->draw({ 2.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f });
