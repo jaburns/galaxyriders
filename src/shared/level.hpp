@@ -4,20 +4,11 @@
 #include <cstdint>
 #include "fixed32.hpp"
 
-struct BakedLevel
-{
-    struct Poly {
-        std::vector<fixed32::vec2> points;
-    };
-
-    std::vector<Poly> polys;
-};
-
 struct Level
 {
     struct Handle {
         fixed32::vec2 point;
-        uint8_t quality;
+        uint32_t quality;
     };
 
     struct Poly {
@@ -26,5 +17,16 @@ struct Level
 
     std::vector<Poly> polys;
 
-    void bake(BakedLevel& result);
+    static Level from_data(std::vector<int32_t> data);
+};
+
+struct BakedLevel
+{
+    struct Poly {
+        std::vector<fixed32::vec2> points;
+    };
+
+    std::vector<Poly> polys;
+
+    static BakedLevel from_level(const Level& level);
 };
