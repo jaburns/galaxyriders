@@ -39,93 +39,81 @@ LevelRenderer::~LevelRenderer()
     glDeleteBuffers(1, &m_index_buffer);
 }
 
-/*
-    Vector2[] insetPoints(Vector2[] points)
-    {
-        var ret = new Vector2[points.Length];
+static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
+{
+    const auto DEPTH = 0.1f;
+    std::vector<glm::vec2> result(points.size());
 
-        for (int i = 0; i < points.Length; i ++) {
-            var i0 = i == 0 ? points.Length - 1 : i - 1;
-            var i1 = i == points.Length - 1 ? 0 : i + 1;
-            Vector2 a = points[i0], b = points[i], c = points[i1];
+    for (size_t i = 0; i < points.size(); ++i) {
+        auto i0 = i == 0 ? points.size() - 1 : i - 1;
+        auto i1 = i == points.size() - 1 ? 0 : i + 1;
+        glm::vec2 a = points[i0], b = points[i], c = points[i1];
 
-            var norm = ((b - a).normalized + (b - c).normalized).normalized;
-            if (((b - a).Cross(c - a) < 0) != targ.FlipNormals) norm *= -1;
+        auto b_a = glm::normalize(b - a);
+        auto b_c = glm::normalize(b - c);
+        auto norm = glm::normalize(b_a + b_c);
 
-            ret[i] = b + norm * targ.SurfaceDepth;
-        }
-
-        return ret;
+        result[i] = b + norm * DEPTH;
     }
 
-    void bake()
-    {
-        var points = generatePoints();
+    return result;
+}
 
-        var edge = targ.gameObject.EnsureComponent<EdgeCollider2D>();
-        edge.points = points.ToArray();
+void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
+{
+//  size_t base_index = mesh.vertices.size();
+    std::vector<glm::vec2> points(poly.points.size());
 
-        var originalVerts = points.ToArray();
-        var insetVerts = insetPoints(originalVerts);
-
-        var vertices = new Vector3[2 * originalVerts.Length];
-        var uvs = new Vector2[2 * originalVerts.Length];
-        for (int i = 0; i < vertices.Length; i++) {
-            vertices[i] = i % 2 == 0 ? originalVerts[i/2] : insetVerts[i/2];
-            uvs[i] = i % 2 == 0 ? Vector2.zero : Vector2.one;
-        }
-
-        int[] innerIndices = (new Triangulator(insetVerts)).Triangulate();
-
-        var indices = new int[3 * vertices.Length + innerIndices.Length];
-        for (int i = 0; i < vertices.Length; i += 2) {
-            var a = i;
-            var b = i+1;
-            var c = (i+2)%vertices.Length;
-            var d = (i+3)%vertices.Length;
-
-            indices[3*i  ] = targ.FlipNormals ? b : a;
-            indices[3*i+1] = targ.FlipNormals ? c : c;
-            indices[3*i+2] = targ.FlipNormals ? a : b;
-            indices[3*i+3] = targ.FlipNormals ? d : b;
-            indices[3*i+4] = targ.FlipNormals ? c : c;
-            indices[3*i+5] = targ.FlipNormals ? b : d;
-        }
-        for (int i = 0; i < innerIndices.Length; ++i) {
-            indices[3*vertices.Length + i] = 2*innerIndices[i] + 1;
-        }
-
-        var mesh = new Mesh();
-        mesh.vertices = vertices;
-        mesh.triangles = indices;
-        mesh.uv = uvs;
-        mesh.RecalculateNormals();
-        mesh.RecalculateBounds();
-
-        var filter = targ.gameObject.EnsureComponent<MeshFilter>();
-        filter.sharedMesh = mesh;
-
-        targ.gameObject.EnsureComponent<MeshRenderer>();
+    for (auto i = 0; i < points.size(); ++i) {
+        points[i] = fixed32::to_float(points[i]);
     }
-*/
+
+    // ###  Implementation with inset ### //
+//  auto inset_pts = inset_points(points);
+//  var vertices = new Vector3[2 * originalVerts.Length];
+//  var uvs = new Vector2[2 * originalVerts.Length];
+//  for (int i = 0; i < vertices.Length; i++) {
+//      vertices[i] = i % 2 == 0 ? originalVerts[i/2] : insetVerts[i/2];
+//      uvs[i] = i % 2 == 0 ? Vector2.zero : Vector2.one;
+//  }
+
+//  int[] innerIndices = (new Triangulator(insetVerts)).Triangulate();
+
+//  var indices = new int[3 * vertices.Length + innerIndices.Length];
+//  for (int i = 0; i < vertices.Length; i += 2) {
+//      var a = i;
+//      var b = i+1;
+//      var c = (i+2)%vertices.Length;
+//      var d = (i+3)%vertices.Length;
+
+//      indices[3*i  ] = targ.FlipNormals ? b : a;
+//      indices[3*i+1] = targ.FlipNormals ? c : c;
+//      indices[3*i+2] = targ.FlipNormals ? a : b;
+//      indices[3*i+3] = targ.FlipNormals ? d : b;
+//      indices[3*i+4] = targ.FlipNormals ? c : c;
+//      indices[3*i+5] = targ.FlipNormals ? b : d;
+//  }
+//  for (int i = 0; i < innerIndices.Length; ++i) {
+//      indices[3*vertices.Length + i] = 2*innerIndices[i] + 1;
+//  }
+
+    // ###  Implementation without inset ### //
+    for (auto i = 0; i < points.size(); ++i) {
+        mesh.vertices.push_back(points[i]);
+        mesh.vdepths.push_back(0.0f);
+    }
+    auto tris = Triangulator::triangulate(points);
+    for (auto tri : tris) {
+        mesh.indices.push_back(tri);
+    }
+}
 
 LevelRenderer::Mesh LevelRenderer::load_mesh(const BakedLevel& level)
 {
     LevelRenderer::Mesh mesh;
 
     for (auto& poly : level.polys) {
-        std::vector<glm::vec2> points(poly.points.size());
-
-        for (auto i = 0; i < points.size(); ++i) {
-            points[i] = fixed32::to_float(points[i]);
-            mesh.vertices.push_back(points[i]);
-            mesh.vdepths.push_back(0.0f);
-        }
-
-        auto tris = Triangulator::triangulate(points);
-        for (auto tri : tris) {
-            mesh.indices.push_back(tri);
-        }
+        push_poly(mesh, poly);
     }
 
     return mesh;

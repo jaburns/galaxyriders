@@ -24,6 +24,7 @@ class LevelRenderer
     std::unique_ptr<const ShaderProgram> m_program;
 
     static Mesh load_mesh(const BakedLevel& level);
+    static void push_poly(Mesh& mesh, const BakedLevel::Poly& p);
 
     LevelRenderer(const LevelRenderer&) =delete;
     LevelRenderer& operator=(const LevelRenderer&) =delete;
