@@ -60,4 +60,6 @@ public:
     fixed32 sin() const;
     fixed32 cos() const;
     fixed32 pow(int32_t p) const;
+
+    static fixed32 max(fixed32 a, fixed32 b);
 };

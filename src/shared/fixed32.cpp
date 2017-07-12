@@ -134,7 +134,7 @@ fixed32 fixed32::sqrt() const
         fixed32 new_guess = (guess + *this / guess) / TWO;
         int_diff = new_guess.m_int - guess.m_int;
         guess.m_int = new_guess.m_int;
-    } while(INT_ABS(int_diff) > 0x10); // within 16 / 65536 = 0.00024 of previous guess
+    } while(INT_ABS(int_diff) > 16); // within 16 / 65536 = 0.00024 of previous guess
     return guess;
 #   undef INT_ABS
 }
@@ -182,4 +182,9 @@ fixed32 fixed32::pow(int32_t p) const
     fixed32 result = *this;
     while (--p > 0) result *= *this;
     return result;
+}
+
+fixed32 fixed32::max(fixed32 a, fixed32 b)
+{
+    return a.m_int > b.m_int ? a : b;
 }
