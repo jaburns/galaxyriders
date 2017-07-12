@@ -21,7 +21,7 @@ UDPSocket::UDPSocket(uint16_t port)
     }
 
     #ifdef _WIN32
-        uint32_t sock_mode_nonblocking = 1;
+        u_long sock_mode_nonblocking = 1;
         ioctlsocket(m_socket, FIONBIO, &sock_mode_nonblocking);
     #else
         fcntl(m_socket, F_SETFL, O_NONBLOCK);

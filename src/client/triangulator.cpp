@@ -32,7 +32,7 @@ static bool inside_triangle(fixed32::vec2 A, fixed32::vec2 B, fixed32::vec2 C, f
     return ((aCROSSbp >= fixed32::ZERO) && (bCROSScp >= fixed32::ZERO) && (cCROSSap >= fixed32::ZERO));
 }
 
-static bool snip(const std::vector<fixed32::vec2>& points, size_t u, size_t v, size_t w, size_t n, size_t V[])
+static bool snip(const std::vector<fixed32::vec2>& points, size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V)
 {
     fixed32::vec2 A = points[V[u]];
     fixed32::vec2 B = points[V[v]];
@@ -41,7 +41,7 @@ static bool snip(const std::vector<fixed32::vec2>& points, size_t u, size_t v, s
     fixed32 pdiff = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
     if (pdiff.to_raw_int() < 2) return false;
 
-    for (auto p = 0; p < n; p++) {
+    for (size_t p = 0; p < n; p++) {
         if ((p == u) || (p == v) || (p == w)) continue;
         fixed32::vec2 P = points[V[p]];
         if (inside_triangle(A, B, C, P)) return false;
@@ -57,11 +57,11 @@ std::vector<uint32_t> Triangulator::triangulate(const std::vector<fixed32::vec2>
     size_t n = points.size();
     if (n < 3) return indices;
 
-    size_t V[n];
+    std::vector<size_t> V(n);
     if (area(points) > 0) {
-        for (int v = 0; v < n; v++) V[v] = v;
+        for (size_t v = 0; v < n; v++) V[v] = v;
     } else {
-        for (int v = 0; v < n; v++) V[v] = (n - 1) - v;
+        for (size_t v = 0; v < n; v++) V[v] = (n - 1) - v;
     }
 
     auto nv = n;

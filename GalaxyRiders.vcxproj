@@ -21,10 +21,12 @@
     <ClInclude Include="src\client\glfw.hpp" />
     <ClInclude Include="src\client\readinput.hpp" />
     <ClInclude Include="src\client\render.hpp" />
+    <ClInclude Include="src\client\renderer\level.hpp" />
     <ClInclude Include="src\client\renderer\wire.hpp" />
     <ClInclude Include="src\client\renderer\skybox.hpp" />
     <ClInclude Include="src\client\renderer\sprite.hpp" />
     <ClInclude Include="src\client\resources.hpp" />
+    <ClInclude Include="src\client\triangulator.hpp" />
     <ClInclude Include="src\shared\config.hpp" />
     <ClInclude Include="src\shared\fixed32.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
@@ -42,13 +44,19 @@
     <ClCompile Include="src\client\main.cpp" />
     <ClCompile Include="src\client\readinput.cpp" />
     <ClCompile Include="src\client\render.cpp" />
+    <ClCompile Include="src\client\renderer\level.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="src\client\renderer\wire.cpp" />
     <ClCompile Include="src\client\renderer\skybox.cpp" />
     <ClCompile Include="src\client\renderer\sprite.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
+    <ClCompile Include="src\client\triangulator.cpp" />
     <ClCompile Include="src\shared\fixed32.cpp" />
     <ClCompile Include="src\shared\geometry.cpp" />
-    <ClCompile Include="src\shared\level.cpp" />
+    <ClCompile Include="src\shared\level.cpp">
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+    </ClCompile>
     <ClCompile Include="src\shared\network.cpp" />
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>

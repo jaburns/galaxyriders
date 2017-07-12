@@ -74,7 +74,7 @@ void Renderer::render(const World& world)
         -fixed32::to_float(world.camera_position)
     );
 
-    m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, 0.0f });
+    m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
 
     m_wire_sphere_renderer->use(v, p);
     m_wire_sphere_renderer->draw({ 2.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f });
