@@ -181,7 +181,7 @@ fixed32 fixed32::pow(int32_t p) const
     if (p == 1) return *this;
     fixed32 result = *this;
     while (--p > 0) result *= *this;
-    return result;
+    return negative_power ? fixed32::ONE / result : result;
 }
 
 fixed32 fixed32::max(fixed32 a, fixed32 b)
