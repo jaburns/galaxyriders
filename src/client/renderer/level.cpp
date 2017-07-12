@@ -39,6 +39,13 @@ LevelRenderer::~LevelRenderer()
     glDeleteBuffers(1, &m_index_buffer);
 }
 
+static const bool FLIP = false;
+
+static float cross2(glm::vec2 a, glm::vec2 b)
+{
+    return (a.x*b.y) - (a.y*b.x);
+}
+
 static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 {
     const auto DEPTH = 0.1f;
@@ -51,7 +58,9 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 
         auto b_a = glm::normalize(b - a);
         auto b_c = glm::normalize(b - c);
+
         auto norm = glm::normalize(b_a + b_c);
+        if ((cross2(b_a, c - a) < 0.0f) != FLIP) norm *= -1;
 
         result[i] = b + norm * DEPTH;
     }
@@ -61,50 +70,46 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 
 void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
 {
-//  size_t base_index = mesh.vertices.size();
-    std::vector<glm::vec2> points(poly.points.size());
+    size_t base_vert_index = mesh.vertices.size();
+    size_t base_tri_index = mesh.indices.size();
 
-    for (auto i = 0; i < points.size(); ++i) {
-        points[i] = fixed32::to_float(points[i]);
+    std::vector<glm::vec2> pts(poly.points.size());
+
+    for (auto i = 0; i < pts.size(); ++i) {
+        pts[i] = fixed32::to_float(poly.points[i]);
     }
 
-    // ###  Implementation with inset ### //
-//  auto inset_pts = inset_points(points);
-//  var vertices = new Vector3[2 * originalVerts.Length];
-//  var uvs = new Vector2[2 * originalVerts.Length];
-//  for (int i = 0; i < vertices.Length; i++) {
-//      vertices[i] = i % 2 == 0 ? originalVerts[i/2] : insetVerts[i/2];
-//      uvs[i] = i % 2 == 0 ? Vector2.zero : Vector2.one;
-//  }
+    auto inset_pts = inset_points(pts);
+    auto new_vert_count = 2 * pts.size();
 
-//  int[] innerIndices = (new Triangulator(insetVerts)).Triangulate();
+    mesh.vertices.reserve(base_vert_index + new_vert_count);
+    mesh.vdepths.reserve(base_vert_index + new_vert_count);
 
-//  var indices = new int[3 * vertices.Length + innerIndices.Length];
-//  for (int i = 0; i < vertices.Length; i += 2) {
-//      var a = i;
-//      var b = i+1;
-//      var c = (i+2)%vertices.Length;
-//      var d = (i+3)%vertices.Length;
-
-//      indices[3*i  ] = targ.FlipNormals ? b : a;
-//      indices[3*i+1] = targ.FlipNormals ? c : c;
-//      indices[3*i+2] = targ.FlipNormals ? a : b;
-//      indices[3*i+3] = targ.FlipNormals ? d : b;
-//      indices[3*i+4] = targ.FlipNormals ? c : c;
-//      indices[3*i+5] = targ.FlipNormals ? b : d;
-//  }
-//  for (int i = 0; i < innerIndices.Length; ++i) {
-//      indices[3*vertices.Length + i] = 2*innerIndices[i] + 1;
-//  }
-
-    // ###  Implementation without inset ### //
-    for (auto i = 0; i < points.size(); ++i) {
-        mesh.vertices.push_back(points[i]);
-        mesh.vdepths.push_back(0.0f);
+    for (auto i = 0; i < new_vert_count; i++) {
+        mesh.vertices.push_back(i % 2 == 0 ? pts[i/2] : inset_pts[i/2]);
+        mesh.vdepths.push_back(i % 2 == 0 ? 0.0f : 1.0f);
     }
-    auto tris = Triangulator::triangulate(points);
-    for (auto tri : tris) {
-        mesh.indices.push_back(tri);
+
+    std::vector<uint32_t> inner_indices = Triangulator::triangulate(pts);
+
+    mesh.indices.resize(base_tri_index + 3 * pts.size() + inner_indices.size());
+
+    for (auto i = 0; i < pts.size(); i += 2) {
+        auto a = base_tri_index + i;
+        auto b = base_tri_index + i+1;
+        auto c = base_tri_index + (i+2)%pts.size();
+        auto d = base_tri_index + (i+3)%pts.size();
+
+        mesh.indices[3*i  ] = FLIP ? b : a;
+        mesh.indices[3*i+1] = FLIP ? c : c;
+        mesh.indices[3*i+2] = FLIP ? a : b;
+        mesh.indices[3*i+3] = FLIP ? d : b;
+        mesh.indices[3*i+4] = FLIP ? c : c;
+        mesh.indices[3*i+5] = FLIP ? b : d;
+    }
+
+    for (int i = 0; i < inner_indices.size(); ++i) {
+        mesh.indices[3*pts.size() + i] = base_tri_index + 2*inner_indices[i] + 1;
     }
 }
 
