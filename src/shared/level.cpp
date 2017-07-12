@@ -1,16 +1,39 @@
 #include "level.hpp"
 
+#include "geometry.hpp"
+#include <iostream>
+
 BakedLevel BakedLevel::from_level(const Level& level)
 {
+    const fixed32 iter = fixed32::from_fraction(1, 20);
     BakedLevel baked;
-
-    // TODO This should actually render out the Bezier curves.
 
     for (auto& poly : level.polys) {
         BakedLevel::Poly this_poly;
-        for (auto& handle : poly.handles) {
-            this_poly.points.push_back(handle.point);
+
+        for (size_t i = 0; i < poly.handles.size(); ) {
+
+            std::vector<fixed32::vec2> current_curve;
+
+            current_curve.push_back(poly.handles[i++].point);
+            while (i < poly.handles.size() && poly.handles[i].quality > 0) {
+                current_curve.push_back(poly.handles[i++].point);
+            }
+
+            if (current_curve.size() >= 2) {
+                if (i < poly.handles.size()) {
+                    current_curve.push_back(poly.handles[i].point);
+                } else {
+                    current_curve.push_back(poly.handles[0].point);
+                }
+                for(fixed32 t = fixed32::ZERO; t < fixed32::ONE; t += iter) {
+                    this_poly.points.push_back(Geometry::evaluate_bezier(current_curve, t));
+                }
+            } else {
+                this_poly.points.push_back(current_curve[0]);
+            }
         }
+
         baked.polys.push_back(this_poly);
     }
 

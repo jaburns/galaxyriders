@@ -168,3 +168,18 @@ fixed32 fixed32::cos() const
     const auto ret = ONE - x2 / TWO + x4 / FOUR_FACTORIAL - x6 / SIX_FACTORIAL;
     return negate ? -ret : ret;
 }
+
+fixed32 fixed32::pow(int32_t p) const
+{
+    bool negative_power = false;
+    if (p < 0) {
+        negative_power = true;
+        p = -p;
+    }
+
+    if (p == 0) return 1;
+    if (p == 1) return *this;
+    fixed32 result = *this;
+    while (--p > 0) result *= *this;
+    return result;
+}

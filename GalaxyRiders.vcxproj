@@ -61,6 +61,8 @@
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\shaders\level.frag" />
+    <None Include="res\shaders\level.vert" />
     <None Include="res\shaders\wire.frag" />
     <None Include="res\shaders\wire.vert" />
     <None Include="res\shaders\main.frag" />

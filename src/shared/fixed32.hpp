@@ -59,4 +59,5 @@ public:
     fixed32 sqrt() const;
     fixed32 sin() const;
     fixed32 cos() const;
+    fixed32 pow(int32_t p) const;
 };

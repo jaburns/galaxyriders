@@ -6,7 +6,7 @@ out vec4 color;
 
 uniform sampler2D sprite_texture;
 
-const vec3 main_color = vec3(0, 1, 1);
+const vec3 main_color = vec3(0.592,0.027,0.278);
 
 void main()
 {
