@@ -188,3 +188,19 @@ fixed32 fixed32::max(fixed32 a, fixed32 b)
 {
     return a.m_int > b.m_int ? a : b;
 }
+
+fixed32 fixed32::length(const fixed32::vec2& v)
+{
+    return (v.x * v.x + v.y * v.y).sqrt();
+}
+
+fixed32::vec2 fixed32::normalize(const fixed32::vec2& v)
+{
+    auto len = length(v);
+    return { v.x / len, v.y / len };
+}
+
+fixed32 fixed32::cross(const fixed32::vec2& a, const fixed32::vec2& b)
+{
+    return (a.x*b.y) - (a.y*b.x);
+}

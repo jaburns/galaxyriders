@@ -62,4 +62,8 @@ public:
     fixed32 pow(int32_t p) const;
 
     static fixed32 max(fixed32 a, fixed32 b);
+
+    static fixed32 length(const vec2& v);
+    static vec2 normalize(const vec2& v);
+    static fixed32 cross(const fixed32::vec2& a, const fixed32::vec2& b);
 };
