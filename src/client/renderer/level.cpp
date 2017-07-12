@@ -114,19 +114,18 @@ LevelRenderer::Mesh LevelRenderer::load_mesh(const BakedLevel& level)
     LevelRenderer::Mesh mesh;
 
     for (auto& poly : level.polys) {
-        for (auto& pt : poly.points) {
-            mesh.vertices.push_back(fixed32::to_float(pt));
+        std::vector<glm::vec2> points(poly.points.size());
+
+        for (auto i = 0; i < points.size(); ++i) {
+            points[i] = fixed32::to_float(points[i]);
+            mesh.vertices.push_back(points[i]);
             mesh.vdepths.push_back(0.0f);
         }
-    }
 
-    uint32_t base_index = 0;
-    for (auto& poly : level.polys) {
-        auto tris = Triangulator::triangulate(poly.points);
+        auto tris = Triangulator::triangulate(points);
         for (auto tri : tris) {
-            mesh.indices.push_back(base_index + tri);
+            mesh.indices.push_back(tri);
         }
-        base_index += poly.points.size();
     }
 
     return mesh;

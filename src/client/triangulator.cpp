@@ -1,22 +1,22 @@
 #include "triangulator.hpp"
 #include <algorithm>
 
-static fixed32 area(const std::vector<fixed32::vec2>& points)
+static float area(const std::vector<glm::vec2>& points)
 {
     size_t n = points.size();
-    fixed32 A = fixed32::ZERO;
+    float A = 0.0f;
     for (size_t p = n - 1, q = 0; q < n; p = q++) {
-        fixed32::vec2 pval = points[p];
-        fixed32::vec2 qval = points[q];
+        glm::vec2 pval = points[p];
+        glm::vec2 qval = points[q];
         A += pval.x * qval.y - qval.x * pval.y;
     }
-    return A / fixed32::TWO;
+    return A / 2.0f;
 }
 
-static bool inside_triangle(fixed32::vec2 A, fixed32::vec2 B, fixed32::vec2 C, fixed32::vec2 P)
+static bool inside_triangle(glm::vec2 A, glm::vec2 B, glm::vec2 C, glm::vec2 P)
 {
-    fixed32 ax, ay, bx, by, cx, cy, apx, apy, bpx, bpy, cpx, cpy;
-    fixed32 cCROSSap, bCROSScp, aCROSSbp;
+    float ax, ay, bx, by, cx, cy, apx, apy, bpx, bpy, cpx, cpy;
+    float cCROSSap, bCROSScp, aCROSSbp;
 
     ax = C.x - B.x; ay = C.y - B.y;
     bx = A.x - C.x; by = A.y - C.y;
@@ -29,29 +29,29 @@ static bool inside_triangle(fixed32::vec2 A, fixed32::vec2 B, fixed32::vec2 C, f
     cCROSSap = cx * apy - cy * apx;
     bCROSScp = bx * cpy - by * cpx;
 
-    return ((aCROSSbp >= fixed32::ZERO) && (bCROSScp >= fixed32::ZERO) && (cCROSSap >= fixed32::ZERO));
+    return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
 }
 
-static bool snip(const std::vector<fixed32::vec2>& points, size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V)
+static bool snip(const std::vector<glm::vec2>& points, size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V)
 {
-    fixed32::vec2 A = points[V[u]];
-    fixed32::vec2 B = points[V[v]];
-    fixed32::vec2 C = points[V[w]];
+    glm::vec2 A = points[V[u]];
+    glm::vec2 B = points[V[v]];
+    glm::vec2 C = points[V[w]];
 
-    fixed32 pdiff = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
-    if (pdiff.to_raw_int() < 2) return false;
+    float pdiff = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
+    if (pdiff < 1e-7) return false;
 
     for (size_t p = 0; p < n; p++) {
         if ((p == u) || (p == v) || (p == w)) continue;
-        fixed32::vec2 P = points[V[p]];
+        glm::vec2 P = points[V[p]];
         if (inside_triangle(A, B, C, P)) return false;
     }
     return true;
 }
 
-std::vector<uint32_t> Triangulator::triangulate(const std::vector<fixed32::vec2>& pts)
+std::vector<uint32_t> Triangulator::triangulate(const std::vector<glm::vec2>& pts)
 {
-    std::vector<fixed32::vec2> points = pts;
+    std::vector<glm::vec2> points = pts;
     std::vector<uint32_t> indices;
 
     size_t n = points.size();
