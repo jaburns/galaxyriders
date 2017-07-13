@@ -13,7 +13,7 @@ public:
     static const fixed32 ONE;
     static const fixed32 MINUS_ONE;
     static const fixed32 TWO;
-    static const fixed32 TWO_PI; // fixed32::from_float(6.283185307179586).to_raw_int();
+    static const fixed32 TWO_PI;
     static const fixed32 PI;
     static const fixed32 PI_OVER_TWO;
 
@@ -65,5 +65,8 @@ public:
 
     static fixed32 length(const vec2& v);
     static vec2 normalize(const vec2& v);
+    static vec2 rotate90(const vec2& v);
+    static fixed32 dot(const fixed32::vec2& a, const fixed32::vec2& b);
     static fixed32 cross(const fixed32::vec2& a, const fixed32::vec2& b);
+    static vec2 reflect(const vec2& v, const vec2& unit_normal, fixed32 normal_scale, fixed32 tangent_scale);
 };

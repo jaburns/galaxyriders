@@ -83,18 +83,18 @@ fixed32& fixed32::operator -=(fixed32 rhs)
 
 fixed32& fixed32::operator *=(fixed32 rhs)
 {
-    int64_t lhs64 = m_int;
-    int64_t rhs64 = rhs.m_int;
-    int64_t result = lhs64 * rhs64;
+    const int64_t lhs64 = m_int;
+    const int64_t rhs64 = rhs.m_int;
+    const int64_t result = lhs64 * rhs64;
     m_int = static_cast<int32_t>(result >> DECIMAL_BITS);
     return *this;
 }
 
 fixed32& fixed32::operator /=(fixed32 rhs)
 {
-    int64_t lhs64 = m_int;
-    int64_t rhs64 = rhs.m_int;
-    int64_t result = (lhs64 << DECIMAL_BITS) / rhs64;
+    const int64_t lhs64 = m_int;
+    const int64_t rhs64 = rhs.m_int;
+    const int64_t result = (lhs64 << DECIMAL_BITS) / rhs64;
     m_int = static_cast<int32_t>(result);
     return *this;
 }
@@ -196,11 +196,31 @@ fixed32 fixed32::length(const fixed32::vec2& v)
 
 fixed32::vec2 fixed32::normalize(const fixed32::vec2& v)
 {
-    auto len = length(v);
+    const auto len = length(v);
     return { v.x / len, v.y / len };
+}
+
+fixed32::vec2 fixed32::rotate90(const fixed32::vec2& v)
+{
+    return { -v.y, v.x };
+}
+
+fixed32 fixed32::dot(const fixed32::vec2& a, const fixed32::vec2& b)
+{
+    return a.x*b.x + a.y*b.y;
 }
 
 fixed32 fixed32::cross(const fixed32::vec2& a, const fixed32::vec2& b)
 {
-    return (a.x*b.y) - (a.y*b.x);
+    return a.x*b.y - a.y*b.x;
+}
+
+fixed32::vec2 fixed32::reflect(const fixed32::vec2& v, const fixed32::vec2& unit_normal, fixed32 normal_scale, fixed32 tangent_scale)
+{
+    const auto unit_tangent = rotate90(unit_normal);
+
+    const auto norm_component = -normal_scale * dot(v, unit_normal);
+    const auto tang_component = tangent_scale * dot(v, unit_tangent);
+
+    return unit_normal * norm_component + unit_tangent * tang_component;
 }
