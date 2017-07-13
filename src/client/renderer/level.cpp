@@ -3,7 +3,6 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
-#include <cmath>
 #include "../triangulator.hpp"
 #include "../palette.hpp"
 
@@ -60,10 +59,9 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
         auto b_a = glm::normalize(b - a);
         auto c_b = glm::normalize(c - b);
 
-        // TODO Take half angle by averaging vectors so we don't have to take cos of acos like plebs.
-        auto diff_dot = glm::dot(b_a, c_b);
-        auto half_angle = acosf(diff_dot) / 2;
-        auto depth = DEPTH / cosf(half_angle);
+        auto half_vector = glm::normalize(b_a + c_b);
+        auto diff_dot = glm::dot(b_a, half_vector);
+        auto depth = DEPTH / diff_dot;
 
         auto norm = glm::normalize(b_a - c_b);
         if (cross2(b_a, c - a) < 0.0f) norm *= -1;
