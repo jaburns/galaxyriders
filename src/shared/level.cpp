@@ -1,6 +1,8 @@
 #include "level.hpp"
 
 #include "geometry.hpp"
+
+
 #include <iostream>
 
 Level Level::from_data(const std::vector<int32_t>& data)
@@ -80,6 +82,8 @@ static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const fi
                 const auto projection = l - point_on_line;
                 const auto p2 = projection.x*projection.x + projection.y*projection.y;
 
+                std::cout << p2.to_float() << '\t';
+
                 if (p2 < r2) {
                     normal = projection / p2.sqrt();
                     if (fixed32::cross(projection, b - a) > 0) {
@@ -107,6 +111,8 @@ static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const fi
         }
     }
 
+    std::cout << std::endl;
+
     return { false };
 }
 
@@ -116,7 +122,7 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(fixed32::vec2 from, fixed
     auto ds = to - from;
     auto d2 = ds.x*ds.x + ds.y*ds.y;
 
-    const auto first_check = test_circle(*this, from, r2);
+    const auto first_check = test_circle(*this, from, radius);
     if (first_check.collided) return first_check;
     if (d2 < r2) return first_check;
 
@@ -125,7 +131,7 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(fixed32::vec2 from, fixed
 
     do {
         from += step;
-        const auto check = test_circle(*this, from, r2);
+        const auto check = test_circle(*this, from, radius);
         if (check.collided) return check;
 
         ds = to - from;
@@ -133,5 +139,5 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(fixed32::vec2 from, fixed
     }
     while (d2 >= r2);
 
-    return test_circle(*this, to, r2);
+    return test_circle(*this, to, radius);
 }

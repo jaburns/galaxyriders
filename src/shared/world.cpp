@@ -46,6 +46,10 @@ World::World(const uint8_t *serialized, int serialized_length)
     camera_look.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
     camera_look.z = fixed32::from_raw_int(buf.read_val32<int32_t>());
     frame_counter = buf.read_val32<int32_t>();
+    player.velocity.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    player.velocity.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    player.position.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    player.position.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
 }
 
 World World::lerp_to(const World& next, float t) const
@@ -62,7 +66,7 @@ World World::lerp_to(const World& next, float t) const
 }
 
 static const fixed32 MOVEMENT_SPEED = fixed32(5);
-static const fixed32 GRAVITY = fixed32::from_fraction(1, 10);
+static const fixed32 GRAVITY = fixed32::from_fraction(-1, 100);
 static const fixed32 RADIUS = fixed32::from_fraction(1, 10);
 
 World World::step(const InputState& input) const
@@ -72,16 +76,16 @@ World World::step(const InputState& input) const
     world.camera_position += MOVEMENT_SPEED * input.movement;
     world.camera_look = input.look_dir;
 
-    world.player.velocity.y += GRAVITY;
-    world.player.position += world.player.velocity;
+    if (input.clicking) {
+        world.player.velocity.y += GRAVITY;
+        world.player.position += world.player.velocity;
 
-    const auto collision = BAKED_LEVEL.collide_circle(player.position, world.player.position, RADIUS);
-    if (collision.collided) {
-        world.player.position = collision.restore;
-        world.player.velocity = fixed32::reflect(world.player.velocity, collision.normal, fixed32::ZERO, fixed32::ONE);
-    }
+        const auto collision = BAKED_LEVEL.collide_circle(player.position, world.player.position, RADIUS);
+        if (collision.collided) {
+            world.player.position = collision.restore;
+            world.player.velocity = fixed32::reflect(world.player.velocity, collision.normal, fixed32::ZERO, fixed32::ONE);
+        }
 
-    if (! input.clicking) {
         world.frame_counter++;
     }
 
