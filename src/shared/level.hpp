@@ -26,7 +26,13 @@ struct BakedLevel
         std::vector<fixed32::vec2> points;
     };
 
+    struct CollisionResult {
+        bool collided;
+    };
+
     std::vector<Poly> polys;
 
     static BakedLevel from_level(const Level& level);
+
+    CollisionResult collide_circle() const;
 };
