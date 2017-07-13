@@ -55,9 +55,10 @@ World World::lerp_to(const World& next, float t) const
 
 World World::step(const InputState& input) const
 {
+    const fixed32 MOVEMENT_SPEED = fixed32(5);
     World world = *this;
 
-    world.camera_position += fixed32::TWO * input.movement;
+    world.camera_position += MOVEMENT_SPEED * input.movement;
     world.camera_look = input.look_dir;
 
     if (! input.clicking) {

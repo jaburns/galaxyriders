@@ -99,14 +99,16 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
+const float SCALE = 0.5f;
+
 void SpriteRenderer::draw(const glm::vec3& position, int frame)
 {
     frame %= m_frames.size() * slowness;
     frame /= slowness;
 
-    glm::vec3 new_pos = position + glm::vec3(m_frames[frame].offset, 0.0f) - glm::vec3(m_origin, 0.0f);
+    glm::vec3 new_pos = position + SCALE * glm::vec3(m_frames[frame].offset, 0.0f) - glm::vec3(m_origin, 0.0f);
 
-    auto m = glm::scale(glm::translate(glm::mat4(1.0f), new_pos), { m_aspect * m_frames[frame].scale.x, m_frames[frame].scale.y, 1.0f });
+    auto m = glm::scale(glm::translate(glm::mat4(1.0f), new_pos), { SCALE * m_aspect * m_frames[frame].scale.x, SCALE * m_frames[frame].scale.y, SCALE });
 
     glUniform4fv(glGetUniformLocation(*m_program, "sprite_source"), 1, glm::value_ptr(m_frames[frame].sprite_source));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
