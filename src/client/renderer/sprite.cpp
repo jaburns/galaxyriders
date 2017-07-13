@@ -3,6 +3,7 @@
 #include <tinyxml2.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../palette.hpp"
 
 static GLfloat quad_vertices[] = {
      0.0f, 1.0f, 0.0f,
@@ -89,6 +90,7 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glUseProgram(*m_program);
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform3fv(glGetUniformLocation(*m_program, "main_color"), 1, glm::value_ptr(Palette::COLOR_LIFE));
     glUniform1i(glGetUniformLocation(*m_program, "sprite_texture"), 0);
 
     glBindVertexArray(m_vao);

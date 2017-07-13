@@ -4,6 +4,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
 #include "../triangulator.hpp"
+#include "../palette.hpp"
 
 LevelRenderer::LevelRenderer(const BakedLevel& level)
 {
@@ -39,8 +40,6 @@ LevelRenderer::~LevelRenderer()
     glDeleteBuffers(1, &m_index_buffer);
 }
 
-static const bool FLIP = false;
-
 static float cross2(glm::vec2 a, glm::vec2 b)
 {
     return (a.x*b.y) - (a.y*b.x);
@@ -60,7 +59,7 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
         auto b_c = glm::normalize(b - c);
 
         auto norm = glm::normalize(b_a + b_c);
-        if ((cross2(b_a, c - a) < 0.0f) != FLIP) norm *= -1;
+        if (cross2(b_a, c - a) < 0.0f) norm *= -1;
 
         result[i] = b + norm * DEPTH;
     }
@@ -92,24 +91,24 @@ void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
 
     std::vector<uint32_t> inner_indices = Triangulator::triangulate(pts);
 
-    mesh.indices.resize(base_tri_index + 3 * pts.size() + inner_indices.size());
+    mesh.indices.resize(base_tri_index + 3 * new_vert_count + inner_indices.size());
 
-    for (auto i = 0; i < pts.size(); i += 2) {
+    for (auto i = 0; i < new_vert_count; i += 2) {
         auto a = base_tri_index + i;
         auto b = base_tri_index + i+1;
-        auto c = base_tri_index + (i+2)%pts.size();
-        auto d = base_tri_index + (i+3)%pts.size();
+        auto c = base_tri_index + (i+2)%new_vert_count;
+        auto d = base_tri_index + (i+3)%new_vert_count;
 
-        mesh.indices[3*i  ] = FLIP ? b : a;
-        mesh.indices[3*i+1] = FLIP ? c : c;
-        mesh.indices[3*i+2] = FLIP ? a : b;
-        mesh.indices[3*i+3] = FLIP ? d : b;
-        mesh.indices[3*i+4] = FLIP ? c : c;
-        mesh.indices[3*i+5] = FLIP ? b : d;
+        mesh.indices[3*i  ] = a;
+        mesh.indices[3*i+1] = c;
+        mesh.indices[3*i+2] = b;
+        mesh.indices[3*i+3] = b;
+        mesh.indices[3*i+4] = c;
+        mesh.indices[3*i+5] = d;
     }
 
     for (int i = 0; i < inner_indices.size(); ++i) {
-        mesh.indices[3*pts.size() + i] = base_tri_index + 2*inner_indices[i] + 1;
+        mesh.indices[3*new_vert_count + i] = base_tri_index + 2*inner_indices[i] + 1;
     }
 }
 
@@ -129,6 +128,8 @@ void LevelRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projec
     glUseProgram(*m_program);
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform3fv(glGetUniformLocation(*m_program, "color_dirt"), 1, glm::value_ptr(Palette::COLOR_DIRT));
+    glUniform3fv(glGetUniformLocation(*m_program, "color_turf"), 1, glm::value_ptr(Palette::COLOR_TURF));
 
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);

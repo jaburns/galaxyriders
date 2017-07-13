@@ -6,6 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "gen/wire_meshes.hpp"
 #include "../shared/level.hpp"
+#include "palette.hpp"
 
 static void error_callback(int error, const char* description)
 {
@@ -49,7 +50,7 @@ Renderer::Renderer()
     glEnable(GL_MULTISAMPLE);
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
-    glClearColor(0.16f, 0.17f, 0.18f, 1.0f);
+    glClearColor(Palette::COLOR_SPACE.r, Palette::COLOR_SPACE.g, Palette::COLOR_SPACE.b, 1.0f);
     glLineWidth(9.0f);
 
     std::vector<int32_t> raw_level = {
@@ -57,7 +58,7 @@ Renderer::Renderer()
     };
     auto baked_level = BakedLevel::from_level(Level::from_data(raw_level));
 
-    m_skybox_renderer = std::make_unique<SkyboxRenderer>();
+//  m_skybox_renderer = std::make_unique<SkyboxRenderer>();
     m_sprite_renderer = std::make_unique<SpriteRenderer>();
     m_wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::CUBE);
     m_level_renderer = std::make_unique<LevelRenderer>(baked_level);
@@ -82,7 +83,7 @@ void Renderer::render(const World& world)
     m_wire_sphere_renderer->draw({ 2.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f });
     m_wire_sphere_renderer->done();
 
-    m_skybox_renderer->draw_once(v, p);
+//  m_skybox_renderer->draw_once(v, p);
 
     m_sprite_renderer->use(v, p);
     m_sprite_renderer->draw({ 0.0f, 0.0f, 0.0f }, world.frame_counter);
