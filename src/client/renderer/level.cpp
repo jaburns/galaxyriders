@@ -3,6 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <algorithm>
+#include <cmath>
 #include "../triangulator.hpp"
 #include "../palette.hpp"
 
@@ -45,9 +46,10 @@ static float cross2(glm::vec2 a, glm::vec2 b)
     return (a.x*b.y) - (a.y*b.x);
 }
 
+static const auto DEPTH = 0.2f;
+
 static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 {
-    const auto DEPTH = 0.1f;
     std::vector<glm::vec2> result(points.size());
 
     for (size_t i = 0; i < points.size(); ++i) {
@@ -56,12 +58,17 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
         glm::vec2 a = points[i0], b = points[i], c = points[i1];
 
         auto b_a = glm::normalize(b - a);
-        auto b_c = glm::normalize(b - c);
+        auto c_b = glm::normalize(c - b);
 
-        auto norm = glm::normalize(b_a + b_c);
+        // TODO Take half angle by averaging vectors so we don't have to take cos of acos like plebs.
+        auto diff_dot = glm::dot(b_a, c_b);
+        auto half_angle = acosf(diff_dot) / 2;
+        auto depth = DEPTH / cosf(half_angle);
+
+        auto norm = glm::normalize(b_a - c_b);
         if (cross2(b_a, c - a) < 0.0f) norm *= -1;
 
-        result[i] = b + norm * DEPTH;
+        result[i] = b + norm * depth;
     }
 
     return result;
