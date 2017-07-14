@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <cstring>
 #include <vector>
-#include "fixed32.hpp"
 #include "sockets.hpp"
 
 struct SerializationBuffer

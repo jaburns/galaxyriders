@@ -2,12 +2,12 @@
 
 #include <vector>
 #include <cstdint>
-#include "fixed32.hpp"
+#include <glm/vec2.hpp>
 
 struct Level
 {
     struct Handle {
-        fixed32::vec2 point;
+        glm::vec2 point;
         uint32_t quality;
     };
 
@@ -23,18 +23,18 @@ struct Level
 struct BakedLevel
 {
     struct Poly {
-        std::vector<fixed32::vec2> points;
+        std::vector<glm::vec2> points;
     };
 
     struct CollisionResult {
         bool collided = false;
-        fixed32::vec2 normal;
-        fixed32::vec2 restore;
+        glm::vec2 normal;
+        glm::vec2 restore;
     };
 
     std::vector<Poly> polys;
 
     static BakedLevel from_level(const Level& level);
 
-    CollisionResult collide_circle(fixed32::vec2 from, fixed32::vec2 to, fixed32 radius) const;
+    CollisionResult collide_circle(glm::vec2 from, glm::vec2 to, float radius) const;
 };

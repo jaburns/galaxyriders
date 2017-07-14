@@ -2,7 +2,7 @@
 
 #include <vector>
 
-bool Geometry::line_intersect(fixed32::vec2 p00, fixed32::vec2 p01, fixed32::vec2 p10, fixed32::vec2 p11, fixed32::vec2 *const result)
+bool Geometry::line_intersect(glm::vec2 p00, glm::vec2 p01, glm::vec2 p10, glm::vec2 p11, glm::vec2 *const result)
 {
     auto dx1x3 = p00.x - p10.x;
     auto dy1y3 = p00.y - p10.y;
@@ -31,10 +31,10 @@ bool Geometry::line_intersect(fixed32::vec2 p00, fixed32::vec2 p01, fixed32::vec
     return false;
 }
 
-bool Geometry::point_in_line_perp_space(fixed32::vec2 a, fixed32::vec2 b, fixed32::vec2 p)
+bool Geometry::point_in_line_perp_space(glm::vec2 a, glm::vec2 b, glm::vec2 p)
 {
-    fixed32 _ax, _ay, _bx, _by, _cx, _cy;
-    fixed32 perpSlope = (a.x-b.x) / (b.y-a.y);
+    float _ax, _ay, _bx, _by, _cx, _cy;
+    float perpSlope = (a.x-b.x) / (b.y-a.y);
 
     // If the slope is greater than 1, transpose the coordinate space to avoid infinity.
     if (perpSlope > 1) {
@@ -46,7 +46,7 @@ bool Geometry::point_in_line_perp_space(fixed32::vec2 a, fixed32::vec2 b, fixed3
         _ay = a.y; _by = b.y; _cy = p.y;
     }
 
-    fixed32 yMin, yMax;
+    float yMin, yMax;
 
     if (_ay > _by) {
         yMin = perpSlope*(_cx - _bx) + _by;
@@ -59,29 +59,31 @@ bool Geometry::point_in_line_perp_space(fixed32::vec2 a, fixed32::vec2 b, fixed3
     return _cy > yMin && _cy < yMax;
 }
 
-static const fixed32 ACCURACY     = fixed32(10000);
-static const fixed32 ACCURACY_INV = fixed32::ONE / ACCURACY;
+static const float ACCURACY     = float(10000);
+static const float ACCURACY_INV = 1.0f / ACCURACY;
 
-fixed32::vec2 Geometry::project_point_on_line(fixed32 m, fixed32::vec2 p)
+glm::vec2 Geometry::project_point_on_line(float m, glm::vec2 p)
 {
-    auto abs_m = m.abs();
+    //TODO find an abs somewhere
+#   define ABS(x) ((x) < 0.0f ? -(x) : (x))
+    auto abs_m = ABS(m);
     if (abs_m < ACCURACY_INV) {
-        return { p.x, fixed32::ZERO };
+        return { p.x, 0.0f };
     } else if (abs_m > ACCURACY) {
-        return { fixed32::ZERO, p.y };
+        return { 0.0f, p.y };
     }
 
-    fixed32::vec2 result;
-    result.y = m*(m*p.y + p.x) / (fixed32::ONE + m*m);
+    glm::vec2 result;
+    result.y = m*(m*p.y + p.x) / (1.0f + m*m);
     result.x = result.y / m;
     return result;
 }
 
-static const fixed32 THREE = fixed32(3);
+static const float THREE = float(3);
 
-fixed32::vec2 Geometry::evaluate_spline(fixed32::vec2 a, fixed32::vec2 b, fixed32::vec2 c, fixed32::vec2 d, fixed32 t)
+glm::vec2 Geometry::evaluate_spline(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 d, float t)
 {
-    auto u = fixed32::ONE - t;
+    auto u = 1.0f - t;
     auto u2 = u * u;
     auto t2 = t * t;
     return u2*u*a + THREE*u2*t*b + THREE*u*t2*c + t2*t*d;

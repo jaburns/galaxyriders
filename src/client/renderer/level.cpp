@@ -79,8 +79,9 @@ void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
 
     std::vector<glm::vec2> pts(poly.points.size());
 
+    // TODO Don't need to copy this list since we're not de-fixed32ing anymore
     for (auto i = 0; i < pts.size(); ++i) {
-        pts[i] = fixed32::to_float(poly.points[i]);
+        pts[i] = poly.points[i];
     }
 
     auto inset_pts = inset_points(pts);

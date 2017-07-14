@@ -3,20 +3,21 @@
 #include <deque>
 #include <cstdint>
 #include <vector>
-#include "fixed32.hpp"
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
 #include "input.hpp"
 #include "level.hpp"
 
 struct World
 {
     struct Player {
-        fixed32::vec2 position;
-        fixed32::vec2 velocity;
+        glm::vec2 position;
+        glm::vec2 velocity;
     };
 
 
-    fixed32::vec3 camera_position;
-    fixed32::vec3 camera_look;
+    glm::vec3 camera_position;
+    glm::vec3 camera_look;
     int frame_counter;
     Player player;
 

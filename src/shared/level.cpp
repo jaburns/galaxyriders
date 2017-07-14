@@ -1,9 +1,6 @@
 #include "level.hpp"
-
 #include "geometry.hpp"
-
-
-#include <iostream>
+#include <glm/geometric.hpp>
 
 Level Level::from_data(const std::vector<int32_t>& data)
 {
@@ -18,8 +15,8 @@ Level Level::from_data(const std::vector<int32_t>& data)
         for (auto j = 0; j < total_handles; ++j) {
             Level::Handle this_handle;
             this_handle.quality = data[read++];
-            this_handle.point.x = fixed32::from_raw_int(data[read++]);
-            this_handle.point.y = fixed32::from_raw_int(data[read++]);
+            this_handle.point.x = (float)data[read++] / 65535.0f;
+            this_handle.point.y = (float)data[read++] / 65535.0f;
             this_poly.handles.push_back(this_handle);
         }
 
@@ -41,8 +38,8 @@ BakedLevel BakedLevel::from_level(const Level& level)
             this_poly.points.push_back(poly.handles[i].point);
 
             if (i <= poly.handles.size() - 4 && poly.handles[i+1].quality > 0 && poly.handles[i+2].quality > 0) {
-                const fixed32 iter = fixed32::from_fraction(1, MAX(poly.handles[i+1].quality, poly.handles[i+2].quality));
-                for(fixed32 t = iter; t < fixed32::ONE; t += iter) {
+                const float iter = 1.0f / MAX(poly.handles[i+1].quality, poly.handles[i+2].quality);
+                for(float t = iter; t < 1.0f; t += iter) {
                     this_poly.points.push_back(Geometry::evaluate_spline(
                         poly.handles[i+0].point,
                         poly.handles[i+1].point,
@@ -62,11 +59,11 @@ BakedLevel BakedLevel::from_level(const Level& level)
 #   undef MAX
 }
 
-static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const fixed32::vec2 pos, fixed32 r)
+static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const glm::vec2 pos, float r)
 {
     const auto r2 = r * r;
     bool lined = false;
-    fixed32::vec2 normal, test_pos;
+    glm::vec2 normal, test_pos;
 
     for (const auto& poly : level.polys) {
         test_pos = pos;
@@ -82,11 +79,9 @@ static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const fi
                 const auto projection = l - point_on_line;
                 const auto p2 = projection.x*projection.x + projection.y*projection.y;
 
-                std::cout << p2.to_float() << '\t';
-
                 if (p2 < r2) {
                     normal = projection / p2.sqrt();
-                    if (fixed32::cross(projection, b - a) > 0) {
+                    if (glm::cross(projection, b - a) > 0) {
                         normal = -normal;
                     }
 
@@ -104,19 +99,17 @@ static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const fi
             const auto ds = pos - poly.points[i];
             const auto d2 = ds.x*ds.x + ds.y*ds.y;
             if (d2 < r2) {
-                normal = ds / d2.sqrt();
+                normal = glm::normalize(ds);
                 test_pos = poly.points[i] + normal * r;
                 return { true, normal, test_pos };
             }
         }
     }
 
-    std::cout << std::endl;
-
     return { false };
 }
 
-BakedLevel::CollisionResult BakedLevel::collide_circle(fixed32::vec2 from, fixed32::vec2 to, fixed32 radius) const
+BakedLevel::CollisionResult BakedLevel::collide_circle(glm::vec2 from, glm::vec2 to, float radius) const
 {
     const auto r2 = radius * radius;
     auto ds = to - from;
@@ -126,8 +119,7 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(fixed32::vec2 from, fixed
     if (first_check.collided) return first_check;
     if (d2 < r2) return first_check;
 
-    const auto dist = d2.sqrt();
-    const fixed32::vec2 step = radius * (ds / dist);
+    const auto step = radius * glm::normalize(ds);
 
     do {
         from += step;

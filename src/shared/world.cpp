@@ -2,6 +2,7 @@
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
+#include <glm/glm.hpp>
 #include <math.h>
 #include "serialization.hpp"
 
@@ -11,8 +12,8 @@ const BakedLevel World::BAKED_LEVEL = BakedLevel::from_level(Level::from_data({
 
 World::World()
 {
-    camera_position = { fixed32::ZERO, fixed32::ZERO, fixed32(3) };
-    camera_look = { fixed32::ZERO, fixed32::ZERO, fixed32::MINUS_ONE };
+    camera_position = { 0.0f, 0.0f, 3.0f };
+    camera_look = { 0.0f, 0.0f, -1.0f };
     frame_counter = 0;
 }
 
@@ -20,17 +21,17 @@ std::vector<uint8_t> World::serialize() const
 {
     SerializationBuffer buf;
 
-    buf.write_val32(camera_position.x.to_raw_int());
-    buf.write_val32(camera_position.y.to_raw_int());
-    buf.write_val32(camera_position.z.to_raw_int());
-    buf.write_val32(camera_look.x.to_raw_int());
-    buf.write_val32(camera_look.y.to_raw_int());
-    buf.write_val32(camera_look.z.to_raw_int());
+    buf.write_val32(camera_position.x);
+    buf.write_val32(camera_position.y);
+    buf.write_val32(camera_position.z);
+    buf.write_val32(camera_look.x);
+    buf.write_val32(camera_look.y);
+    buf.write_val32(camera_look.z);
     buf.write_val32(frame_counter);
-    buf.write_val32(player.velocity.x.to_raw_int());
-    buf.write_val32(player.velocity.y.to_raw_int());
-    buf.write_val32(player.position.x.to_raw_int());
-    buf.write_val32(player.position.y.to_raw_int());
+    buf.write_val32(player.velocity.x);
+    buf.write_val32(player.velocity.y);
+    buf.write_val32(player.position.x);
+    buf.write_val32(player.position.y);
 
     return buf.buffer;
 }
@@ -39,35 +40,36 @@ World::World(const uint8_t *serialized, int serialized_length)
 {
     DeserializationBuffer buf(serialized, serialized_length);
 
-    camera_position.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    camera_position.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    camera_position.z = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    camera_look.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    camera_look.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    camera_look.z = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    camera_position.x = buf.read_val32<float>();
+    camera_position.y = buf.read_val32<float>();
+    camera_position.z = buf.read_val32<float>();
+    camera_look.x = buf.read_val32<int32_t>();
+    camera_look.y = buf.read_val32<int32_t>();
+    camera_look.z = buf.read_val32<int32_t>();
     frame_counter = buf.read_val32<int32_t>();
-    player.velocity.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    player.velocity.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    player.position.x = fixed32::from_raw_int(buf.read_val32<int32_t>());
-    player.position.y = fixed32::from_raw_int(buf.read_val32<int32_t>());
+    player.velocity.x = buf.read_val32<float>();
+    player.velocity.y = buf.read_val32<float>();
+    player.position.x = buf.read_val32<float>();
+    player.position.y = buf.read_val32<float>();
 }
 
 World World::lerp_to(const World& next, float t) const
 {
-    auto mix = [&t](const auto& a, const auto& b) {
-        return a + fixed32::from_float(t) * (b - a);
-    };
-
     World world = *this;
-    world.camera_position = mix(world.camera_position, next.camera_position);
-    world.camera_look = mix(world.camera_look, next.camera_look);
+    world.camera_position = glm::mix(world.camera_position, next.camera_position);
+    world.camera_look = glm::mix(world.camera_look, next.camera_look);
     world.frame_counter = next.frame_counter;
     return world;
 }
 
-static const fixed32 MOVEMENT_SPEED = fixed32(5);
-static const fixed32 GRAVITY = fixed32::from_fraction(-1, 100);
-static const fixed32 RADIUS = fixed32::from_fraction(1, 10);
+static const float MOVEMENT_SPEED = 5.0f;
+static const float GRAVITY = -0.01f;
+static const float RADIUS = 0.1f;
+
+static glm::vec2 reflect(const glm::vec2& i, const glm::vec2& n, float normal_scale, float tangent_scale)
+{
+    // TODO implement
+}
 
 World World::step(const InputState& input) const
 {
@@ -83,7 +85,7 @@ World World::step(const InputState& input) const
         const auto collision = BAKED_LEVEL.collide_circle(player.position, world.player.position, RADIUS);
         if (collision.collided) {
             world.player.position = collision.restore;
-            world.player.velocity = fixed32::reflect(world.player.velocity, collision.normal, fixed32::ZERO, fixed32::ONE);
+            world.player.velocity = reflect(world.player.velocity, collision.normal, 0.0f, 1.0f);
         }
 
         world.frame_counter++;

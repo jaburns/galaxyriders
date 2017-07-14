@@ -1,10 +1,10 @@
 #pragma once
 
-#include "fixed32.hpp"
+#include <glm/vec3.hpp>
 
 struct InputState
 {
-    fixed32::vec3 look_dir = { fixed32::ZERO, fixed32::ZERO, fixed32::MINUS_ONE };
-    fixed32::vec3 movement = { fixed32::ZERO, fixed32::ZERO, fixed32::ZERO };
+    glm::vec3 look_dir = { 0.0f, 0.0f, -1.0f };
+    glm::vec3 movement = { 0.0f, 0.0f, 0.0f };
     bool clicking = false;
 };
