@@ -55,7 +55,7 @@ Renderer::Renderer()
 
 //  m_skybox_renderer = std::make_unique<SkyboxRenderer>();
     m_sprite_renderer = std::make_unique<SpriteRenderer>();
-    m_wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::SPHERE);
+    m_wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::CIRCLE);
     m_level_renderer = std::make_unique<LevelRenderer>(World::BAKED_LEVEL);
 }
 

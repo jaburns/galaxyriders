@@ -37,23 +37,23 @@ static std::vector<float> get_cube_vertices()
     return verts;
 }
 
-static std::vector<float> get_sphere_vertices()
+static std::vector<float> get_sphere_vertices(bool only_xy_plane = false)
 {
     std::vector<float> verts;
 
-    for (auto i = 0; i < 3; ++i) {
+    for (auto i = 0; i < (only_xy_plane ? 1: 3); ++i) {
         for (auto t = 0.0f; t < 2*3.14159f; t += 0.1f) {
-            if (i == 0) verts.push_back(0.0f);
+            if (i == 2) verts.push_back(0.0f);
             verts.push_back(sinf(t - 0.1f));
             if (i == 1) verts.push_back(0.0f);
             verts.push_back(cosf(t - 0.1f));
-            if (i == 2) verts.push_back(0.0f);
-
             if (i == 0) verts.push_back(0.0f);
+
+            if (i == 2) verts.push_back(0.0f);
             verts.push_back(sinf(t));
             if (i == 1) verts.push_back(0.0f);
             verts.push_back(cosf(t));
-            if (i == 2) verts.push_back(0.0f);
+            if (i == 0) verts.push_back(0.0f);
         }
     }
 
@@ -94,6 +94,7 @@ int main(int argc, char **argv)
 
     add("CUBE", get_cube_vertices());
     add("SPHERE", get_sphere_vertices());
+    add("CIRCLE", get_sphere_vertices(true));
 
     hpp_stream << "};" << std::endl;
 
