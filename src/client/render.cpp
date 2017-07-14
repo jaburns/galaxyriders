@@ -59,7 +59,8 @@ Renderer::Renderer()
     m_level_renderer = std::make_unique<LevelRenderer>(World::BAKED_LEVEL);
 }
 
-void Renderer::render(const World& world)
+
+void Renderer::render(const ClientState& state)
 {
     int width, height;
     glfwGetFramebufferSize(m_window, &width, &height);
@@ -68,21 +69,21 @@ void Renderer::render(const World& world)
 
     auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
     auto v = glm::translate(
-        glm::lookAt(glm::vec3(0.0f), world.camera_look, { 0.0f, 1.0f, 0.0f }),
-        -world.camera_position
+        glm::lookAt(glm::vec3(0.0f), state.camera_look, { 0.0f, 1.0f, 0.0f }),
+        -state.camera_position
     );
 
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
 
     m_wire_sphere_renderer->use(v, p);
 
-    m_wire_sphere_renderer->draw(glm::vec3(world.player.position, 0.0f), { 0.0f, 1.0f, 0.0f });
+    m_wire_sphere_renderer->draw(glm::vec3(state.world.player.position, 0.0f), { 0.0f, 1.0f, 0.0f });
     m_wire_sphere_renderer->done();
 
 //  m_skybox_renderer->draw_once(v, p);
 
     m_sprite_renderer->use(v, p);
-    m_sprite_renderer->draw({ 0.0f, 0.0f, 0.0f }, world.frame_counter);
+    m_sprite_renderer->draw({ 0.0f, 0.0f, 0.0f }, state.world.frame_counter);
     m_sprite_renderer->done();
 
     glfwSwapBuffers(m_window);

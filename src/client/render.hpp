@@ -7,6 +7,7 @@
 #include "renderer/sprite.hpp"
 #include "renderer/wire.hpp"
 #include "renderer/level.hpp"
+#include "state.hpp"
 #include "../shared/world.hpp"
 
 class Renderer
@@ -26,5 +27,5 @@ public:
 
     GLFWwindow* raw_glfw_window() const { return m_window; }
     bool should_close_window() const { return glfwWindowShouldClose(m_window); }
-    void render(const World& world);
+    void render(const ClientState& state);
 };

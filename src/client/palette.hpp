@@ -2,7 +2,7 @@
 
 #include <glm/vec3.hpp>
 
-namespace Palette 
+namespace Palette
 {
     static const glm::vec3 COLOR_SPACE = { 0.031372f,0.117647f,0.247058f };
     static const glm::vec3 COLOR_DIRT  = { 0.054901f,0.372549f,0.462745f };

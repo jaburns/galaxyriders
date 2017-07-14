@@ -11,23 +11,18 @@
 struct World
 {
     struct Player {
-        glm::vec2 position;
-        glm::vec2 velocity;
+        glm::vec2 position = { -0.1f, 0.0f };
+        glm::vec2 velocity = { -0.1f, 0.0f };
     };
 
-
-    glm::vec3 camera_position;
-    glm::vec3 camera_look;
-    int frame_counter;
+    int frame_counter = 0;
     Player player;
 
-
-    World();
+    World() { }
     World(const uint8_t *serialized, int serialized_length);
     std::vector<uint8_t> serialize() const;
     World lerp_to(const World& next, float t) const;
-
-    World step(const InputState& input) const;
+    World step(const SharedInputState& input) const;
 
     static const BakedLevel BAKED_LEVEL;
 };

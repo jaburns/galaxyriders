@@ -15,6 +15,8 @@ static bool key_w = false;
 static bool key_s = false;
 static bool key_a = false;
 static bool key_d = false;
+static bool key_left = false;
+static bool key_right = false;
 static bool key_space = false;
 static bool key_lshift = false;
 
@@ -47,6 +49,9 @@ static void update_state()
     state.look_dir.y = tilt;
     if (key_space)  state.movement.y += MOVE_SPEED;
     if (key_lshift) state.movement.y -= MOVE_SPEED;
+
+    state.shared.left = key_left;
+    state.shared.right = key_right;
 }
 
 static void update_key(bool& out_var, int match_key, int key, int action)
@@ -68,6 +73,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     update_key(key_s, GLFW_KEY_S, key, action);
     update_key(key_a, GLFW_KEY_A, key, action);
     update_key(key_d, GLFW_KEY_D, key, action);
+    update_key(key_left, GLFW_KEY_LEFT, key, action);
+    update_key(key_right, GLFW_KEY_RIGHT, key, action);
     update_key(key_space, GLFW_KEY_SPACE, key, action);
     update_key(key_lshift, GLFW_KEY_LEFT_SHIFT, key, action);
 

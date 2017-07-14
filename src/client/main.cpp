@@ -2,10 +2,15 @@
 #include <chrono>
 #include <cstring>
 #include <cstdint>
+#include "state.hpp"
 #include "readinput.hpp"
 #include "render.hpp"
 #include "../shared/network.hpp"
 #include "../shared/config.hpp"
+
+
+// Only needed until main_net is updated to use ClientState
+#include "../shared/world.hpp"
 
 void main_net()
 {
@@ -43,9 +48,9 @@ void main_net()
 
         auto inp = Input::read_state();
         if (inp.clicking) {
-            renderer.render(last_world.lerp_to(new_world, millis_since_update / millis_per_tick));
+        //  renderer.render(last_world.lerp_to(new_world, millis_since_update / millis_per_tick));
         } else {
-            renderer.render(new_world);
+        //  renderer.render(new_world);
         }
     }
 }
@@ -55,7 +60,7 @@ void main_local()
     Renderer renderer;
     Input::bind_handlers(renderer.raw_glfw_window());
 
-    World last_world, new_world;
+    ClientState last_state, new_state;
 
     auto current_time = std::chrono::high_resolution_clock::now();
     float accumulator = 0.0f;
@@ -67,12 +72,12 @@ void main_local()
         accumulator += frame_millis;
 
         while (accumulator >= Config::MILLIS_PER_TICK) {
-            last_world = new_world;
-            new_world = new_world.step(Input::read_state());
+            last_state = new_state;
+            new_state = new_state.step(Input::read_state());
             accumulator -= Config::MILLIS_PER_TICK;
         }
 
-        renderer.render(last_world.lerp_to(new_world, accumulator / Config::MILLIS_PER_TICK));
+        renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK));
     }
 }
 
