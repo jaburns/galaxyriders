@@ -2,7 +2,6 @@
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
-#include <glm/glm.hpp>
 #include <math.h>
 #include "serialization.hpp"
 
@@ -15,6 +14,8 @@ World::World()
     camera_position = { 0.0f, 0.0f, 3.0f };
     camera_look = { 0.0f, 0.0f, -1.0f };
     frame_counter = 0;
+    player.position = { -0.1f, 0.0f };
+    player.velocity = { -0.1f, 0.1f };
 }
 
 std::vector<uint8_t> World::serialize() const
@@ -56,20 +57,34 @@ World::World(const uint8_t *serialized, int serialized_length)
 World World::lerp_to(const World& next, float t) const
 {
     World world = *this;
-    world.camera_position = glm::mix(world.camera_position, next.camera_position);
-    world.camera_look = glm::mix(world.camera_look, next.camera_look);
+    world.camera_position = glm::mix(world.camera_position, next.camera_position, t);
+    world.camera_look = glm::mix(world.camera_look, next.camera_look, t);
+    world.player.position = glm::mix(world.player.position, next.player.position, t);
     world.frame_counter = next.frame_counter;
     return world;
 }
 
 static const float MOVEMENT_SPEED = 5.0f;
-static const float GRAVITY = -0.01f;
+static const float GRAVITY = -0.02f;
 static const float RADIUS = 0.1f;
 
-static glm::vec2 reflect(const glm::vec2& i, const glm::vec2& n, float normal_scale, float tangent_scale)
+// TODO find a better place for these vector methods
+static glm::vec2 rotate90(const glm::vec2& v)
 {
-    // TODO implement
+    return { -v.y, v.x };
 }
+
+static glm::vec2 reflect(const glm::vec2& v, const glm::vec2& unit_normal, float normal_scale, float tangent_scale)
+{
+    const auto unit_tangent = rotate90(unit_normal);
+
+    const auto norm_component = -normal_scale * glm::dot(v, unit_normal);
+    const auto tang_component = tangent_scale * glm::dot(v, unit_tangent);
+
+    return unit_normal * norm_component + unit_tangent * tang_component;
+}
+
+
 
 World World::step(const InputState& input) const
 {

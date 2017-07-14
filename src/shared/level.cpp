@@ -59,6 +59,12 @@ BakedLevel BakedLevel::from_level(const Level& level)
 #   undef MAX
 }
 
+// TODO find a better place for these vector methods
+static float cross2(const glm::vec2& a, const glm::vec2& b)
+{
+    return a.x*b.y - a.y*b.x;
+}
+
 static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const glm::vec2 pos, float r)
 {
     const auto r2 = r * r;
@@ -80,8 +86,8 @@ static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const gl
                 const auto p2 = projection.x*projection.x + projection.y*projection.y;
 
                 if (p2 < r2) {
-                    normal = projection / p2.sqrt();
-                    if (glm::cross(projection, b - a) > 0) {
+                    normal = glm::normalize(projection);
+                    if (cross2(projection, b - a) > 0.0f) {
                         normal = -normal;
                     }
 
@@ -115,7 +121,7 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(glm::vec2 from, glm::vec2
     auto ds = to - from;
     auto d2 = ds.x*ds.x + ds.y*ds.y;
 
-    const auto first_check = test_circle(*this, from, radius);
+    const auto first_check = test_circle(*this, to, radius);
     if (first_check.collided) return first_check;
     if (d2 < r2) return first_check;
 
@@ -131,5 +137,5 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(glm::vec2 from, glm::vec2
     }
     while (d2 >= r2);
 
-    return test_circle(*this, to, radius);
+    return { false };
 }
