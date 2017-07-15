@@ -4,10 +4,15 @@
 
 static const float MOVEMENT_SPEED = 5.0f;
 
+static bool clicked = false;
+
 ClientState ClientState::step(const InputState& input) const
 {
     auto new_state = *this;
-    new_state.world = new_state.world.step(input.shared);
+
+    if (input.clicking) {
+        new_state.world = new_state.world.step(input.shared);
+    }
 
     new_state.camera_position += MOVEMENT_SPEED * input.movement;
     new_state.camera_look = input.look_dir;
