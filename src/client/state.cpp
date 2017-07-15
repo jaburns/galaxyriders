@@ -11,7 +11,12 @@ ClientState ClientState::step(const InputState& input) const
     auto new_state = *this;
 
     if (input.clicking) {
-        new_state.world = new_state.world.step(input.shared);
+        if (!clicked) {
+            new_state.world = new_state.world.step(input.shared);
+        }
+        clicked = true;
+    } else {
+        clicked = false;
     }
 
     new_state.camera_position += MOVEMENT_SPEED * input.movement;

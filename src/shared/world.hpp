@@ -12,7 +12,7 @@ struct World
 {
     struct Player {
         glm::vec2 position = { -0.1f, 0.0f };
-        glm::vec2 velocity = { -0.1f, 0.0f };
+        glm::vec2 velocity = { -0.1f, 0.1f };
     };
 
     int frame_counter = 0;

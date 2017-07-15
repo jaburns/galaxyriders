@@ -121,12 +121,11 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(glm::vec2 from, glm::vec2
     auto ds = to - from;
     auto d2 = ds.x*ds.x + ds.y*ds.y;
 
-    const auto first_check = test_circle(*this, to, radius);
-    if (first_check.collided) return first_check;
-    if (d2 < r2) return first_check;
+    if (d2 <= r2) {
+        return test_circle(*this, to, radius);
+    }
 
     const auto step = radius * glm::normalize(ds);
-
     do {
         from += step;
         const auto check = test_circle(*this, from, radius);
@@ -137,5 +136,5 @@ BakedLevel::CollisionResult BakedLevel::collide_circle(glm::vec2 from, glm::vec2
     }
     while (d2 >= r2);
 
-    return { false };
+    return test_circle(*this, to, radius);
 }
