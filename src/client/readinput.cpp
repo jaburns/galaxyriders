@@ -19,6 +19,8 @@ static bool key_left = false;
 static bool key_right = false;
 static bool key_space = false;
 static bool key_lshift = false;
+static bool key_r_angle = false;
+static bool key_p = false;
 
 static float last_mouse_read_x = 0.0f;
 static float last_mouse_read_y = 0.0f;
@@ -52,6 +54,9 @@ static void update_state()
 
     state.shared.left = key_left;
     state.shared.right = key_right;
+
+    state.debug_pause = key_p;
+    state.debug_step = key_r_angle;
 }
 
 static void update_key(bool& out_var, int match_key, int key, int action)
@@ -77,6 +82,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     update_key(key_right, GLFW_KEY_RIGHT, key, action);
     update_key(key_space, GLFW_KEY_SPACE, key, action);
     update_key(key_lshift, GLFW_KEY_LEFT_SHIFT, key, action);
+    update_key(key_r_angle, GLFW_KEY_PERIOD, key, action);
+    update_key(key_p, GLFW_KEY_P, key, action);
 
     update_state();
 }

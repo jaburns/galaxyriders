@@ -99,7 +99,7 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-const float SCALE = 0.5f;
+const float SCALE = 1.0f;
 
 void SpriteRenderer::draw(const glm::vec3& position, int frame)
 {

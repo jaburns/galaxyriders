@@ -4,23 +4,22 @@
 
 static const float MOVEMENT_SPEED = 5.0f;
 
-static bool clicked = false;
-
 ClientState ClientState::step(const InputState& input) const
 {
     auto new_state = *this;
 
-    if (input.clicking) {
-        if (!clicked) {
-            new_state.world = new_state.world.step(input.shared);
-        }
-        clicked = true;
-    } else {
-        clicked = false;
+    if (input.debug_pause && !last_input.debug_pause) {
+        new_state.debug_paused = !new_state.debug_paused;
+    }
+
+    if (!new_state.debug_paused || (input.debug_step && !last_input.debug_step)) {
+        new_state.world = new_state.world.step(input.shared);
     }
 
     new_state.camera_position += MOVEMENT_SPEED * input.movement;
     new_state.camera_look = input.look_dir;
+
+    new_state.last_input = input;
 
     return new_state;
 }
