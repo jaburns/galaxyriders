@@ -2,26 +2,17 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-compile_cmd() {
-    echo -e "\tcc -c -o \"$2\" $1 \\
-        -Iexternal/lodepng \\
-        -Iexternal/glm \\
-        -Iexternal/tinyxml2 \\
-        -std=c++14"
-}
+CC='cc'
+CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2'
 
 cpp_to_obj() {
-    echo "$1" | sed 's/cpp$/o/;s:/:_:g'
+    echo "$1" | sed 's/cpp$/o/'
 }
 
 make_cmd() {
     local obj_file="$(cpp_to_obj "$1")"
-    cc -MM -MT "$obj_file" -c "$1" \
-        -Iexternal/lodepng \
-        -Iexternal/glm \
-        -Iexternal/tinyxml2 \
-        -std=c++14
-    compile_cmd "$1" "$obj_file"
+    $CC $CFLAGS -MM -MT "$obj_file" -c "$1"
+    echo -e "\t$CC $CFLAGS -o $obj_file -c $1"
 }
 
 file_list() {
@@ -37,9 +28,13 @@ print_makefile() {
     done
     echo "game: $all"
     echo -e "\tcc -o game $all -lstdc++ -lglfw -framework OpenGL"
+
     for f in $(file_list); do
         make_cmd "$f"
     done
+
+    echo '.PHONY: clean'
+    echo -e "clean:\n\t find . -iname '*.o' | xargs rm && rm -f ./game"
 }
 
 print_makefile > Makefile

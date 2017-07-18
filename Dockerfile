@@ -9,7 +9,12 @@ COPY src/server ./src/server
 COPY build_server ./build_server
 
 RUN apk add --no-cache --update tini libstdc++ g++ && \
-    ./build_server && \
+    g++ -o server_bin \
+        src/server/*.cpp \
+        src/shared/*.cpp \
+        -Iexternal/glm \
+        -std=c++14 \
+        -lstdc++ && \
     apk del g++
 
 EXPOSE 12345
