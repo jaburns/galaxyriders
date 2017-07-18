@@ -2,8 +2,14 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
+# glfw3 is required to build this project, and can be installed via homebrew:
+#   brew tap homebrew/versions
+#   brew install --build-bottle --static glfw3
+
 CC='cc'
 CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2'
+LDFLAGS='-lstdc++ -lglfw -framework OpenGL'
+BIN_FILE='game'
 
 cpp_to_obj() {
     echo "$1" | sed 's/cpp$/o/'
@@ -22,12 +28,12 @@ file_list() {
 }
 
 print_makefile() {
-    local all=''
+    local all_objs=''
     for f in $(file_list); do
-        all="$all $(cpp_to_obj $f)"
+        all_objs="$all_objs $(cpp_to_obj $f)"
     done
-    echo "game: $all"
-    echo -e "\tcc -o game $all -lstdc++ -lglfw -framework OpenGL"
+    echo "$BIN_FILE: $all_objs"
+    echo -e "\t$CC -o $BIN_FILE $all_objs $LDFLAGS"
 
     for f in $(file_list); do
         make_cmd "$f"
