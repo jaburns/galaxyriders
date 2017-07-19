@@ -10,5 +10,5 @@ tools/*
 !tools/build
 !tools/*.cpp
 *.sdf.png
-*.o
+build
 Makefile
