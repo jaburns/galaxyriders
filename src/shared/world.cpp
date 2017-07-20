@@ -44,22 +44,6 @@ World World::lerp_to(const World& next, float t) const
 static const float GRAVITY = -0.02f;
 static const float RADIUS = 0.1f;
 
-// TODO find a better place for these vector methods
-static glm::vec2 rotate90(const glm::vec2& v)
-{
-    return { -v.y, v.x };
-}
-
-static glm::vec2 reflect(const glm::vec2& v, const glm::vec2& unit_normal, float normal_scale, float tangent_scale)
-{
-    const auto unit_tangent = rotate90(unit_normal);
-
-    const auto norm_component = -normal_scale * glm::dot(v, unit_normal);
-    const auto tang_component = tangent_scale * glm::dot(v, unit_tangent);
-
-    return unit_normal * norm_component + unit_tangent * tang_component;
-}
-
 World World::step(const SharedInputState& input) const
 {
     World world = *this;
@@ -67,16 +51,12 @@ World World::step(const SharedInputState& input) const
     world.frame_counter++;
 
     world.player.velocity.y += GRAVITY;
-    world.player.position += world.player.velocity;
-
     if (input.left)  world.player.velocity.x += GRAVITY;
     if (input.right) world.player.velocity.x -= GRAVITY;
 
-    const auto collision = BAKED_LEVEL.collide_circle(player.position, world.player.position, RADIUS);
-    if (collision.collided) {
-        world.player.position = collision.restore;
-        world.player.velocity = reflect(world.player.velocity, collision.normal, 0.0f, 1.0f);
-    }
+    const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, world.player.velocity, RADIUS, 0.0f);
+    world.player.position = collision.position;
+    world.player.velocity = collision.velocity;
 
     return world;
 }

@@ -59,17 +59,41 @@ BakedLevel BakedLevel::from_level(const Level& level)
 #   undef MAX
 }
 
-// TODO find a better place for these vector methods
+// TODO Move these in to a vector utility file or something
+
 static float cross2(const glm::vec2& a, const glm::vec2& b)
 {
     return a.x*b.y - a.y*b.x;
 }
 
-static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const glm::vec2 pos, float r)
+static glm::vec2 rotate90(const glm::vec2& v)
+{
+    return { -v.y, v.x };
+}
+
+static glm::vec2 reflect(const glm::vec2& v, const glm::vec2& unit_normal, float normal_scale, float tangent_scale)
+{
+    const auto unit_tangent = rotate90(unit_normal);
+
+    const auto norm_component = -normal_scale * glm::dot(v, unit_normal);
+    const auto tang_component = tangent_scale * glm::dot(v, unit_tangent);
+
+    return unit_normal * norm_component + unit_tangent * tang_component;
+}
+
+struct CircleTestResult {
+    bool collided;
+    glm::vec2 normal;
+    glm::vec2 position;
+};
+
+static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos, float r)
 {
     const auto r2 = r * r;
     bool lined = false;
     glm::vec2 normal, test_pos;
+
+    // TODO at least do a rectangle bounds check before all the Real Math.
 
     for (const auto& poly : level.polys) {
         test_pos = pos;
@@ -115,26 +139,37 @@ static BakedLevel::CollisionResult test_circle(const BakedLevel& level, const gl
     return { false };
 }
 
-BakedLevel::CollisionResult BakedLevel::collide_circle(glm::vec2 from, glm::vec2 to, float radius) const
+BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 position, glm::vec2 velocity, float radius, float bounce) const
 {
     const auto r2 = radius * radius;
-    auto ds = to - from;
-    auto d2 = ds.x*ds.x + ds.y*ds.y;
+    const auto og_speed = glm::length(velocity);
+    auto d2 = velocity.x*velocity.x + velocity.y*velocity.y;
 
-    if (d2 <= r2) {
-        return test_circle(*this, to, radius);
+    bool collided = false;
+    const auto step = radius * glm::normalize(velocity);
+    while (d2 >= r2) {
+        position += step;
+        velocity -= step;
+
+        const auto test = test_circle(*this, position, radius);
+        if (test.collided) {
+            collided = true;
+            position = test.position;
+            velocity = reflect(velocity, test.normal, bounce, 1.0f);
+        }
+
+        d2 = velocity.x*velocity.x + velocity.y*velocity.y;
     }
 
-    const auto step = radius * glm::normalize(ds);
-    do {
-        from += step;
-        const auto check = test_circle(*this, from, radius);
-        if (check.collided) return check;
+    position += velocity;
 
-        ds = to - from;
-        d2 = ds.x*ds.x + ds.y*ds.y;
+    const auto test = test_circle(*this, position, radius);
+
+    if (test.collided) {
+        collided = true;
+        position = test.position;
+        velocity = reflect(velocity, test.normal, bounce, 1.0f);
     }
-    while (d2 >= r2);
 
-    return test_circle(*this, to, radius);
+    return { collided, position, glm::normalize(velocity) * og_speed };
 }

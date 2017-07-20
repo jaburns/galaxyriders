@@ -28,13 +28,13 @@ struct BakedLevel
 
     struct CollisionResult {
         bool collided = false;
-        glm::vec2 normal;
-        glm::vec2 restore;
+        glm::vec2 position;
+        glm::vec2 velocity;
     };
 
     std::vector<Poly> polys;
 
     static BakedLevel from_level(const Level& level);
 
-    CollisionResult collide_circle(glm::vec2 from, glm::vec2 to, float radius) const;
+    CollisionResult move_and_collide_circle(glm::vec2 position, glm::vec2 delta, float radius, float bounce) const;
 };
