@@ -141,26 +141,14 @@ static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos
 
 BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 position, glm::vec2 velocity, float radius, float bounce) const
 {
-    position += velocity;
-    const auto test = test_circle(*this, position, radius);
     bool collided = false;
+    auto distance_remaining = glm::length(velocity);
 
-    if (test.collided) {
-        collided = true;
-        position = test.position;
-        velocity = reflect(velocity, test.normal, bounce, 1.0f);
-    }
+    while (distance_remaining > radius) {
+        const auto step = glm::normalize(velocity) * radius;
 
-    return { test.collided, position, velocity };
-    /*
-    const auto r2 = radius * radius;
-    auto d2 = velocity.x*velocity.x + velocity.y*velocity.y;
-
-    bool collided = false;
-    const auto step = radius * glm::normalize(velocity);
-    while (d2 >= r2) {
         position += step;
-        velocity -= step;
+        distance_remaining -= radius;
 
         const auto test = test_circle(*this, position, radius);
         if (test.collided) {
@@ -168,11 +156,9 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
             position = test.position;
             velocity = reflect(velocity, test.normal, bounce, 1.0f);
         }
-
-        d2 = velocity.x*velocity.x + velocity.y*velocity.y;
     }
 
-    position += velocity;
+    position += glm::normalize(velocity) * distance_remaining;
 
     const auto test = test_circle(*this, position, radius);
 
@@ -183,5 +169,4 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
     }
 
     return { collided, position, velocity };
-    */
 }

@@ -46,21 +46,21 @@ static const float RADIUS = 0.1f;
 
 World World::step(const SharedInputState& input) const
 {
-    World world = *this;
+    World next = *this;
 
-    world.frame_counter++;
+    next.frame_counter++;
 
-    world.player.velocity.y += GRAVITY;
-    if (input.left)  world.player.velocity.x += GRAVITY;
-    if (input.right) world.player.velocity.x -= GRAVITY;
+    next.player.velocity.y += GRAVITY;
+    if (input.left)  next.player.velocity.x += GRAVITY;
+    if (input.right) next.player.velocity.x -= GRAVITY;
 
-    const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, world.player.velocity, RADIUS, 0.0f);
-    world.player.position = collision.position;
-    world.player.velocity = collision.velocity;
+    const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, next.player.velocity, RADIUS, 0.0f);
+    next.player.position = collision.position;
+    next.player.velocity = collision.velocity;
 
     if (collision.collided) {
-        world.player.velocity *= 0.9f;
+        next.player.velocity *= 0.9f;
     }
 
-    return world;
+    return next;
 }
