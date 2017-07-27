@@ -58,5 +58,9 @@ World World::step(const SharedInputState& input) const
     world.player.position = collision.position;
     world.player.velocity = collision.velocity;
 
+    if (collision.collided) {
+        world.player.velocity *= 0.9f;
+    }
+
     return world;
 }

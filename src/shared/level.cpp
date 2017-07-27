@@ -141,8 +141,19 @@ static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos
 
 BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 position, glm::vec2 velocity, float radius, float bounce) const
 {
+    position += velocity;
+    const auto test = test_circle(*this, position, radius);
+    bool collided = false;
+
+    if (test.collided) {
+        collided = true;
+        position = test.position;
+        velocity = reflect(velocity, test.normal, bounce, 1.0f);
+    }
+
+    return { test.collided, position, velocity };
+    /*
     const auto r2 = radius * radius;
-    const auto og_speed = glm::length(velocity);
     auto d2 = velocity.x*velocity.x + velocity.y*velocity.y;
 
     bool collided = false;
@@ -171,5 +182,6 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
         velocity = reflect(velocity, test.normal, bounce, 1.0f);
     }
 
-    return { collided, position, glm::normalize(velocity) * og_speed };
+    return { collided, position, velocity };
+    */
 }
