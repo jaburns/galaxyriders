@@ -27,6 +27,7 @@
     <ClInclude Include="src\client\renderer\skybox.hpp" />
     <ClInclude Include="src\client\renderer\sprite.hpp" />
     <ClInclude Include="src\client\resources.hpp" />
+    <ClInclude Include="src\client\state.hpp" />
     <ClInclude Include="src\client\triangulator.hpp" />
     <ClInclude Include="src\shared\config.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
@@ -51,6 +52,7 @@
     <ClCompile Include="src\client\renderer\skybox.cpp" />
     <ClCompile Include="src\client\renderer\sprite.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
+    <ClCompile Include="src\client\state.cpp" />
     <ClCompile Include="src\client\triangulator.cpp" />
     <ClCompile Include="src\shared\geometry.cpp" />
     <ClCompile Include="src\shared\level.cpp">
