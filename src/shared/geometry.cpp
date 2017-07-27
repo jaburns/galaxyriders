@@ -1,5 +1,6 @@
 #include "geometry.hpp"
 
+#include <glm/geometric.hpp>
 #include <vector>
 
 bool Geometry::line_intersect(glm::vec2 p00, glm::vec2 p01, glm::vec2 p10, glm::vec2 p11, glm::vec2 *const result)
@@ -64,7 +65,6 @@ static const float ACCURACY_INV = 1.0f / ACCURACY;
 
 glm::vec2 Geometry::project_point_on_line(float m, glm::vec2 p)
 {
-    //TODO find an abs somewhere
 #   define ABS(x) ((x) < 0.0f ? -(x) : (x))
     auto abs_m = ABS(m);
     if (abs_m < ACCURACY_INV) {
@@ -72,6 +72,7 @@ glm::vec2 Geometry::project_point_on_line(float m, glm::vec2 p)
     } else if (abs_m > ACCURACY) {
         return { 0.0f, p.y };
     }
+#   undef ABS
 
     glm::vec2 result;
     result.y = m*(m*p.y + p.x) / (1.0f + m*m);
@@ -79,12 +80,30 @@ glm::vec2 Geometry::project_point_on_line(float m, glm::vec2 p)
     return result;
 }
 
-static const float THREE = float(3);
-
 glm::vec2 Geometry::evaluate_spline(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 d, float t)
 {
     auto u = 1.0f - t;
     auto u2 = u * u;
     auto t2 = t * t;
-    return u2*u*a + THREE*u2*t*b + THREE*u*t2*c + t2*t*d;
+    return u2*u*a + 3.0f*u2*t*b + 3.0f*u*t2*c + t2*t*d;
+}
+
+float Geometry::vec2_cross(const glm::vec2& a, const glm::vec2& b)
+{
+    return a.x*b.y - a.y*b.x;
+}
+
+glm::vec2 Geometry::vec2_rotate90(const glm::vec2& v)
+{
+    return { -v.y, v.x };
+}
+
+glm::vec2 Geometry::vec2_reflect(const glm::vec2& v, const glm::vec2& unit_normal, float normal_scale, float tangent_scale)
+{
+    const auto unit_tangent = vec2_rotate90(unit_normal);
+
+    const auto norm_component = -normal_scale * glm::dot(v, unit_normal);
+    const auto tang_component = tangent_scale * glm::dot(v, unit_tangent);
+
+    return unit_normal * norm_component + unit_tangent * tang_component;
 }

@@ -59,28 +59,6 @@ BakedLevel BakedLevel::from_level(const Level& level)
 #   undef MAX
 }
 
-// TODO Move these in to a vector utility file or something
-
-static float cross2(const glm::vec2& a, const glm::vec2& b)
-{
-    return a.x*b.y - a.y*b.x;
-}
-
-static glm::vec2 rotate90(const glm::vec2& v)
-{
-    return { -v.y, v.x };
-}
-
-static glm::vec2 reflect(const glm::vec2& v, const glm::vec2& unit_normal, float normal_scale, float tangent_scale)
-{
-    const auto unit_tangent = rotate90(unit_normal);
-
-    const auto norm_component = -normal_scale * glm::dot(v, unit_normal);
-    const auto tang_component = tangent_scale * glm::dot(v, unit_tangent);
-
-    return unit_normal * norm_component + unit_tangent * tang_component;
-}
-
 struct CircleTestResult {
     bool collided;
     glm::vec2 normal;
@@ -111,7 +89,7 @@ static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos
 
                 if (p2 < r2) {
                     normal = glm::normalize(projection);
-                    if (cross2(projection, b - a) > 0.0f) {
+                    if (Geometry::vec2_cross(projection, b - a) > 0.0f) {
                         normal = -normal;
                     }
 
@@ -154,7 +132,7 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
         if (test.collided) {
             collided = true;
             position = test.position;
-            velocity = reflect(velocity, test.normal, bounce, 1.0f);
+            velocity = Geometry::vec2_reflect(velocity, test.normal, bounce, 1.0f);
         }
     }
 
@@ -165,7 +143,7 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
     if (test.collided) {
         collided = true;
         position = test.position;
-        velocity = reflect(velocity, test.normal, bounce, 1.0f);
+        velocity = Geometry::vec2_reflect(velocity, test.normal, bounce, 1.0f);
     }
 
     return { collided, position, velocity };
