@@ -53,7 +53,7 @@ Renderer::Renderer()
     glClearColor(Palette::COLOR_SPACE.r, Palette::COLOR_SPACE.g, Palette::COLOR_SPACE.b, 1.0f);
     glLineWidth(9.0f);
 
-//  m_skybox_renderer = std::make_unique<SkyboxRenderer>();
+    m_skybox_renderer = std::make_unique<SkyboxRenderer>();
     m_sprite_renderer = std::make_unique<SpriteRenderer>();
     m_wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::CIRCLE);
     m_level_renderer = std::make_unique<LevelRenderer>(World::BAKED_LEVEL);
@@ -76,14 +76,13 @@ void Renderer::render(const ClientState& state)
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
 
     m_wire_sphere_renderer->use(v, p);
-
-    m_wire_sphere_renderer->draw(glm::vec3(state.world.player.position, 0.0f), { 0.0f, 1.0f, 0.0f });
+    m_wire_sphere_renderer->draw(glm::vec3(state.world.player.position, 0.0f), {0.1f, 0.1f, 0.1f}, { 0.0f, 1.0f, 0.0f });
     m_wire_sphere_renderer->done();
 
-//  m_skybox_renderer->draw_once(v, p);
+    m_skybox_renderer->draw_once(v, p);
 
     m_sprite_renderer->use(v, p);
-    m_sprite_renderer->draw(glm::vec3(state.world.player.position, 0.0f), state.world.frame_counter);
+    m_sprite_renderer->draw(glm::vec3(state.world.player.position, 0.0f) + glm::vec3(0.0f, -0.1f, 0.0f), 0.5f, state.world.frame_counter / 2);
     m_sprite_renderer->done();
 
     glfwSwapBuffers(m_window);

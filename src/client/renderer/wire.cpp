@@ -36,10 +36,9 @@ void WireRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBindVertexArray(m_vao);
 }
 
-void WireRenderer::draw(const glm::vec3& position, const glm::vec3& color)
+void WireRenderer::draw(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color)
 {
-    // TODO dont hardcode scale
-    auto m = glm::scale(glm::translate(glm::mat4(1.0f), position), {0.1f, 0.1f, 0.1f});
+    auto m = glm::scale(glm::translate(glm::mat4(1.0f), position), scale);
     glUniform3fv(glGetUniformLocation(*m_program, "line_color"), 1, glm::value_ptr(color));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
     glDrawArrays(GL_LINES, 0, m_lines_size);

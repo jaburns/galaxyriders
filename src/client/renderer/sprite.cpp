@@ -66,8 +66,8 @@ void SpriteRenderer::load_frames()
 
         if (first_iter) {
             m_aspect = frame_width / frame_height;
-            m_origin.x = sprite_width / frame_height / 2.0f;
-            m_origin.y = -sprite_height / frame_height;
+            m_origin.x =  0.5f * m_aspect;
+            m_origin.y = -1.0f;
             first_iter = false;
         }
     }
@@ -79,8 +79,6 @@ SpriteRenderer::~SpriteRenderer()
     glDeleteVertexArrays(1, &m_vao);
     glDeleteBuffers(1, &m_vertex_buffer);
 }
-
-const int slowness = 2;
 
 void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
 {
@@ -99,16 +97,16 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-const float SCALE = 1.0f;
-
-void SpriteRenderer::draw(const glm::vec3& position, int frame)
+void SpriteRenderer::draw(const glm::vec3& position, float scale, int frame)
 {
-    frame %= m_frames.size() * slowness;
-    frame /= slowness;
+    frame %= m_frames.size();
 
-    glm::vec3 new_pos = position + SCALE * glm::vec3(m_frames[frame].offset, 0.0f) - glm::vec3(m_origin, 0.0f);
+    glm::vec3 new_pos = position + scale * (glm::vec3(m_frames[frame].offset, 0.0f) - glm::vec3(m_origin, 0.0f));
 
-    auto m = glm::scale(glm::translate(glm::mat4(1.0f), new_pos), { SCALE * m_aspect * m_frames[frame].scale.x, SCALE * m_frames[frame].scale.y, SCALE });
+    auto m = glm::scale(
+        glm::translate(glm::mat4(1.0f), new_pos), 
+        { scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f }
+    );
 
     glUniform4fv(glGetUniformLocation(*m_program, "sprite_source"), 1, glm::value_ptr(m_frames[frame].sprite_source));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
