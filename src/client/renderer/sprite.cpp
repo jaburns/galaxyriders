@@ -14,6 +14,7 @@ static GLfloat quad_vertices[] = {
      1.0f, 1.0f, 0.0f
 };
 
+// TODO m_origin should be passed as an argument.
 SpriteRenderer::SpriteRenderer()
 {
     m_program = std::make_unique<const ShaderProgram>("res/shaders/sprite.vert", "res/shaders/sprite.frag");;
