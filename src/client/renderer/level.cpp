@@ -77,25 +77,18 @@ void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
     size_t base_vert_index = mesh.vertices.size();
     size_t base_tri_index = mesh.indices.size();
 
-    std::vector<glm::vec2> pts(poly.points.size());
-
-    // TODO Don't need to copy this list since we're not de-fixed32ing anymore
-    for (auto i = 0; i < pts.size(); ++i) {
-        pts[i] = poly.points[i];
-    }
-
-    auto inset_pts = inset_points(pts);
-    auto new_vert_count = 2 * pts.size();
+    auto inset_pts = inset_points(poly.points);
+    auto new_vert_count = 2 * poly.points.size();
 
     mesh.vertices.reserve(base_vert_index + new_vert_count);
     mesh.vdepths.reserve(base_vert_index + new_vert_count);
 
     for (auto i = 0; i < new_vert_count; i++) {
-        mesh.vertices.push_back(i % 2 == 0 ? pts[i/2] : inset_pts[i/2]);
+        mesh.vertices.push_back(i % 2 == 0 ? poly.points[i/2] : inset_pts[i/2]);
         mesh.vdepths.push_back(i % 2 == 0 ? 0.0f : 1.0f);
     }
 
-    std::vector<uint32_t> inner_indices = Triangulator::triangulate(pts);
+    std::vector<uint32_t> inner_indices = Triangulator::triangulate(poly.points);
 
     mesh.indices.resize(base_tri_index + 3 * new_vert_count + inner_indices.size());
 
