@@ -14,12 +14,12 @@ static GLfloat quad_vertices[] = {
      1.0f, 1.0f, 0.0f
 };
 
-// TODO m_origin should be passed as an argument.
+// TODO m_origin should be passed as an argument, and so should "guy"
 SpriteRenderer::SpriteRenderer()
 {
     m_program = std::make_unique<const ShaderProgram>("res/shaders/sprite.vert", "res/shaders/sprite.frag");;
     m_texture = std::make_unique<const Texture>("res/sprites/guy.sdf.png");
-    this->load_frames();
+    load_frames();
 
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);

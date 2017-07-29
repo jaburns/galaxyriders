@@ -54,11 +54,9 @@ Renderer::Renderer()
     glLineWidth(9.0f);
 
     m_skybox_renderer = std::make_unique<SkyboxRenderer>();
-    m_sprite_renderer = std::make_unique<SpriteRenderer>();
-    m_wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::CIRCLE);
     m_level_renderer = std::make_unique<LevelRenderer>(World::BAKED_LEVEL);
+    m_player_renderer = std::make_unique<PlayerRenderer>();
 }
-
 
 void Renderer::render(const ClientState& state)
 {
@@ -74,16 +72,8 @@ void Renderer::render(const ClientState& state)
     );
 
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
-
-    m_wire_sphere_renderer->use(v, p);
-    m_wire_sphere_renderer->draw(glm::vec3(state.world.player.position, 0.0f), {0.1f, 0.1f, 0.1f}, { 0.0f, 1.0f, 0.0f });
-    m_wire_sphere_renderer->done();
-
     m_skybox_renderer->draw_once(v, p);
-
-    m_sprite_renderer->use(v, p);
-    m_sprite_renderer->draw(glm::vec3(state.world.player.position, 0.0f) + glm::vec3(0.0f, -0.12f, 0.0f), 0.3f, 0);
-    m_sprite_renderer->done();
+    m_player_renderer->draw_once(v, p, state.world.player.position);
 
     glfwSwapBuffers(m_window);
     glfwPollEvents();
