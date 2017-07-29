@@ -2,6 +2,7 @@
 
 #include <glm/geometric.hpp>
 #include <vector>
+#include <cmath>
 
 bool Geometry::line_intersect(glm::vec2 p00, glm::vec2 p01, glm::vec2 p10, glm::vec2 p11, glm::vec2 *const result)
 {
@@ -65,14 +66,12 @@ static const float ACCURACY_INV = 1.0f / ACCURACY;
 
 glm::vec2 Geometry::project_point_on_line(float m, glm::vec2 p)
 {
-#   define ABS(x) ((x) < 0.0f ? -(x) : (x))
-    auto abs_m = ABS(m);
+    auto abs_m = fabs(m);
     if (abs_m < ACCURACY_INV) {
         return { p.x, 0.0f };
     } else if (abs_m > ACCURACY) {
         return { 0.0f, p.y };
     }
-#   undef ABS
 
     glm::vec2 result;
     result.y = m*(m*p.y + p.x) / (1.0f + m*m);
