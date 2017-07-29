@@ -82,7 +82,7 @@ void Renderer::render(const ClientState& state)
     m_skybox_renderer->draw_once(v, p);
 
     m_sprite_renderer->use(v, p);
-    m_sprite_renderer->draw(glm::vec3(state.world.player.position, 0.0f) + glm::vec3(0.0f, -0.1f, 0.0f), 0.5f, state.world.frame_counter / 2);
+    m_sprite_renderer->draw(glm::vec3(state.world.player.position, 0.0f) + glm::vec3(0.0f, -0.12f, 0.0f), 0.3f, 0);
     m_sprite_renderer->done();
 
     glfwSwapBuffers(m_window);
