@@ -2,21 +2,21 @@
 #include "geometry.hpp"
 #include <glm/geometric.hpp>
 
-Level Level::from_data(const std::vector<int32_t>& data)
+Level Level::from_data(const std::vector<float>& data)
 {
     Level level;
     size_t read = 0;
 
-    const auto total_polys = data[read++];
-    for (auto i = 0; i < total_polys; ++i) {
+    const int total_polys = data[read++];
+    for (int i = 0; i < total_polys; ++i) {
         Level::Poly this_poly;
 
-        auto total_handles = data[read++];
-        for (auto j = 0; j < total_handles; ++j) {
+        int total_handles = data[read++];
+        for (int j = 0; j < total_handles; ++j) {
             Level::Handle this_handle;
-            this_handle.quality = data[read++];
-            this_handle.point.x = (float)data[read++] / 65535.0f;
-            this_handle.point.y = (float)data[read++] / 65535.0f;
+            this_handle.quality = (uint32_t)data[read++];
+            this_handle.point.x = data[read++];
+            this_handle.point.y = data[read++];
             this_poly.handles.push_back(this_handle);
         }
 

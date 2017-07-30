@@ -17,7 +17,7 @@ struct Level
 
     std::vector<Poly> polys;
 
-    static Level from_data(const std::vector<int32_t>& data);
+    static Level from_data(const std::vector<float>& data);
 };
 
 struct BakedLevel
