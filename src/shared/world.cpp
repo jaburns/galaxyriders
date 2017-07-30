@@ -2,7 +2,7 @@
 
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
-#include <math.h>
+#include <cmath>
 #include "serialization.hpp"
 
 const BakedLevel World::BAKED_LEVEL = BakedLevel::from_level(Level::from_data({
@@ -41,8 +41,14 @@ World World::lerp_to(const World& next, float t) const
     return world;
 }
 
-static const float GRAVITY = -0.02f;
+static const float GRAVITY = 0.02f;
 static const float RADIUS = 0.1f;
+static const float WALK_ACCEL = 0.03f;
+static const float PUMP_ACCEL = 0.08f;
+static const float MAX_RUN_SPEED = 0.1f;
+static const float TURN_AROUND_MULTIPLIER = 3.0f;
+static const float JUMP_SPEED = 0.1f;
+static const int LATE_JUMP_FRAMES = 5;
 
 World World::step(const SharedInputState& input) const
 {
@@ -50,16 +56,48 @@ World World::step(const SharedInputState& input) const
 
     next.frame_counter++;
 
-    next.player.velocity.y += GRAVITY;
-    if (input.left)  next.player.velocity.x += GRAVITY;
-    if (input.right) next.player.velocity.x -= GRAVITY;
+    // ----- Horizontal motion -----
+
+    float walk_accel =
+        input.left ? -WALK_ACCEL :
+        input.right ? WALK_ACCEL : 0.0f;
+
+    if (walk_accel * next.player.velocity.x < -1e-9f) {
+        walk_accel *= TURN_AROUND_MULTIPLIER;
+    } else if (fabs(next.player.velocity.x) > MAX_RUN_SPEED) {
+        walk_accel = 0.0f;
+    }
+
+    next.player.velocity.x += walk_accel;
+
+    // ----- Vertical motion -----
+
+    next.player.velocity.y -= GRAVITY;
+
+    if (input.down_edge) {
+        if (next.player.velocity.y > 0.0f) next.player.velocity.y = 0.0f;
+        next.player.grounded = 0;
+    }
+
+    if (input.down) {
+        next.player.velocity.y -= PUMP_ACCEL;
+    }
+
+    if (input.up_edge && next.player.grounded > 0) {
+        next.player.grounded = 0;
+        next.player.velocity.y += JUMP_SPEED;
+    }
+
+    // ----- Collision detection and resolution -----
 
     const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, next.player.velocity, RADIUS, 0.0f);
     next.player.position = collision.position;
     next.player.velocity = collision.velocity;
 
     if (collision.collided) {
-        next.player.velocity *= 0.9f;
+        next.player.grounded = LATE_JUMP_FRAMES;
+    } else if (next.player.grounded > 0) {
+        next.player.grounded--;
     }
 
     return next;

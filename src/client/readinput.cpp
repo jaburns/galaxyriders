@@ -17,6 +17,8 @@ static bool key_a = false;
 static bool key_d = false;
 static bool key_left = false;
 static bool key_right = false;
+static bool key_up = false;
+static bool key_down = false;
 static bool key_space = false;
 static bool key_lshift = false;
 static bool key_r_angle = false;
@@ -55,6 +57,14 @@ static void update_state()
     state.shared.left = key_left;
     state.shared.right = key_right;
 
+    bool was_up = state.shared.up;
+    state.shared.up = key_up;
+    state.shared.up_edge = key_up && !was_up;
+
+    bool was_down = state.shared.down;
+    state.shared.down = key_down;
+    state.shared.down_edge = key_down && !was_down;
+
     state.debug_pause = key_p;
     state.debug_step = key_r_angle;
 }
@@ -80,6 +90,8 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
     update_key(key_d, GLFW_KEY_D, key, action);
     update_key(key_left, GLFW_KEY_LEFT, key, action);
     update_key(key_right, GLFW_KEY_RIGHT, key, action);
+    update_key(key_up, GLFW_KEY_UP, key, action);
+    update_key(key_down, GLFW_KEY_DOWN, key, action);
     update_key(key_space, GLFW_KEY_SPACE, key, action);
     update_key(key_lshift, GLFW_KEY_LEFT_SHIFT, key, action);
     update_key(key_r_angle, GLFW_KEY_PERIOD, key, action);
