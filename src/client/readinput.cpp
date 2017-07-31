@@ -89,10 +89,14 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
     }
 }
 
+#include <iostream>
+
 static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
     this_mouse_read_x = (float)xpos;
     this_mouse_read_y = (float)ypos;
+
+    std::cout << xpos << "\t" << ypos << std::endl;
 
     auto dx = this_mouse_read_x - last_mouse_read_x;
     auto dy = this_mouse_read_y - last_mouse_read_y;
@@ -117,7 +121,7 @@ static void cursor_pos_callback_first(GLFWwindow* window, double xpos, double yp
 
 void Input::bind_handlers(GLFWwindow* window)
 {
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     glfwSetCursorPosCallback(window, cursor_pos_callback_first);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetKeyCallback(window, key_callback);
