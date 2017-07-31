@@ -30,6 +30,7 @@ struct BakedLevel
         bool collided = false;
         glm::vec2 position;
         glm::vec2 velocity;
+        glm::vec2 normal;
     };
 
     std::vector<Poly> polys;

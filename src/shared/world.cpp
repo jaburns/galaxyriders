@@ -43,7 +43,6 @@ World World::lerp_to(const World& next, float t) const
 }
 
 static const float DT = Config::MILLIS_PER_TICK / 1000.0f;
-
 static const float GRAVITY = 30.0f * DT * DT;
 static const float RADIUS = 0.5f;
 static const float WALK_ACCEL = 30.0f * DT * DT;
@@ -98,7 +97,9 @@ World World::step(const SharedInputState& input) const
     next.player.velocity = collision.velocity;
 
     if (collision.collided) {
-        next.player.grounded = LATE_JUMP_FRAMES;
+        if (collision.normal.y > 0.5f) {
+            next.player.grounded = LATE_JUMP_FRAMES;
+        }
     } else if (next.player.grounded > 0) {
         next.player.grounded--;
     }
