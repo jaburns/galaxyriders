@@ -45,7 +45,7 @@ static float cross2(glm::vec2 a, glm::vec2 b)
     return (a.x*b.y) - (a.y*b.x);
 }
 
-static const auto DEPTH = 0.2f;
+static const auto DEPTH = 1.0f;
 
 static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 {

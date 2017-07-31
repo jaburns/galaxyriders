@@ -3,6 +3,7 @@
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
 #include <cmath>
+#include "config.hpp"
 #include "serialization.hpp"
 
 const BakedLevel World::BAKED_LEVEL = BakedLevel::from_level(Level::from_data({
@@ -41,13 +42,15 @@ World World::lerp_to(const World& next, float t) const
     return world;
 }
 
-static const float GRAVITY = 9.81f / 900.0f * 0.3f; // Imported
-static const float RADIUS = 0.1f;
-static const float WALK_ACCEL = 30.0f / 900.0f * 0.3f; // Imported
-static const float PUMP_ACCEL = 80.0f / 900.0f * 0.3f; // Imported
-static const float MAX_RUN_SPEED = 35.0f / 30.0f * 0.3f; // Imported
-static const float TURN_AROUND_MULTIPLIER = 3.0f; // Imported
-static const float JUMP_SPEED = 10.0f / 30.0f * 0.3f; // Imported
+static const float DT = Config::MILLIS_PER_TICK / 1000.0f;
+
+static const float GRAVITY = 30.0f * DT * DT;
+static const float RADIUS = 0.5f;
+static const float WALK_ACCEL = 30.0f * DT * DT;
+static const float PUMP_ACCEL = 80.0f * DT * DT;
+static const float MAX_RUN_SPEED = 35.0f * DT;
+static const float TURN_AROUND_MULTIPLIER = 3.0f;
+static const float JUMP_SPEED = 10.0f * DT;
 static const int LATE_JUMP_FRAMES = 5;
 
 World World::step(const SharedInputState& input) const
@@ -90,7 +93,7 @@ World World::step(const SharedInputState& input) const
 
     // ----- Collision detection and resolution -----
 
-    const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, next.player.velocity, RADIUS, 0.0f);
+    const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, next.player.velocity , RADIUS, 0.0f);
     next.player.position = collision.position;
     next.player.velocity = collision.velocity;
 
