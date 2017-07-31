@@ -52,7 +52,7 @@ static const float TURN_AROUND_MULTIPLIER = 3.0f;
 static const float JUMP_SPEED = 10.0f * DT;
 static const int LATE_JUMP_FRAMES = 5;
 
-World World::step(const SharedInputState& input) const
+World World::step(const SharedInputState& old_input, const SharedInputState& new_input) const
 {
     World next = *this;
 
@@ -61,8 +61,8 @@ World World::step(const SharedInputState& input) const
     // ----- Horizontal motion -----
 
     float walk_accel =
-        input.left ? -WALK_ACCEL :
-        input.right ? WALK_ACCEL : 0.0f;
+        new_input.left ? -WALK_ACCEL :
+        new_input.right ? WALK_ACCEL : 0.0f;
 
     if (walk_accel * next.player.velocity.x < -1e-9f) {
         walk_accel *= TURN_AROUND_MULTIPLIER;
@@ -76,16 +76,16 @@ World World::step(const SharedInputState& input) const
 
     next.player.velocity.y -= GRAVITY;
 
-    if (input.down_edge) {
+    if (!old_input.down && new_input.down) {
         if (next.player.velocity.y > 0.0f) next.player.velocity.y = 0.0f;
         next.player.grounded = 0;
     }
 
-    if (input.down) {
+    if (new_input.down) {
         next.player.velocity.y -= PUMP_ACCEL;
     }
 
-    if (input.up_edge && next.player.grounded > 0) {
+    if (!old_input.up && new_input.up && next.player.grounded > 0) {
         next.player.grounded = 0;
         next.player.velocity.y += JUMP_SPEED;
     }

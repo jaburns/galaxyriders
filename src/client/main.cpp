@@ -47,7 +47,7 @@ void main_net()
         float millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
         auto inp = Input::read_state();
-        if (inp.clicking) {
+        if (inp.mouse_click) {
         //  renderer.render(last_world.lerp_to(new_world, millis_since_update / millis_per_tick));
         } else {
         //  renderer.render(new_world);

@@ -13,7 +13,7 @@ ClientState ClientState::step(const InputState& input) const
     }
 
     if (!new_state.debug_paused || (input.debug_step && !last_input.debug_step)) {
-        new_state.world = new_state.world.step(input.shared);
+        new_state.world = new_state.world.step(last_input.shared, input.shared);
     }
 
     new_state.camera_position += MOVEMENT_SPEED * input.movement;

@@ -8,9 +8,10 @@ struct InputState
 {
     glm::vec3 look_dir = { 0.0f, 0.0f, -1.0f };
     glm::vec3 movement = { 0.0f, 0.0f, 0.0f };
-    bool clicking = false;
-    bool debug_pause = false;
-    bool debug_step = false;
+
+    bool mouse_click;
+    bool debug_pause;
+    bool debug_step;
 
     SharedInputState shared;
 };

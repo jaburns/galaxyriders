@@ -2,27 +2,18 @@
 
 #include <glm/geometric.hpp>
 #include <glm/gtc/constants.hpp>
-#include <math.h>
+#include <cmath>
 #define GLM_ENABLE_EXPERIMENTAL
 #   include <glm/gtx/rotate_vector.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
+#include <vector>
 
 #define PI 3.14159f
+#define MAX_KEY_CODE 350
 
 const float MOVE_SPEED = 0.05f;
 
-static bool key_w = false;
-static bool key_s = false;
-static bool key_a = false;
-static bool key_d = false;
-static bool key_left = false;
-static bool key_right = false;
-static bool key_up = false;
-static bool key_down = false;
-static bool key_space = false;
-static bool key_lshift = false;
-static bool key_r_angle = false;
-static bool key_p = false;
+static bool key_down[MAX_KEY_CODE] = {};
 
 static float last_mouse_read_x = 0.0f;
 static float last_mouse_read_y = 0.0f;
@@ -45,28 +36,22 @@ static void update_state()
 
     state.movement = { 0.0f, 0.0f, 0.0f };
 
-    if (key_w) state.movement += MOVE_SPEED * state.look_dir;
-    if (key_s) state.movement -= MOVE_SPEED * state.look_dir;
-    if (key_a) state.movement -= MOVE_SPEED * side_dir;
-    if (key_d) state.movement += MOVE_SPEED * side_dir;
+    if (key_down[GLFW_KEY_W]) state.movement += MOVE_SPEED * state.look_dir;
+    if (key_down[GLFW_KEY_S]) state.movement -= MOVE_SPEED * state.look_dir;
+    if (key_down[GLFW_KEY_A]) state.movement -= MOVE_SPEED * side_dir;
+    if (key_down[GLFW_KEY_D]) state.movement += MOVE_SPEED * side_dir;
 
     state.look_dir.y = tilt;
-    if (key_space)  state.movement.y += MOVE_SPEED;
-    if (key_lshift) state.movement.y -= MOVE_SPEED;
+    if (key_down[GLFW_KEY_SPACE])  state.movement.y += MOVE_SPEED;
+    if (key_down[GLFW_KEY_LEFT_SHIFT]) state.movement.y -= MOVE_SPEED;
 
-    state.shared.left = key_left;
-    state.shared.right = key_right;
+    state.shared.left  = key_down[GLFW_KEY_LEFT];
+    state.shared.right = key_down[GLFW_KEY_RIGHT];
+    state.shared.up    = key_down[GLFW_KEY_UP];
+    state.shared.down  = key_down[GLFW_KEY_DOWN];
 
-    bool was_up = state.shared.up;
-    state.shared.up = key_up;
-    state.shared.up_edge = key_up && !was_up;
-
-    bool was_down = state.shared.down;
-    state.shared.down = key_down;
-    state.shared.down_edge = key_down && !was_down;
-
-    state.debug_pause = key_p;
-    state.debug_step = key_r_angle;
+    state.debug_pause = key_down[GLFW_KEY_P];
+    state.debug_step  = key_down[GLFW_KEY_PERIOD];
 }
 
 static void update_key(bool& out_var, int match_key, int key, int action)
@@ -79,23 +64,16 @@ static void update_key(bool& out_var, int match_key, int key, int action)
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+    if (action == GLFW_PRESS) {
+        key_down[key] = true;
+    } else if (action == GLFW_RELEASE) {
+        key_down[key] = false;
+    }
+
+    if (key_down[GLFW_KEY_ESCAPE]) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
         return;
     }
-
-    update_key(key_w, GLFW_KEY_W, key, action);
-    update_key(key_s, GLFW_KEY_S, key, action);
-    update_key(key_a, GLFW_KEY_A, key, action);
-    update_key(key_d, GLFW_KEY_D, key, action);
-    update_key(key_left, GLFW_KEY_LEFT, key, action);
-    update_key(key_right, GLFW_KEY_RIGHT, key, action);
-    update_key(key_up, GLFW_KEY_UP, key, action);
-    update_key(key_down, GLFW_KEY_DOWN, key, action);
-    update_key(key_space, GLFW_KEY_SPACE, key, action);
-    update_key(key_lshift, GLFW_KEY_LEFT_SHIFT, key, action);
-    update_key(key_r_angle, GLFW_KEY_PERIOD, key, action);
-    update_key(key_p, GLFW_KEY_P, key, action);
 
     update_state();
 }
@@ -104,9 +82,9 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT) {
         if (action == GLFW_PRESS) {
-            state.clicking = true;
+            state.mouse_click = true;
         } else if (action == GLFW_RELEASE) {
-            state.clicking = false;
+            state.mouse_click = false;
         }
     }
 }
