@@ -1,12 +1,14 @@
 #pragma once
 
+#include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
 #include "glfw.hpp"
 #include "../shared/input.hpp"
 
 struct InputState
 {
-    glm::vec3 mouse_ray = { 0.0f, 0.0f, -1.0f };
+    glm::vec2 mouse_pos;
     bool mouse_click;
     bool debug_pause;
     bool debug_step;
@@ -18,4 +20,5 @@ namespace Input
 {
     void bind_handlers(GLFWwindow* window);
     InputState read_state();
+    glm::vec3 get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view);
 }

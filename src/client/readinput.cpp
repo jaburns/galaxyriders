@@ -1,18 +1,9 @@
 #include "readinput.hpp"
 
-#define GLM_ENABLE_EXPERIMENTAL
-
 #include <cmath>
 #include <vector>
-#include <glm/geometric.hpp>
-#include <glm/gtc/constants.hpp>
-#include <glm/gtx/rotate_vector.hpp>
 #include <glm/vec4.hpp>
 
-// Needed for g_projection_matrix and view matrix.
-#include "render.hpp"
-
-#define PI 3.14159f
 #define MAX_KEY_CODE 350
 
 const float MOVE_SPEED = 0.05f;
@@ -59,25 +50,30 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
     const auto fwidth  = static_cast<float>(width);
     const auto fheight = static_cast<float>(height);
 
-    const auto x = 2.0f * xpos / fwidth - 1.0f;
-    const auto y = 1.0f - 2.0f * ypos / fheight;
+    state.mouse_pos = glm::vec2(
+        2.0f * xpos / fwidth - 1.0f,
+        1.0f - 2.0f * ypos / fheight
+    );
+}
 
-    glm::vec4 ray_clip = glm::vec4(x, y, -1.0f, 1.0f);
+glm::vec3 Input::get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
+{
+    glm::vec4 ray_clip = glm::vec4(mouse_pos, -1.0f, 1.0f);
 
-    glm::vec4 ray_eye = glm::inverse(Renderer::g_projection_matrix) * ray_clip;
+    glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
     ray_eye.z = -1.0f;
     ray_eye.w =  0.0f;
 
-    glm::vec4 ray_world = glm::inverse(Renderer::g_view_matrix) * ray_eye;
+    glm::vec4 ray_world = glm::inverse(view) * ray_eye;
     ray_world.w = 0.0f;
     ray_world = glm::normalize(ray_world);
 
-    state.mouse_ray = ray_world;
+    return ray_world;
 }
 
 void Input::bind_handlers(GLFWwindow* window)
 {
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
     glfwSetCursorPosCallback(window, cursor_pos_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetKeyCallback(window, key_callback);

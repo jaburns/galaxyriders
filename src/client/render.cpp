@@ -6,10 +6,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "gen/wire_meshes.hpp"
 #include "../shared/level.hpp"
+#include "readinput.hpp"
 #include "palette.hpp"
-
-glm::mat4x4 Renderer::g_projection_matrix = {};
-glm::mat4x4 Renderer::g_view_matrix = {};
 
 static void error_callback(int error, const char* description)
 {
@@ -76,13 +74,11 @@ void Renderer::render(const ClientState& state)
     const auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
     const auto v = glm::translate(glm::lookAt(glm::vec3(0.0f), { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f }), -cam_pos);
 
-    g_projection_matrix = p; // TODO Solve this in a better way than using globals.
-    g_view_matrix = v;
-
+    const auto mouse_ray = Input::get_mouse_ray(Input::read_state().mouse_pos, p, v);
     const glm::vec3 plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
     const glm::vec3 plane_coord = glm::vec3(0.0f);
-    float t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, cam_pos)) / glm::dot(plane_normal, state.last_input.mouse_ray);
-    const glm::vec3 ray_pos = cam_pos + t * state.last_input.mouse_ray;
+    float t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, cam_pos)) / glm::dot(plane_normal, mouse_ray);
+    const glm::vec3 ray_pos = cam_pos + t * mouse_ray;
 
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
 //  m_skybox_renderer->draw_once(v, p);
