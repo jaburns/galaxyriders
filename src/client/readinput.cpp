@@ -93,21 +93,23 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
 
 static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
-    this_mouse_read_x = (float)xpos;
-    this_mouse_read_y = (float)ypos;
+    int width, height;
+    glfwGetWindowSize(window, &width, &height);
 
-    std::cout << xpos << "\t" << ypos << std::endl;
+    const auto fwidth  = static_cast<float>(width);
+    const auto fheight = static_cast<float>(height);
 
-    auto dx = this_mouse_read_x - last_mouse_read_x;
-    auto dy = this_mouse_read_y - last_mouse_read_y;
+    const auto x = (2.0f * xpos - fwidth) / fheight;
+    const auto y = 1.0f - 2.0f * ypos / fheight;
 
-    facing += dx / 1000.0f;
-    tilt -= dy / 1000.0f;
-    if (tilt < -2.0f) tilt = -2.0f;
-    if (tilt >  2.0f) tilt =  2.0f;
+    std::cout << x << "\t" << y << std::endl;
 
-    last_mouse_read_x = this_mouse_read_x;
-    last_mouse_read_y = this_mouse_read_y;
+    facing = 0.0f;
+    tilt = 0.0f;
+    this_mouse_read_x = 0.0f;
+    this_mouse_read_y = 0.0f;
+    last_mouse_read_x = 0.0f;
+    last_mouse_read_y = 0.0f;
 
     update_state();
 }
