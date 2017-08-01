@@ -8,6 +8,9 @@
 #include "../shared/level.hpp"
 #include "palette.hpp"
 
+glm::mat4x4 Renderer::g_projection_matrix = {};
+glm::mat4x4 Renderer::g_view_matrix = {};
+
 static void error_callback(int error, const char* description)
 {
     fprintf(stderr, "Error: %s\n", description);
@@ -58,9 +61,6 @@ Renderer::Renderer()
     m_player_renderer = std::make_unique<PlayerRenderer>();
 }
 
-glm::mat4x4 Renderer::g_projection_matrix = {};
-glm::mat4x4 Renderer::g_view_matrix = {};
-
 void Renderer::render(const ClientState& state)
 {
     int width, height;
@@ -71,23 +71,21 @@ void Renderer::render(const ClientState& state)
     const glm::vec3 cam_pos =
         { state.world.player.position.x,
           state.world.player.position.y,
-          40.0f };
+          state.camera_dist };
 
     const auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
     const auto v = glm::translate(glm::lookAt(glm::vec3(0.0f), { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f }), -cam_pos);
 
-    // TODO Solve this in a better way than using globals.
-    g_projection_matrix = p;
+    g_projection_matrix = p; // TODO Solve this in a better way than using globals.
     g_view_matrix = v;
 
-            const glm::vec3 plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
-            const glm::vec3 plane_coord = glm::vec3(0.0f);
-            glm::vec3 ray_pos = state.last_input.mouse_ray;
-            float t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, cam_pos)) / glm::dot(plane_normal, state.last_input.mouse_ray);
-            ray_pos = cam_pos + t * ray_pos;
+    const glm::vec3 plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    const glm::vec3 plane_coord = glm::vec3(0.0f);
+    float t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, cam_pos)) / glm::dot(plane_normal, state.last_input.mouse_ray);
+    const glm::vec3 ray_pos = cam_pos + t * state.last_input.mouse_ray;
 
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
-    m_skybox_renderer->draw_once(v, p);
+//  m_skybox_renderer->draw_once(v, p);
     m_player_renderer->draw_once(v, p, state.world.player.position);
     m_player_renderer->draw_once(v, p, ray_pos);
 

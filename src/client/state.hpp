@@ -8,6 +8,8 @@ struct ClientState
 {
     bool debug_paused = true;
 
+    float camera_dist = 10.0f;
+
     InputState last_input;
     World world;
 
