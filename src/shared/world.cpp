@@ -36,9 +36,8 @@ World::World(const uint8_t *serialized, int serialized_length)
 
 World World::lerp_to(const World& next, float t) const
 {
-    World world = *this;
-    world.player.position = glm::mix(world.player.position, next.player.position, t);
-    world.frame_counter = next.frame_counter;
+    World world = next;
+    world.player.position = glm::mix(player.position, next.player.position, t);
     return world;
 }
 

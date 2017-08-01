@@ -6,9 +6,7 @@
 
 struct InputState
 {
-    glm::vec3 look_dir = { 0.0f, 0.0f, -1.0f };
-    glm::vec3 movement = { 0.0f, 0.0f, 0.0f };
-
+    glm::vec3 mouse_ray = { 0.0f, 0.0f, -1.0f };
     bool mouse_click;
     bool debug_pause;
     bool debug_step;

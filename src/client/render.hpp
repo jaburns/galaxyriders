@@ -23,6 +23,9 @@ public:
     Renderer();
     ~Renderer();
 
+    static glm::mat4x4 g_projection_matrix;
+    static glm::mat4x4 g_view_matrix;
+
     GLFWwindow* raw_glfw_window() const { return m_window; }
     bool should_close_window() const { return glfwWindowShouldClose(m_window); }
     void render(const ClientState& state);

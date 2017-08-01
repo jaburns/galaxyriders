@@ -25,7 +25,7 @@ Renderer::Renderer()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-//  glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
+    glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 4); // MSAA
 
     m_window = glfwCreateWindow(1280, 720, "Galaxy Riders", NULL, NULL);
@@ -58,6 +58,9 @@ Renderer::Renderer()
     m_player_renderer = std::make_unique<PlayerRenderer>();
 }
 
+glm::mat4x4 Renderer::g_projection_matrix = {};
+glm::mat4x4 Renderer::g_view_matrix = {};
+
 void Renderer::render(const ClientState& state)
 {
     int width, height;
@@ -65,18 +68,28 @@ void Renderer::render(const ClientState& state)
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
-    auto v = glm::translate(
-        glm::lookAt(glm::vec3(0.0f), state.camera_look, { 0.0f, 1.0f, 0.0f }),
-        { -state.world.player.position.x,
-        -state.world.player.position.y,
-        -40.0f }
-//      -state.camera_position
-    );
+    const glm::vec3 cam_pos =
+        { state.world.player.position.x,
+          state.world.player.position.y,
+          40.0f };
+
+    const auto p = glm::perspective(3.14159f / 3.0f, width / (float)height, 0.1f, 1024.0f);
+    const auto v = glm::translate(glm::lookAt(glm::vec3(0.0f), { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f }), -cam_pos);
+
+    // TODO Solve this in a better way than using globals.
+    g_projection_matrix = p;
+    g_view_matrix = v;
+
+            const glm::vec3 plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
+            const glm::vec3 plane_coord = glm::vec3(0.0f);
+            glm::vec3 ray_pos = state.last_input.mouse_ray;
+            float t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, cam_pos)) / glm::dot(plane_normal, state.last_input.mouse_ray);
+            ray_pos = cam_pos + t * ray_pos;
 
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
     m_skybox_renderer->draw_once(v, p);
     m_player_renderer->draw_once(v, p, state.world.player.position);
+    m_player_renderer->draw_once(v, p, ray_pos);
 
     glfwSwapBuffers(m_window);
     glfwPollEvents();

@@ -1,12 +1,16 @@
 #include "readinput.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
+
+#include <cmath>
+#include <vector>
 #include <glm/geometric.hpp>
 #include <glm/gtc/constants.hpp>
-#include <cmath>
-#define GLM_ENABLE_EXPERIMENTAL
-#   include <glm/gtx/rotate_vector.hpp>
-#undef GLM_ENABLE_EXPERIMENTAL
-#include <vector>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/vec4.hpp>
+
+// Needed for g_projection_matrix and view matrix.
+#include "render.hpp"
 
 #define PI 3.14159f
 #define MAX_KEY_CODE 350
@@ -14,53 +18,7 @@
 const float MOVE_SPEED = 0.05f;
 
 static bool key_down[MAX_KEY_CODE] = {};
-
-static float last_mouse_read_x = 0.0f;
-static float last_mouse_read_y = 0.0f;
-static float this_mouse_read_x = 0.0f;
-static float this_mouse_read_y = 0.0f;
-
-static float facing = 0.0f;
-static float tilt = 0.0f;
-
 static InputState state;
-
-static void update_state()
-{
-    state.look_dir = {
-        cos(facing - glm::half_pi<float>()),
-        0.0f,
-        sin(facing - glm::half_pi<float>())
-    };
-    glm::vec3 side_dir = { -state.look_dir.z, 0.0f, state.look_dir.x };
-
-    state.movement = { 0.0f, 0.0f, 0.0f };
-
-    if (key_down[GLFW_KEY_W]) state.movement += MOVE_SPEED * state.look_dir;
-    if (key_down[GLFW_KEY_S]) state.movement -= MOVE_SPEED * state.look_dir;
-    if (key_down[GLFW_KEY_A]) state.movement -= MOVE_SPEED * side_dir;
-    if (key_down[GLFW_KEY_D]) state.movement += MOVE_SPEED * side_dir;
-
-    state.look_dir.y = tilt;
-    if (key_down[GLFW_KEY_SPACE])  state.movement.y += MOVE_SPEED;
-    if (key_down[GLFW_KEY_LEFT_SHIFT]) state.movement.y -= MOVE_SPEED;
-
-    state.shared.left  = key_down[GLFW_KEY_LEFT];
-    state.shared.right = key_down[GLFW_KEY_RIGHT];
-    state.shared.up    = key_down[GLFW_KEY_UP];
-    state.shared.down  = key_down[GLFW_KEY_DOWN];
-
-    state.debug_pause = key_down[GLFW_KEY_P];
-    state.debug_step  = key_down[GLFW_KEY_PERIOD];
-}
-
-static void update_key(bool& out_var, int match_key, int key, int action)
-{
-    if (key == match_key) {
-        if (action == GLFW_PRESS) out_var = true;
-        else if (action == GLFW_RELEASE) out_var = false;
-    }
-}
 
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -72,10 +30,14 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 
     if (key_down[GLFW_KEY_ESCAPE]) {
         glfwSetWindowShouldClose(window, GLFW_TRUE);
-        return;
     }
 
-    update_state();
+    state.shared.left  = key_down[GLFW_KEY_LEFT];
+    state.shared.right = key_down[GLFW_KEY_RIGHT];
+    state.shared.up    = key_down[GLFW_KEY_UP];
+    state.shared.down  = key_down[GLFW_KEY_DOWN];
+    state.debug_pause  = key_down[GLFW_KEY_P];
+    state.debug_step   = key_down[GLFW_KEY_PERIOD];
 }
 
 static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
@@ -89,46 +51,36 @@ static void mouse_button_callback(GLFWwindow* window, int button, int action, in
     }
 }
 
-#include <iostream>
-
 static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 {
     int width, height;
-    glfwGetWindowSize(window, &width, &height);
+    glfwGetFramebufferSize(window, &width, &height);
 
     const auto fwidth  = static_cast<float>(width);
     const auto fheight = static_cast<float>(height);
 
-    const auto x = (2.0f * xpos - fwidth) / fheight;
+    const auto x = 2.0f * xpos / fwidth - 1.0f;
     const auto y = 1.0f - 2.0f * ypos / fheight;
 
-    std::cout << x << "\t" << y << std::endl;
+    glm::vec4 ray_clip = glm::vec4(x, y, -1.0f, 1.0f);
 
-    facing = 0.0f;
-    tilt = 0.0f;
-    this_mouse_read_x = 0.0f;
-    this_mouse_read_y = 0.0f;
-    last_mouse_read_x = 0.0f;
-    last_mouse_read_y = 0.0f;
+    glm::vec4 ray_eye = glm::inverse(Renderer::g_projection_matrix) * ray_clip;
+    ray_eye.z = -1.0f;
+    ray_eye.w =  0.0f;
 
-    update_state();
-}
+    glm::vec4 ray_world = glm::inverse(Renderer::g_view_matrix) * ray_eye;
+    ray_world.w = 0.0f;
+    ray_world = glm::normalize(ray_world);
 
-static void cursor_pos_callback_first(GLFWwindow* window, double xpos, double ypos)
-{
-    last_mouse_read_x = (float)xpos;
-    last_mouse_read_y = (float)ypos;
-    glfwSetCursorPosCallback(window, cursor_pos_callback);
+    state.mouse_ray = ray_world;
 }
 
 void Input::bind_handlers(GLFWwindow* window)
 {
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-    glfwSetCursorPosCallback(window, cursor_pos_callback_first);
+    glfwSetCursorPosCallback(window, cursor_pos_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetKeyCallback(window, key_callback);
-
-    update_state();
 }
 
 InputState Input::read_state()
