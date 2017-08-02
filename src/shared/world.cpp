@@ -96,6 +96,7 @@ World World::step(const SharedInputState& old_input, const SharedInputState& new
     next.player.velocity = collision.velocity;
 
     if (collision.collided) {
+        next.player.ground_normal = collision.normal;
         if (collision.normal.y > 0.5f) {
             next.player.grounded = LATE_JUMP_FRAMES;
         }

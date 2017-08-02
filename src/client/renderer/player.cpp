@@ -18,13 +18,12 @@ void PlayerRenderer::draw_once(
     const auto pos3 = glm::vec3(player.position, 0.0f);
 
     m_wire_sphere_renderer->use(view, projection);
-    m_wire_sphere_renderer->draw(pos3, {0.5f, 0.5f, 0.5f}, { 0.0f, 1.0f, 0.0f });
+    m_wire_sphere_renderer->draw(pos3, {0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f});
     m_wire_sphere_renderer->done();
 
-    const float roto_degs = anim.radians * 180.0f / (float)M_PI;
-    const auto sprite_offset = glm::rotate(glm::vec2(0.0f, -0.57f), roto_degs);
+    const auto sprite_offset = glm::rotate(glm::vec2(0.0f, -0.57f), anim.radians);
 
     m_sprite_renderer->use(view, projection);
-    m_sprite_renderer->draw(pos3 + glm::vec3(sprite_offset, 0.0f), roto_degs, 1.0f, anim.frame);
+    m_sprite_renderer->draw(pos3 + glm::vec3(sprite_offset, 0.0f), anim.radians, 1.0f, anim.frame);
     m_sprite_renderer->done();
 }
