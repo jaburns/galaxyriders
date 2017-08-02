@@ -3,6 +3,8 @@
 #include <memory>
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
+#include "../../shared/world.hpp"
+#include "../state.hpp"
 #include "sprite.hpp"
 #include "wire.hpp"
 
@@ -17,5 +19,8 @@ class PlayerRenderer
 public:
     PlayerRenderer();
 
-    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec2& position);
+    void draw_once(
+        const glm::mat4x4& view, const glm::mat4x4& projection,
+        const World::Player& player, const ClientState::PlayerAnimation& anim
+    );
 };

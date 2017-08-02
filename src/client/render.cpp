@@ -26,7 +26,7 @@ Renderer::Renderer()
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
+//  glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
     glfwWindowHint(GLFW_SAMPLES, 4); // MSAA
 
     m_window = glfwCreateWindow(1280, 720, "Galaxy Riders", NULL, NULL);
@@ -82,8 +82,8 @@ void Renderer::render(const ClientState& state)
 
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
 //  m_skybox_renderer->draw_once(v, p);
-    m_player_renderer->draw_once(v, p, state.world.player.position);
-    m_player_renderer->draw_once(v, p, ray_pos);
+    m_player_renderer->draw_once(v, p, state.world.player, state.player_anim);
+    //TODO draw something at ray_pos
 
     glfwSwapBuffers(m_window);
     glfwPollEvents();

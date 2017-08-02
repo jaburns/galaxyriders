@@ -19,6 +19,9 @@ ClientState ClientState::step(const InputState& input) const
     float target_dist = 20.0f + 20.0f * glm::length(new_state.world.player.velocity);
     new_state.camera_dist += (target_dist - new_state.camera_dist) / 10.0f;
 
+    new_state.player_anim.frame++;
+    new_state.player_anim.radians += 0.001f;
+
     new_state.last_input = input;
 
     return new_state;

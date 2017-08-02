@@ -7,15 +7,18 @@ PlayerRenderer::PlayerRenderer()
     m_wire_sphere_renderer = std::make_unique<WireRenderer>(WireMeshes::CIRCLE);
 }
 
-void PlayerRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec2& position)
-{
-    const auto pos3 = glm::vec3(position, 0.0f);
+
+void PlayerRenderer::draw_once(
+    const glm::mat4x4& view, const glm::mat4x4& projection,
+    const World::Player& player, const ClientState::PlayerAnimation& anim
+) {
+    const auto pos3 = glm::vec3(player.position, 0.0f);
 
     m_wire_sphere_renderer->use(view, projection);
     m_wire_sphere_renderer->draw(pos3, {0.5f, 0.5f, 0.5f}, { 0.0f, 1.0f, 0.0f });
     m_wire_sphere_renderer->done();
 
     m_sprite_renderer->use(view, projection);
-    m_sprite_renderer->draw(pos3 + glm::vec3(0.0f, -0.5f, 0.0f), 1.0f, 0);
+    m_sprite_renderer->draw(pos3 + glm::vec3(0.0f, -0.5f, 0.0f), anim.radians, 1.0f, anim.frame);
     m_sprite_renderer->done();
 }

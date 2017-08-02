@@ -24,7 +24,7 @@ class SpriteRenderer
     std::unique_ptr<const ShaderProgram> m_program;
     std::unique_ptr<const Texture> m_texture;
     std::vector<SpriteFrame> m_frames;
-    
+
     glm::vec2 m_origin;
     float m_aspect;
 
@@ -38,6 +38,6 @@ public:
     ~SpriteRenderer();
 
     void use(const glm::mat4x4& view, const glm::mat4x4& projection);
-    void draw(const glm::vec3& position, float scale, int frame);
+    void draw(const glm::vec3& position, float rotation_rads, float scale, int frame);
     void done();
 };

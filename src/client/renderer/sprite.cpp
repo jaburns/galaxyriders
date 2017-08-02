@@ -1,8 +1,11 @@
 #include "sprite.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <tinyxml2.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/transform.hpp>
 #include "../palette.hpp"
 
 static GLfloat quad_vertices[] = {
@@ -98,16 +101,16 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void SpriteRenderer::draw(const glm::vec3& position, float scale, int frame)
+void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float scale, int frame)
 {
     frame %= m_frames.size();
 
     glm::vec3 new_pos = position + scale * (glm::vec3(m_frames[frame].offset, 0.0f) - glm::vec3(m_origin, 0.0f));
 
-    auto m = glm::scale(
-        glm::translate(glm::mat4(1.0f), new_pos), 
-        { scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f }
-    );
+    const auto m = glm::scale(
+            glm::translate(glm::mat4(1.0f), new_pos),
+            { scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f })
+        * glm::rotate(rotation_rads * 180.0f / 3.14159f, glm::vec3(0.0f, 0.0f, 1.0f));
 
     glUniform4fv(glGetUniformLocation(*m_program, "sprite_source"), 1, glm::value_ptr(m_frames[frame].sprite_source));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
