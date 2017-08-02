@@ -4,6 +4,27 @@
 
 static const float MOVEMENT_SPEED = 5.0f;
 
+#include <iostream>
+#define DLOG(x) (std::cout << (x) << std::endl)
+
+ClientState::PlayerAnimation ClientState::PlayerAnimation::step(const World::Player& old_player, const World::Player& new_player) const
+{
+    auto new_anim = *this;
+
+    if (new_player.grounded > 0) {
+        new_anim.radians = atan2f(new_player.ground_normal.y, new_player.ground_normal.x) - 3.141592654f/2.0f;
+        new_anim.frame = 0;
+    } else {
+        new_anim.radians *= 0.8f;
+    }
+
+    if (old_player.grounded > 0 && new_player.grounded == 0) {
+        DLOG("Ollied!");
+    }
+
+    return new_anim;
+}
+
 ClientState ClientState::step(const InputState& input) const
 {
     auto new_state = *this;
@@ -19,14 +40,7 @@ ClientState ClientState::step(const InputState& input) const
     float target_dist = 10.0f + 20.0f * glm::length(new_state.world.player.velocity);
     new_state.camera_dist += (target_dist - new_state.camera_dist) / 10.0f;
 
-    if (new_state.world.player.grounded > 0) {
-        new_state.player_anim.radians = atan2f(new_state.world.player.ground_normal.y, new_state.world.player.ground_normal.x) - 3.141592654f/2.0f;
-    } else {
-        new_state.player_anim.radians *= 0.8f;
-    }
-
-//  new_state.player_anim.frame++;
-//  new_state.player_anim.radians += 0.001f;
+    new_state.player_anim = new_state.player_anim.step(world.player, new_state.world.player);
 
     new_state.last_input = input;
 

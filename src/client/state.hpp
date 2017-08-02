@@ -10,6 +10,8 @@ struct ClientState
     struct PlayerAnimation {
         float radians = 0.0f;
         int32_t frame = 0;
+
+        PlayerAnimation step(const World::Player& old_player, const World::Player& new_player) const;
     };
 
     bool debug_paused = true;
