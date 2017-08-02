@@ -24,6 +24,6 @@ void PlayerRenderer::draw_once(
     const auto sprite_offset = glm::rotate(glm::vec2(0.0f, -0.57f), anim.radians);
 
     m_sprite_renderer->use(view, projection);
-    m_sprite_renderer->draw(pos3 + glm::vec3(sprite_offset, 0.0f), anim.radians, 1.0f, anim.frame);
+    m_sprite_renderer->draw(pos3 + glm::vec3(sprite_offset, 0.0f), anim.radians, 1.0f, anim.frame, anim.face_left);
     m_sprite_renderer->done();
 }

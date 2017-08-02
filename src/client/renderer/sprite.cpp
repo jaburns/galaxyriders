@@ -96,18 +96,22 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBindVertexArray(m_vao);
 
     glEnable(GL_BLEND);
+    glDisable(GL_CULL_FACE);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float scale, int frame)
+void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float scale, int frame, bool flipx)
 {
+
     frame %= m_frames.size();
 
     const auto offset_delta = scale * (m_frames[frame].offset - m_scaled_origin);
-    const auto scale_vec = glm::vec3(scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f);
     const auto rotated_delta = glm::rotate(offset_delta, rotation_rads);
 
-    const auto m = 
+    auto scale_vec = glm::vec3(scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f);
+    if (flipx) scale_vec.x *= -1.0f;
+
+    const auto m =
         glm::translate(position + glm::vec3(rotated_delta, 0.0f)) *
         glm::rotate(rotation_rads, glm::vec3(0.0f, 0.0f, 1.0f)) *
         glm::scale(scale_vec) *
@@ -122,4 +126,5 @@ void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float 
 void SpriteRenderer::done()
 {
     glDisable(GL_BLEND);
+    glEnable(GL_CULL_FACE);
 }

@@ -8,10 +8,18 @@
 struct ClientState
 {
     struct PlayerAnimation {
+        enum Mode {
+            STANDING,
+            OLLIE,
+            FLIPPING
+        };
+
         float radians = 0.0f;
         int32_t frame = 0;
+        bool face_left = false;
+        Mode mode = STANDING;
 
-        PlayerAnimation step(const World::Player& old_player, const World::Player& new_player) const;
+        PlayerAnimation step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right) const;
     };
 
     bool debug_paused = true;

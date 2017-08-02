@@ -17,4 +17,4 @@ void main()
         mix(sprite_source.x, sprite_source.z, position.x),
         mix(sprite_source.y, sprite_source.w, 1 - position.y)
     );
-}  
+}
