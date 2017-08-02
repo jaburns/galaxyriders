@@ -16,11 +16,11 @@ ClientState ClientState::step(const InputState& input) const
         new_state.world = new_state.world.step(last_input.shared, input.shared);
     }
 
-    float target_dist = 20.0f + 20.0f * glm::length(new_state.world.player.velocity);
+    float target_dist = 10.0f + 20.0f * glm::length(new_state.world.player.velocity);
     new_state.camera_dist += (target_dist - new_state.camera_dist) / 10.0f;
 
-    new_state.player_anim.frame++;
-    new_state.player_anim.radians += 0.001f;
+//  new_state.player_anim.frame++;
+//  new_state.player_anim.radians += 0.001f;
 
     new_state.last_input = input;
 

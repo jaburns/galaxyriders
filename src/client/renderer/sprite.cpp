@@ -4,8 +4,7 @@
 
 #include <tinyxml2.h>
 #include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
+#include <glm/gtx/rotate_vector.hpp>
 #include "../palette.hpp"
 
 static GLfloat quad_vertices[] = {
@@ -17,11 +16,11 @@ static GLfloat quad_vertices[] = {
      1.0f, 1.0f, 0.0f
 };
 
-// TODO m_origin should be passed as an argument, and so should "guy"
-SpriteRenderer::SpriteRenderer()
+SpriteRenderer::SpriteRenderer(const std::string& sprite_name, const glm::vec2& origin)
+    : m_sprite_name(sprite_name), m_origin(origin)
 {
     m_program = std::make_unique<const ShaderProgram>("res/shaders/sprite.vert", "res/shaders/sprite.frag");;
-    m_texture = std::make_unique<const Texture>("res/sprites/guy.sdf.png");
+    m_texture = std::make_unique<const Texture>("res/sprites/" + m_sprite_name + ".sdf.png");
     load_frames();
 
     glGenVertexArrays(1, &m_vao);
@@ -41,7 +40,7 @@ void SpriteRenderer::load_frames()
 
     SpriteFrame new_frame;
     XMLDocument doc;
-    doc.LoadFile("res/sprites/guy.xml");
+    doc.LoadFile(("res/sprites/" + m_sprite_name + ".xml").c_str());
     bool first_iter = true;
 
     auto *atlas = doc.FirstChildElement();
@@ -70,8 +69,7 @@ void SpriteRenderer::load_frames()
 
         if (first_iter) {
             m_aspect = frame_width / frame_height;
-            m_origin.x =  0.5f * m_aspect;
-            m_origin.y = -1.0f;
+            m_scaled_origin = glm::vec2(m_origin.x * m_aspect, m_origin.y);
             first_iter = false;
         }
     }
@@ -101,16 +99,19 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float scale, int frame)
+void SpriteRenderer::draw(const glm::vec3& position, float rotation_degs, float scale, int frame)
 {
     frame %= m_frames.size();
 
-    glm::vec3 new_pos = position + scale * (glm::vec3(m_frames[frame].offset, 0.0f) - glm::vec3(m_origin, 0.0f));
+    const auto offset_delta = scale * (m_frames[frame].offset - m_scaled_origin);
+    const auto scale_vec = glm::vec3(scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f);
+    const auto rotated_delta = glm::rotate(offset_delta, rotation_degs);
 
-    const auto m = glm::scale(
-            glm::translate(glm::mat4(1.0f), new_pos),
-            { scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f })
-        * glm::rotate(rotation_rads * 180.0f / 3.14159f, glm::vec3(0.0f, 0.0f, 1.0f));
+    const auto m = 
+        glm::translate(position + glm::vec3(rotated_delta, 0.0f)) *
+        glm::rotate(rotation_degs, glm::vec3(0.0f, 0.0f, 1.0f)) *
+        glm::scale(scale_vec) *
+        glm::mat4x4(1.0f);
 
     glUniform4fv(glGetUniformLocation(*m_program, "sprite_source"), 1, glm::value_ptr(m_frames[frame].sprite_source));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));

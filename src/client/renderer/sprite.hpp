@@ -1,6 +1,7 @@
 #pragma once
 
 #include <memory>
+#include <string>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
@@ -25,8 +26,11 @@ class SpriteRenderer
     std::unique_ptr<const Texture> m_texture;
     std::vector<SpriteFrame> m_frames;
 
-    glm::vec2 m_origin;
+    const std::string m_sprite_name;
+    const glm::vec2 m_origin;
+
     float m_aspect;
+    glm::vec2 m_scaled_origin;
 
     SpriteRenderer(const SpriteRenderer&) =delete;
     SpriteRenderer& operator=(const SpriteRenderer&) =delete;
@@ -34,10 +38,10 @@ class SpriteRenderer
     void load_frames();
 
 public:
-    SpriteRenderer();
+    SpriteRenderer(const std::string& sprite_name, const glm::vec2& origin);
     ~SpriteRenderer();
 
     void use(const glm::mat4x4& view, const glm::mat4x4& projection);
-    void draw(const glm::vec3& position, float rotation_rads, float scale, int frame);
+    void draw(const glm::vec3& position, float rotation_degs, float scale, int frame);
     void done();
 };
