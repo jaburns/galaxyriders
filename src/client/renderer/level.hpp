@@ -22,6 +22,8 @@ class LevelRenderer
 
     Mesh m_mesh;
     std::unique_ptr<const ShaderProgram> m_program;
+    std::unique_ptr<const Texture> m_noise_texture;
+    std::unique_ptr<const Texture> m_ground_texture;
 
     static Mesh load_mesh(const BakedLevel& level);
     static void push_poly(Mesh& mesh, const BakedLevel::Poly& p);

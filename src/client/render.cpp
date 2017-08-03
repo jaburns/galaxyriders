@@ -81,7 +81,7 @@ void Renderer::render(const ClientState& state)
     const glm::vec3 ray_pos = cam_pos + t * mouse_ray;
 
     m_level_renderer->draw_once(v, p, { 0.0f, 0.0f, -0.01f });
-//  m_skybox_renderer->draw_once(v, p);
+    m_skybox_renderer->draw_once(v, p);
     m_player_renderer->draw_once(v, p, state.world.player, state.player_anim);
     //TODO draw something at ray_pos
 

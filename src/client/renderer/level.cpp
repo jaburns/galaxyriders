@@ -9,6 +9,8 @@
 LevelRenderer::LevelRenderer(const BakedLevel& level)
 {
     m_program = std::make_unique<const ShaderProgram>("res/shaders/level.vert", "res/shaders/level.frag");
+    m_noise_texture = std::make_unique<const Texture>("res/textures/noise.png");
+    m_ground_texture = std::make_unique<const Texture>("res/textures/ground.png");
     m_mesh = load_mesh(level);
 
     glGenVertexArrays(1, &m_vao);
@@ -124,11 +126,16 @@ LevelRenderer::Mesh LevelRenderer::load_mesh(const BakedLevel& level)
 
 void LevelRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position)
 {
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, *m_noise_texture);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, *m_ground_texture);
+
     glUseProgram(*m_program);
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform3fv(glGetUniformLocation(*m_program, "color_dirt"), 1, glm::value_ptr(Palette::COLOR_DIRT));
-    glUniform3fv(glGetUniformLocation(*m_program, "color_turf"), 1, glm::value_ptr(Palette::COLOR_TURF));
+    glUniform1i(glGetUniformLocation(*m_program, "noise_texture"), 0);
+    glUniform1i(glGetUniformLocation(*m_program, "ground_texture"), 1);
 
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
