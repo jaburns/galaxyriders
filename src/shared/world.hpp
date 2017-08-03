@@ -15,6 +15,7 @@ struct World
         glm::vec2 velocity = { -0.0f, 0.0f };
         glm::vec2 ground_normal = { 0.0f, 1.0f };
         uint8_t grounded = 0;
+        bool air_stomping = false;
     };
 
     int frame_counter = 0;

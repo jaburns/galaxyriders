@@ -23,6 +23,11 @@ ClientState::PlayerAnimation ClientState::PlayerAnimation::step(const World::Pla
         new_anim.frame = 0;
     }
 
+    if (!old_player.air_stomping && new_player.air_stomping) {
+        new_anim.mode = STOMPING;
+        new_anim.frame = 12;
+    }
+
     if (move_left)  new_anim.face_left = true;
     if (move_right) new_anim.face_left = false;
 
@@ -39,6 +44,9 @@ ClientState::PlayerAnimation ClientState::PlayerAnimation::step(const World::Pla
             if (++new_anim.frame > 12) {
                 new_anim.frame -= 4;
             }
+            break;
+        case STOMPING:
+            if (new_anim.frame < 18) new_anim.frame++;
             break;
     }
 

@@ -81,6 +81,7 @@ World World::step(const SharedInputState& old_input, const SharedInputState& new
     }
 
     if (new_input.down) {
+        next.player.air_stomping = true;
         next.player.velocity.y -= PUMP_ACCEL;
     }
 
@@ -100,6 +101,7 @@ World World::step(const SharedInputState& old_input, const SharedInputState& new
         if (collision.normal.y > 0.5f) {
             next.player.grounded = LATE_JUMP_FRAMES;
         }
+        next.player.air_stomping = false;
     } else if (next.player.grounded > 0) {
         next.player.grounded--;
     }

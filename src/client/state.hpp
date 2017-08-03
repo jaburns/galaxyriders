@@ -11,7 +11,8 @@ struct ClientState
         enum Mode {
             STANDING,
             OLLIE,
-            FLIPPING
+            FLIPPING,
+            STOMPING
         };
 
         float radians = 0.0f;

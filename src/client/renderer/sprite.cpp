@@ -1,4 +1,4 @@
-#include "sprite.hpp"
+﻿#include "sprite.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -102,14 +102,17 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
 
 void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float scale, int frame, bool flipx)
 {
-
     frame %= m_frames.size();
 
-    const auto offset_delta = scale * (m_frames[frame].offset - m_scaled_origin);
-    const auto rotated_delta = glm::rotate(offset_delta, rotation_rads);
-
+    auto offset_delta = scale * (m_frames[frame].offset - m_scaled_origin);
     auto scale_vec = glm::vec3(scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f);
-    if (flipx) scale_vec.x *= -1.0f;
+
+    if (flipx) { // TODO This implementation of flipx only works when the sprite origin has x=0.5, which is currently true for the only sprite ¯\_(ツ)_/¯
+        scale_vec.x *= -1.0f;
+        offset_delta.x *= -1.0f;
+    }
+
+    const auto rotated_delta = glm::rotate(offset_delta, rotation_rads);
 
     const auto m =
         glm::translate(position + glm::vec3(rotated_delta, 0.0f)) *
