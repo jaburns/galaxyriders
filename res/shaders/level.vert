@@ -1,12 +1,10 @@
 #version 150
 
 in vec2 position;
-in float vdepth;
-in float vspan;
+in vec2 surface_pos;
 
-out float v_vdepth;
-out float v_vspan;
 out vec4 v_world_pos;
+out vec2 v_surface_pos;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -16,6 +14,5 @@ void main()
 {
     v_world_pos = model * vec4(position, 0.0, 1.0);
     gl_Position = projection * view * v_world_pos;
-    v_vdepth = vdepth;
-    v_vspan = vspan;
+    v_surface_pos = surface_pos;
 }

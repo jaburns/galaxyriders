@@ -20,19 +20,13 @@ LevelRenderer::LevelRenderer(const BakedLevel& level)
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, m_mesh.vertices.size() * sizeof(glm::vec2), m_mesh.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(*m_program, "position"));
-    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, (void*) 0);
+    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*) 0);
 
-    glGenBuffers(1, &m_vdepth_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vdepth_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.vdepths.size() * sizeof(float), m_mesh.vdepths.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "vdepth"));
-    glVertexAttribPointer(glGetAttribLocation(*m_program, "vdepth"), 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*) 0);
-
-    glGenBuffers(1, &m_vspan_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vspan_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.vspans.size() * sizeof(float), m_mesh.vspans.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "vspan"));
-    glVertexAttribPointer(glGetAttribLocation(*m_program, "vspan"), 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*) 0);
+    glGenBuffers(1, &m_surface_pos_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_surface_pos_buffer);
+    glBufferData(GL_ARRAY_BUFFER, m_mesh.surface_pos.size() * sizeof(glm::vec2), m_mesh.surface_pos.data(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "surface_pos"));
+    glVertexAttribPointer(glGetAttribLocation(*m_program, "surface_pos"), 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*) 0);
 
     glGenBuffers(1, &m_index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
@@ -44,7 +38,7 @@ LevelRenderer::~LevelRenderer()
     glBindVertexArray(0);
     glDeleteVertexArrays(1, &m_vao);
     glDeleteBuffers(1, &m_vertex_buffer);
-    glDeleteBuffers(1, &m_vdepth_buffer);
+    glDeleteBuffers(1, &m_surface_pos_buffer);
     glDeleteBuffers(1, &m_index_buffer);
 }
 
@@ -89,13 +83,14 @@ void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
     auto new_vert_count = 2 * poly.points.size();
 
     mesh.vertices.reserve(base_vert_index + new_vert_count);
-    mesh.vdepths.reserve(base_vert_index + new_vert_count);
-    mesh.vspans.reserve(base_vert_index + new_vert_count);
+    mesh.surface_pos.reserve(base_vert_index + new_vert_count);
 
     for (auto i = 0; i < new_vert_count; i++) {
         mesh.vertices.push_back(i % 2 == 0 ? poly.points[i/2] : inset_pts[i/2]);
-        mesh.vdepths.push_back(i % 2 == 0 ? 0.0f : 1.0f);
-        mesh.vspans.push_back(i % 2 == 1 ? 0.0f : 1.0f); // TODO measure distance along outside of polygon here
+        mesh.surface_pos.push_back(glm::vec2(
+            0.0f, // TODO compute surface x pos
+            i % 2 == 0 ? 0.0f : 1.0f
+        ));
     }
 
     std::vector<uint32_t> inner_indices = Triangulator::triangulate(poly.points);
