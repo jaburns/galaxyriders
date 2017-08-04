@@ -85,10 +85,16 @@ void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
     mesh.vertices.reserve(base_vert_index + new_vert_count);
     mesh.surface_pos.reserve(base_vert_index + new_vert_count);
 
+    float surface_run = 0.0f;
+
     for (auto i = 0; i < new_vert_count; i++) {
+        if (i > 0 && i % 2 == 0) {
+            surface_run += glm::length(poly.points[i/2] - poly.points[i/2-1]);
+        }
+
         mesh.vertices.push_back(i % 2 == 0 ? poly.points[i/2] : inset_pts[i/2]);
         mesh.surface_pos.push_back(glm::vec2(
-            0.0f, // TODO compute surface x pos
+            surface_run,
             i % 2 == 0 ? 0.0f : 1.0f
         ));
     }
