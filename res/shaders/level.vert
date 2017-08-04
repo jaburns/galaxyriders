@@ -2,8 +2,10 @@
 
 in vec2 position;
 in float vdepth;
+in float vspan;
 
 out float v_vdepth;
+out float v_vspan;
 out vec4 v_world_pos;
 
 uniform mat4 model;
@@ -15,4 +17,5 @@ void main()
     v_world_pos = model * vec4(position, 0.0, 1.0);
     gl_Position = projection * view * v_world_pos;
     v_vdepth = vdepth;
+    v_vspan = vspan;
 }

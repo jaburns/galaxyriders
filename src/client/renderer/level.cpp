@@ -28,6 +28,12 @@ LevelRenderer::LevelRenderer(const BakedLevel& level)
     glEnableVertexAttribArray(glGetAttribLocation(*m_program, "vdepth"));
     glVertexAttribPointer(glGetAttribLocation(*m_program, "vdepth"), 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*) 0);
 
+    glGenBuffers(1, &m_vspan_buffer);
+    glBindBuffer(GL_ARRAY_BUFFER, m_vspan_buffer);
+    glBufferData(GL_ARRAY_BUFFER, m_mesh.vspans.size() * sizeof(float), m_mesh.vspans.data(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "vspan"));
+    glVertexAttribPointer(glGetAttribLocation(*m_program, "vspan"), 1, GL_FLOAT, GL_FALSE, sizeof(float), (void*) 0);
+
     glGenBuffers(1, &m_index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_mesh.indices.size() * sizeof(uint32_t), m_mesh.indices.data(), GL_STATIC_DRAW);
@@ -84,10 +90,12 @@ void LevelRenderer::push_poly(Mesh& mesh, const BakedLevel::Poly& poly)
 
     mesh.vertices.reserve(base_vert_index + new_vert_count);
     mesh.vdepths.reserve(base_vert_index + new_vert_count);
+    mesh.vspans.reserve(base_vert_index + new_vert_count);
 
     for (auto i = 0; i < new_vert_count; i++) {
         mesh.vertices.push_back(i % 2 == 0 ? poly.points[i/2] : inset_pts[i/2]);
         mesh.vdepths.push_back(i % 2 == 0 ? 0.0f : 1.0f);
+        mesh.vspans.push_back(i % 2 == 1 ? 0.0f : 1.0f); // TODO measure distance along outside of polygon here
     }
 
     std::vector<uint32_t> inner_indices = Triangulator::triangulate(poly.points);

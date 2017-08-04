@@ -1,6 +1,7 @@
 #version 150
 
 in float v_vdepth;
+in float v_vspan;
 in vec4 v_world_pos;
 
 out vec4 color;
@@ -12,6 +13,8 @@ void main()
 {
 //  float antialias = 0.5*fwidth(v_vdepth);
 //  float smooth_depth = smoothstep(0.5 - antialias, 0.5 + antialias, v_vdepth);
+
+// TODO draw something along v_vspan
 
     float smooth_depth = v_vdepth;
 

@@ -12,12 +12,14 @@ class LevelRenderer
     struct Mesh {
         std::vector<glm::vec2> vertices;
         std::vector<float> vdepths;
+        std::vector<float> vspans;
         std::vector<uint32_t> indices;
     };
 
     GLuint m_vao;
     GLuint m_vertex_buffer;
     GLuint m_vdepth_buffer;
+    GLuint m_vspan_buffer;
     GLuint m_index_buffer;
 
     Mesh m_mesh;
