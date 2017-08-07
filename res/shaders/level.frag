@@ -10,14 +10,14 @@ uniform sampler2D noise_texture;
 
 void main()
 {
-    vec4 color_ground = texture(ground_texture, v_world_pos.xy * 0.1);
-    float color_noise  = texture( noise_texture, v_world_pos.xy * 0.1).r;
-    vec4 color_mixed = (0.5 + 0.5*color_noise)*color_ground;
+    vec3 color_raw_ground = texture(ground_texture, v_world_pos.xy * 0.1).rgb;
+    float color_noise = texture(noise_texture, v_world_pos.xy * 0.1).r;
+    vec3 color_dirt = (0.5 + 0.5*color_noise)*color_raw_ground;
 
-    vec4 color_with_surf = mix(vec4(0,0,0.9,1), color_mixed, clamp(v_surface_pos.y, 0.2, 1));
+    vec3 color_turf = mod(v_surface_pos.x, 1) > 0.5 ? vec3(1,0,0) : vec3(0,1,0);
 
-    float clamper = clamp((1 - v_surface_pos.y)*10, 0, 1);
-    float changer = (0.5 + 0.5*sin(v_surface_pos.x)) * clamper;
-
-    color = mix(color_with_surf, vec4(1, 0, 0, 1), changer);
+    float antialias = fwidth(v_surface_pos.y);
+    float smooth_depth = smoothstep(0, antialias, v_surface_pos.y);
+    color = vec4(mix(color_turf, color_dirt, clamp(smooth_depth, 0.2, 0.8)), 1);
+//  color = vec4(color_turf, 1);
 }
