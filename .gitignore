@@ -3,8 +3,6 @@ server_bin
 Debug
 Release
 GLGame.vcxproj.user
-.vs
-.vscode
 src/client/gen
 tools/*
 !tools/build
