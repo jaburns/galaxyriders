@@ -18,7 +18,7 @@ struct InputState
 
 namespace Input
 {
-    void bind_handlers(GLFWwindow* window);
+    void bind_handlers(SDL_Window* window);
     InputState read_state();
     glm::vec3 get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view);
 }

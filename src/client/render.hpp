@@ -11,7 +11,8 @@
 
 class Renderer
 {
-    GLFWwindow* m_window;
+    SDL_Window* m_window;
+    SDL_GLContext m_context;
     std::unique_ptr<SkyboxRenderer> m_skybox_renderer;
     std::unique_ptr<LevelRenderer> m_level_renderer;
     std::unique_ptr<PlayerRenderer> m_player_renderer;
@@ -23,7 +24,7 @@ public:
     Renderer();
     ~Renderer();
 
-    GLFWwindow* raw_glfw_window() const { return m_window; }
-    bool should_close_window() const { return glfwWindowShouldClose(m_window); }
+    SDL_Window* raw_glfw_window() const { return m_window; }
+    bool should_close_window() const { return false; } //glfwWindowShouldClose(m_window); }
     void render(const ClientState& state);
 };

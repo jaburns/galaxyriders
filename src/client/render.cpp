@@ -9,39 +9,41 @@
 #include "readinput.hpp"
 #include "palette.hpp"
 
-static void error_callback(int error, const char* description)
-{
-    fprintf(stderr, "Error: %s\n", description);
-    exit(EXIT_FAILURE);
-}
+// static void error_callback(int error, const char* description)
+// {
+//     fprintf(stderr, "Error: %s\n", description);
+//     exit(EXIT_FAILURE);
+// }
 
 Renderer::Renderer()
 {
-    glfwSetErrorCallback(error_callback);
-    if (!glfwInit()) {
+    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         exit(EXIT_FAILURE);
+        return;
     }
 
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-    glfwWindowHint(GLFW_MAXIMIZED, GL_TRUE);
-    glfwWindowHint(GLFW_SAMPLES, 4); // MSAA
+    m_window = SDL_CreateWindow(
+        "Galaxy Riders", 
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        1280, 720,
+        SDL_WINDOW_OPENGL
+    );
 
-    m_window = glfwCreateWindow(1280, 720, "Galaxy Riders", NULL, NULL);
-    if (!m_window) {
-        glfwTerminate();
-        exit(EXIT_FAILURE);
-    }
+    m_context = SDL_GL_CreateContext(m_window);
 
-    glfwMakeContextCurrent(m_window);
-    glfwSwapInterval(1); // 1: vsync, 0: fast
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1); // MSAA
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+    SDL_GL_SetSwapInterval(1); // 1: vsync, 0: fast
 
 #ifdef _WIN32
-    GLint GlewInitResult = glewInit();
-    if (GLEW_OK != GlewInitResult) {
-        printf("ERROR: %s\n", glewGetErrorString(GlewInitResult));
+    glewExperimental = GL_TRUE;
+    const auto glewInitResult = glewInit();
+    if (glewInitResult != GLEW_OK) {
+        printf("ERROR: %s\n", glewGetErrorString(glewInitResult));
         exit(EXIT_FAILURE);
     }
 #endif
@@ -52,7 +54,7 @@ Renderer::Renderer()
     glFrontFace(GL_CW);
     glCullFace(GL_BACK);
     glClearColor(Palette::COLOR_SPACE.r, Palette::COLOR_SPACE.g, Palette::COLOR_SPACE.b, 1.0f);
-    glLineWidth(9.0f);
+    glLineWidth(1.0f);
 
     m_skybox_renderer = std::make_unique<SkyboxRenderer>();
     m_level_renderer = std::make_unique<LevelRenderer>(World::BAKED_LEVEL);
@@ -61,8 +63,8 @@ Renderer::Renderer()
 
 void Renderer::render(const ClientState& state)
 {
-    int width, height;
-    glfwGetFramebufferSize(m_window, &width, &height);
+    int width = 1280, height = 720;
+//  glfwGetFramebufferSize(m_window, &width, &height);
     glViewport(0, 0, width, height);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -85,12 +87,13 @@ void Renderer::render(const ClientState& state)
     m_player_renderer->draw_once(v, p, state.world.player, state.player_anim);
     //TODO draw something at ray_pos
 
-    glfwSwapBuffers(m_window);
-    glfwPollEvents();
+    SDL_GL_SwapWindow(m_window);
+//  glfwPollEvents(); // TODO poll for input
 }
 
 Renderer::~Renderer()
 {
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
+	SDL_GL_DeleteContext(m_context);
+	SDL_DestroyWindow(m_window);
+	SDL_Quit();
 }
