@@ -12,3 +12,5 @@ tools/*
 *.sdf.png
 build
 Makefile
+SDL2.dll
+glew32.dll
