@@ -1,8 +1,11 @@
 #pragma once
 
-#include <SDL.h>
-#ifdef _WIN32
+#ifdef __APPLE__
+#   include <OpenGL/gl3.h>
+#   include <SDL2/SDL.h>
+#elif _WIN32
 #   include <GL/glew.h>
+#   include <SDL.h>
+#else
+#   error "Unsupported platform"
 #endif
-#include <gl\glew.h>
-#include <SDL_opengl.h>
