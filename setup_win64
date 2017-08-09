@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+git submodule update --init --recursive
+
 pushd external
 
     wget https://downloads.sourceforge.net/project/glew/glew/2.1.0/glew-2.1.0-win32.zip
