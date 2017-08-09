@@ -2,8 +2,6 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-# Requires SDL2 v2.0.5: brew install sdl2
-
 CC='cc'
 CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2'
 LDFLAGS='-lstdc++ -lSDL2 -framework OpenGL'
