@@ -16,6 +16,8 @@ Now open ``GalaxyRiders.sln`` in Visual Studio and the project should build and 
 
 ```
 brew install sdl2
+git clone git@github.com:jaburns/galaxyriders
+cd galaxyriders
 git submodule update --init --recursive
 pushd tools
 ./build
