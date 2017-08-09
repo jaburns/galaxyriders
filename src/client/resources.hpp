@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glfw.hpp"
+#include "gfx.hpp"
 #include <memory>
 #include <cstdint>
 #include <vector>

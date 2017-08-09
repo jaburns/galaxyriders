@@ -1,34 +1,30 @@
 #include "readinput.hpp"
 
 #include <cmath>
-#include <vector>
+#include <unordered_set>
 #include <glm/vec4.hpp>
 
 #define MAX_KEY_CODE 350
 
 const float MOVE_SPEED = 0.05f;
 
-static bool key_down[MAX_KEY_CODE] = {};
+static std::unordered_set<SDL_Keycode> keys_down;
 static InputState state;
 
-static void key_callback(SDL_Window* window, int key, int scancode, int action, int mods)
+void Input::GLOBAL_key_callback(SDL_Keycode keycode, bool press)
 {
-//  if (action == GLFW_PRESS) {
-//      key_down[key] = true;
-//  } else if (action == GLFW_RELEASE) {
-//      key_down[key] = false;
-//  }
+    if (press) {
+        keys_down.insert(keycode);
+    } else {
+        keys_down.erase(keycode);
+    }
 
-//  if (key_down[GLFW_KEY_ESCAPE]) {
-//      glfwSetWindowShouldClose(window, GLFW_TRUE);
-//  }
-
-//  state.shared.left  = key_down[GLFW_KEY_LEFT];
-//  state.shared.right = key_down[GLFW_KEY_RIGHT];
-//  state.shared.up    = key_down[GLFW_KEY_UP];
-//  state.shared.down  = key_down[GLFW_KEY_DOWN];
-//  state.debug_pause  = key_down[GLFW_KEY_P];
-//  state.debug_step   = key_down[GLFW_KEY_PERIOD];
+    state.shared.left  = keys_down.count(SDLK_LEFT);
+    state.shared.right = keys_down.count(SDLK_RIGHT);
+    state.shared.up    = keys_down.count(SDLK_UP);
+    state.shared.down  = keys_down.count(SDLK_DOWN);
+    state.debug_pause  = keys_down.count(SDLK_p);
+    state.debug_step   = keys_down.count(SDLK_PERIOD);
 }
 
 static void mouse_button_callback(SDL_Window* window, int button, int action, int mods)

@@ -26,7 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\client\gen\wire_meshes.hpp" />
-    <ClInclude Include="src\client\glfw.hpp" />
+    <ClInclude Include="src\client\gfx.hpp" />
     <ClInclude Include="src\client\palette.hpp" />
     <ClInclude Include="src\client\readinput.hpp" />
     <ClInclude Include="src\client\render.hpp" />

@@ -4,7 +4,7 @@
 #include <array>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-#include "../glfw.hpp"
+#include "../gfx.hpp"
 #include "../resources.hpp"
 
 class WireRenderer
