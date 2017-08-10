@@ -13,7 +13,6 @@ Renderer::Renderer()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         exit(EXIT_FAILURE);
-        return;
     }
 
     m_window_width = 1280;
