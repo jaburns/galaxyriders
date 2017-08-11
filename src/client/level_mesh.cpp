@@ -15,7 +15,7 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
     for (auto i = 0; i < points.size(); ++i) {
         const auto i0 = i == 0 ? points.size() - 1 : i - 1;
         const auto i1 = i == points.size() - 1 ? 0 : i + 1;
-        glm::vec2 a = points[i0], b = points[i], c = points[i1];
+        const auto a = points[i0], b = points[i], c = points[i1];
 
         const auto b_a = glm::normalize(b - a);
         const auto c_b = glm::normalize(c - b);
@@ -33,6 +33,77 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
     return result;
 }
 
+static void push_poly_ex(LevelMesh& mesh, const BakedLevel::Poly& poly)
+{
+    const auto inset_pts = inset_points(poly.points);
+
+    // ----- Inner-earth mesh building -----
+    {
+        const auto inner_indices = Triangulator::triangulate(inset_pts);
+
+        const auto base_vert_index = mesh.vertices.size();
+        const auto base_tri_index = mesh.indices.size();
+
+        mesh.vertices.reserve(base_vert_index + inset_pts.size());
+        mesh.surface_pos.reserve(base_vert_index + inset_pts.size());
+        mesh.indices.reserve(base_tri_index + inner_indices.size());
+
+        for (auto i = 0; i < inset_pts.size(); ++i) {
+            mesh.vertices.push_back(inset_pts[i]);
+            mesh.surface_pos.push_back({ 0.0f, 1.0f });
+        }
+
+        for (auto i = 0; i < inner_indices.size(); ++i) {
+            mesh.indices.push_back(base_vert_index + inner_indices[i]);
+        }
+    }
+
+    // ----- Outer crust mesh building
+    {
+        const auto base_vert_index = mesh.vertices.size();
+        const auto base_tri_index = mesh.indices.size();
+        const auto new_vert_count = 4 * poly.points.size();
+
+        mesh.vertices.reserve(base_vert_index + new_vert_count);
+        mesh.surface_pos.reserve(base_vert_index + new_vert_count);
+        mesh.indices.reserve(base_tri_index + 6 * poly.points.size());
+
+        auto surface_run = 0.0f;
+
+        for (auto i = 0; i < poly.points.size(); i++) {
+            auto j = (i + 1) % poly.points.size();
+
+            mesh.vertices.push_back(poly.points[i]);
+            mesh.vertices.push_back(inset_pts[i]);
+            mesh.vertices.push_back(poly.points[j]);
+            mesh.vertices.push_back(inset_pts[j]);
+
+            mesh.surface_pos.push_back(glm::vec2(surface_run, 0.0f));
+            mesh.surface_pos.push_back(glm::vec2(surface_run, 1.0f));
+
+            surface_run += glm::length(poly.points[j] - poly.points[i]);
+
+            mesh.surface_pos.push_back(glm::vec2(surface_run, 0.0f));
+            mesh.surface_pos.push_back(glm::vec2(surface_run, 1.0f));
+        }
+
+        for (auto i = 0; i < new_vert_count; i += 4) {
+            const auto a = base_vert_index + i;
+            const auto b = base_vert_index + i+1;
+            const auto c = base_vert_index + (i+2)%new_vert_count;
+            const auto d = base_vert_index + (i+3)%new_vert_count;
+
+            mesh.indices.push_back(a);
+            mesh.indices.push_back(c);
+            mesh.indices.push_back(b);
+            mesh.indices.push_back(b);
+            mesh.indices.push_back(c);
+            mesh.indices.push_back(d);
+        }
+    }
+}
+
+// DEPRECATED
 static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
 {
     const auto base_vert_index = mesh.vertices.size();
@@ -58,7 +129,7 @@ static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
         ));
     }
 
-    std::vector<uint32_t> inner_indices = Triangulator::triangulate(poly.points);
+    const auto inner_indices = Triangulator::triangulate(poly.points);
 
     mesh.indices.resize(base_tri_index + 3 * new_vert_count + inner_indices.size());
 
@@ -84,6 +155,6 @@ static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
 LevelMesh::LevelMesh(const BakedLevel& level)
 {
     for (const auto& poly : level.polys) {
-        push_poly(*this, poly);
+        push_poly_ex(*this, poly);
     }
 }
