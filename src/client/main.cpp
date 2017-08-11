@@ -15,9 +15,8 @@
 void main_net()
 {
     GameRenderer renderer;
-
     UDPSocket socket;
-    SocketAddress send_address = UDPSocket::get_host_address("localhost", Config::DEFAULT_PORT);
+    const auto send_address = UDPSocket::get_host_address("localhost", Config::DEFAULT_PORT);
     SocketAddress receive_address;
     uint8_t buffer[Config::MAX_PACKET_SIZE];
 
@@ -29,10 +28,10 @@ void main_net()
 
     auto receive_world = std::chrono::high_resolution_clock::now();
     auto last_receive_world = std::chrono::high_resolution_clock::now();
-    float millis_per_tick = 100.0f;
+    auto millis_per_tick = 100.0f;
 
     while (!Gfx::g_should_close_window) {
-        int message_len = 0;
+        int32_t message_len = 0;
         if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
             last_world = new_world;
             new_world = World(buffer, message_len);
@@ -42,10 +41,10 @@ void main_net()
             millis_per_tick = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(receive_world - last_receive_world).count());
         }
 
-        auto this_frame = std::chrono::high_resolution_clock::now();
-        float millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
+        const auto this_frame = std::chrono::high_resolution_clock::now();
+        const auto millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
-        auto inp = Input::read_state();
+        const auto inp = Input::read_state();
         if (inp.mouse_click) {
         //  renderer.render(last_world.lerp_to(new_world, millis_since_update / millis_per_tick));
         } else {
@@ -62,11 +61,11 @@ void main_local()
     ClientState last_state, new_state;
 
     auto current_time = std::chrono::high_resolution_clock::now();
-    float accumulator = 0.0f;
+    auto accumulator = 0.0f;
 
     while (!Gfx::g_should_close_window) {
         const auto new_time = std::chrono::high_resolution_clock::now();
-        const float frame_millis = static_cast<const float>(std::chrono::duration_cast<std::chrono::milliseconds>(new_time - current_time).count());
+        const auto frame_millis = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(new_time - current_time).count());
         current_time = new_time;
         accumulator += frame_millis;
 

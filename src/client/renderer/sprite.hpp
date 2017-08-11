@@ -23,6 +23,7 @@ class SpriteRenderer : public NoCopy
 
     const ShaderProgram m_program;
     const Texture m_texture;
+
     const std::string m_sprite_name;
     const glm::vec2 m_origin;
 

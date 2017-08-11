@@ -7,7 +7,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include "../palette.hpp"
 
-static GLfloat quad_vertices[] = {
+static constexpr GLfloat quad_vertices[] = {
      0.0f, 1.0f, 0.0f,
      1.0f, 0.0f, 0.0f,
      0.0f, 0.0f, 0.0f,
@@ -37,23 +37,23 @@ SpriteRenderer::SpriteRenderer(const std::string& sprite_name, const glm::vec2& 
 void SpriteRenderer::load_frames()
 {
     using namespace tinyxml2;
-    const float SPRITE_SHEET_SIZE = 4096.0f;
+    constexpr auto SPRITE_SHEET_SIZE = 4096.0f;
 
     SpriteFrame new_frame;
     XMLDocument doc;
     doc.LoadFile(("res/sprites/" + m_sprite_name + ".xml").c_str());
     bool first_iter = true;
 
-    auto *atlas = doc.FirstChildElement();
-    for (auto *child = atlas->FirstChildElement(); child != nullptr; child = child->NextSiblingElement()) {
-        float sprite_x = child->FloatAttribute("x");
-        float sprite_y = child->FloatAttribute("y");
-        float sprite_width = child->FloatAttribute("width");
-        float sprite_height = child->FloatAttribute("height");
-        float frame_offset_x = child->FloatAttribute("frameX");
-        float frame_offset_y = child->FloatAttribute("frameY");
-        float frame_width = child->FloatAttribute("frameWidth");
-        float frame_height = child->FloatAttribute("frameHeight");
+    const auto *atlas = doc.FirstChildElement();
+    for (const auto *child = atlas->FirstChildElement(); child != nullptr; child = child->NextSiblingElement()) {
+        const auto sprite_x = child->FloatAttribute("x");
+        const auto sprite_y = child->FloatAttribute("y");
+        const auto sprite_width = child->FloatAttribute("width");
+        const auto sprite_height = child->FloatAttribute("height");
+        const auto frame_offset_x = child->FloatAttribute("frameX");
+        const auto frame_offset_y = child->FloatAttribute("frameY");
+        const auto frame_width = child->FloatAttribute("frameWidth");
+        const auto frame_height = child->FloatAttribute("frameHeight");
 
         new_frame.sprite_source.x = sprite_x / SPRITE_SHEET_SIZE;
         new_frame.sprite_source.y = sprite_y / SPRITE_SHEET_SIZE;
@@ -107,14 +107,12 @@ void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float 
 
     auto offset_delta = scale * (m_frames[frame].offset - m_scaled_origin);
     auto scale_vec = glm::vec3(scale * m_aspect * m_frames[frame].scale.x, scale * m_frames[frame].scale.y, 1.0f);
-
     if (flipx) { // TODO This implementation of flipx only works when the sprite origin has x=0.5, which is currently true for the only sprite ¯\_(ツ)_/¯
         scale_vec.x *= -1.0f;
         offset_delta.x *= -1.0f;
     }
 
     const auto rotated_delta = glm::rotate(offset_delta, rotation_rads);
-
     const auto m =
         glm::translate(position + glm::vec3(rotated_delta, 0.0f)) *
         glm::rotate(rotation_rads, glm::vec3(0.0f, 0.0f, 1.0f)) *

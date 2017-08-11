@@ -12,17 +12,17 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 
     std::vector<glm::vec2> result(points.size());
 
-    for (size_t i = 0; i < points.size(); ++i) {
-        auto i0 = i == 0 ? points.size() - 1 : i - 1;
-        auto i1 = i == points.size() - 1 ? 0 : i + 1;
+    for (auto i = 0; i < points.size(); ++i) {
+        const auto i0 = i == 0 ? points.size() - 1 : i - 1;
+        const auto i1 = i == points.size() - 1 ? 0 : i + 1;
         glm::vec2 a = points[i0], b = points[i], c = points[i1];
 
-        auto b_a = glm::normalize(b - a);
-        auto c_b = glm::normalize(c - b);
+        const auto b_a = glm::normalize(b - a);
+        const auto c_b = glm::normalize(c - b);
 
-        auto half_vector = glm::normalize(b_a + c_b);
-        auto diff_dot = glm::dot(b_a, half_vector);
-        auto depth = DEPTH / diff_dot;
+        const auto half_vector = glm::normalize(b_a + c_b);
+        const auto diff_dot = glm::dot(b_a, half_vector);
+        const auto depth = DEPTH / diff_dot;
 
         auto norm = glm::normalize(b_a - c_b);
         if (Geometry::vec2_cross(b_a, c - a) < 0.0f) norm *= -1;
@@ -35,16 +35,16 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 
 static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
 {
-    size_t base_vert_index = mesh.vertices.size();
-    size_t base_tri_index = mesh.indices.size();
+    const auto base_vert_index = mesh.vertices.size();
+    const auto base_tri_index = mesh.indices.size();
 
-    auto inset_pts = inset_points(poly.points);
-    auto new_vert_count = 2 * poly.points.size();
+    const auto inset_pts = inset_points(poly.points);
+    const auto new_vert_count = 2 * poly.points.size();
 
     mesh.vertices.reserve(base_vert_index + new_vert_count);
     mesh.surface_pos.reserve(base_vert_index + new_vert_count);
 
-    float surface_run = 0.0f;
+    auto surface_run = 0.0f;
 
     for (auto i = 0; i < new_vert_count; i++) {
         if (i > 0 && i % 2 == 0) {
@@ -63,10 +63,10 @@ static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
     mesh.indices.resize(base_tri_index + 3 * new_vert_count + inner_indices.size());
 
     for (auto i = 0; i < new_vert_count; i += 2) {
-        auto a = base_tri_index + i;
-        auto b = base_tri_index + i+1;
-        auto c = base_tri_index + (i+2)%new_vert_count;
-        auto d = base_tri_index + (i+3)%new_vert_count;
+        const auto a = base_tri_index + i;
+        const auto b = base_tri_index + i+1;
+        const auto c = base_tri_index + (i+2)%new_vert_count;
+        const auto d = base_tri_index + (i+3)%new_vert_count;
 
         mesh.indices[3*i  ] = a;
         mesh.indices[3*i+1] = c;
@@ -76,7 +76,7 @@ static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
         mesh.indices[3*i+5] = d;
     }
 
-    for (int i = 0; i < inner_indices.size(); ++i) {
+    for (auto i = 0; i < inner_indices.size(); ++i) {
         mesh.indices[3*new_vert_count + i] = base_tri_index + 2*inner_indices[i] + 1;
     }
 }

@@ -2,7 +2,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-static GLfloat skybox_vertices[] = {
+static constexpr GLfloat skybox_vertices[] = {
     -1.0f,  1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f,  1.0f, -1.0f, 1.0f,  1.0f, -1.0f,
     -1.0f, -1.0f,  1.0f, -1.0f,  1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f,  1.0f, -1.0f, -1.0f, -1.0f,  1.0f, -1.0f,  1.0f,  1.0f,
      1.0f, -1.0f, -1.0f, 1.0f,  1.0f,  1.0f, 1.0f, -1.0f,  1.0f, 1.0f,  1.0f,  1.0f, 1.0f, -1.0f, -1.0f, 1.0f,  1.0f, -1.0f,
@@ -46,8 +46,9 @@ void SkyboxRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& proje
 
     glDepthFunc(GL_LEQUAL);
 
+    const auto trunc_view = glm::mat4(glm::mat3(view));
+
     glUseProgram(m_program);
-    auto trunc_view = glm::mat4(glm::mat3(view));
     glUniformMatrix4fv(glGetUniformLocation(m_program, "view"), 1, GL_FALSE, glm::value_ptr(trunc_view));
     glUniformMatrix4fv(glGetUniformLocation(m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform1i(glGetUniformLocation(m_program, "skybox"), 0);

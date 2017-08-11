@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     auto add = [&](const std::string& name, const std::vector<float>& data) {
         hpp_stream << "static const WireMesh "<<name<<";" << std::endl;
 
-        cpp_stream << "static float "<<name<<"_data[] = {" << std::endl;
+        cpp_stream << "static constexpr float "<<name<<"_data[] = {" << std::endl;
         cpp_stream << join_floats(data) << std::endl;
         cpp_stream << "}; const WireMesh WireMeshes::"<<name<<" = { "<<name<<"_data, sizeof("<<name<<"_data) };" << std::endl;
     };

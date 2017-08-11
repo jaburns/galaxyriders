@@ -3,8 +3,8 @@
 
 static float area(const std::vector<glm::vec2>& points)
 {
-    size_t n = points.size();
-    float A = 0.0f;
+    const auto n = points.size();
+    auto A = 0.0f;
     for (size_t p = n - 1, q = 0; q < n; p = q++) {
         glm::vec2 pval = points[p];
         glm::vec2 qval = points[q];
@@ -15,35 +15,32 @@ static float area(const std::vector<glm::vec2>& points)
 
 static bool inside_triangle(glm::vec2 A, glm::vec2 B, glm::vec2 C, glm::vec2 P)
 {
-    float ax, ay, bx, by, cx, cy, apx, apy, bpx, bpy, cpx, cpy;
-    float cCROSSap, bCROSScp, aCROSSbp;
+    const auto ax = C.x - B.x, ay = C.y - B.y;
+    const auto bx = A.x - C.x, by = A.y - C.y;
+    const auto cx = B.x - A.x, cy = B.y - A.y;
+    const auto apx = P.x - A.x, apy = P.y - A.y;
+    const auto bpx = P.x - B.x, bpy = P.y - B.y;
+    const auto cpx = P.x - C.x, cpy = P.y - C.y;
 
-    ax = C.x - B.x; ay = C.y - B.y;
-    bx = A.x - C.x; by = A.y - C.y;
-    cx = B.x - A.x; cy = B.y - A.y;
-    apx = P.x - A.x; apy = P.y - A.y;
-    bpx = P.x - B.x; bpy = P.y - B.y;
-    cpx = P.x - C.x; cpy = P.y - C.y;
+    const auto aCROSSbp = ax * bpy - ay * bpx;
+    const auto cCROSSap = cx * apy - cy * apx;
+    const auto bCROSScp = bx * cpy - by * cpx;
 
-    aCROSSbp = ax * bpy - ay * bpx;
-    cCROSSap = cx * apy - cy * apx;
-    bCROSScp = bx * cpy - by * cpx;
-
-    return ((aCROSSbp >= 0.0f) && (bCROSScp >= 0.0f) && (cCROSSap >= 0.0f));
+    return aCROSSbp >= 0.0f && bCROSScp >= 0.0f && cCROSSap >= 0.0f;
 }
 
 static bool snip(const std::vector<glm::vec2>& points, size_t u, size_t v, size_t w, size_t n, const std::vector<size_t>& V)
 {
-    glm::vec2 A = points[V[u]];
-    glm::vec2 B = points[V[v]];
-    glm::vec2 C = points[V[w]];
+    const auto A = points[V[u]];
+    const auto B = points[V[v]];
+    const auto C = points[V[w]];
 
-    float pdiff = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
+    const auto pdiff = (B.x - A.x) * (C.y - A.y) - (B.y - A.y) * (C.x - A.x);
     if (pdiff < 1e-7) return false;
 
     for (size_t p = 0; p < n; p++) {
         if ((p == u) || (p == v) || (p == w)) continue;
-        glm::vec2 P = points[V[p]];
+        const auto P = points[V[p]];
         if (inside_triangle(A, B, C, P)) return false;
     }
     return true;
@@ -51,10 +48,10 @@ static bool snip(const std::vector<glm::vec2>& points, size_t u, size_t v, size_
 
 std::vector<uint32_t> Triangulator::triangulate(const std::vector<glm::vec2>& pts)
 {
-    std::vector<glm::vec2> points = pts;
+    auto points = pts;
     std::vector<uint32_t> indices;
 
-    size_t n = points.size();
+    const auto n = points.size();
     if (n < 3) return indices;
 
     std::vector<size_t> V(n);

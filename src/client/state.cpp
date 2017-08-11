@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-static const float MOVEMENT_SPEED = 5.0f;
+static constexpr float MOVEMENT_SPEED = 5.0f;
 
 #include <iostream>
 #define DLOG(x) (std::cout << (x) << std::endl)
@@ -65,7 +65,7 @@ ClientState ClientState::step(const InputState& input) const
         new_state.world = new_state.world.step(last_input.shared, input.shared);
     }
 
-    float target_dist = 10.0f + 20.0f * glm::length(new_state.world.player.velocity);
+    const auto target_dist = 10.0f + 20.0f * glm::length(new_state.world.player.velocity);
     new_state.camera_dist += (target_dist - new_state.camera_dist) / 10.0f;
 
     new_state.player_anim = new_state.player_anim.step(world.player, new_state.world.player, input.shared.left, input.shared.right);
@@ -77,7 +77,7 @@ ClientState ClientState::step(const InputState& input) const
 
 ClientState ClientState::lerp_to(const ClientState& next, float t) const
 {
-    ClientState new_state = next;
+    auto new_state = next;
     new_state.world = this->world.lerp_to(next.world, t);
     new_state.camera_dist = glm::mix(camera_dist, next.camera_dist, t);
     new_state.player_anim.radians = glm::mix(player_anim.radians, next.player_anim.radians, t);

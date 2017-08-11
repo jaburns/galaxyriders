@@ -6,7 +6,10 @@
 
 #define MAX_KEY_CODE 350
 
-const float MOVE_SPEED = 0.05f;
+static constexpr float MOVE_SPEED = 0.05f;
+
+
+// TODO roll into Core
 
 static std::unordered_set<SDL_Keycode> keys_down;
 static InputState state;
