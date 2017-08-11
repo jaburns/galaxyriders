@@ -10,9 +10,6 @@
 #include "../shared/network.hpp"
 #include "../shared/config.hpp"
 
-// Only needed until main_net is updated to use ClientState
-#include "../shared/world.hpp"
-
 void main_net()
 {
     GameRenderer renderer;
