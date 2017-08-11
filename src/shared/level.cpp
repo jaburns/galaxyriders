@@ -7,7 +7,7 @@ Level Level::from_data(const std::vector<float>& data)
     Level level;
     size_t read = 0;
 
-    const int total_polys = data[read++];
+    const auto total_polys = data[read++];
     for (int i = 0; i < total_polys; ++i) {
         Level::Poly this_poly;
 
@@ -34,12 +34,12 @@ BakedLevel BakedLevel::from_level(const Level& level)
     for (auto& poly : level.polys) {
         BakedLevel::Poly this_poly;
 
-        for (size_t i = 0; i < poly.handles.size(); ++i) {
+        for (auto i = 0; i < poly.handles.size(); ++i) {
             this_poly.points.push_back(poly.handles[i].point);
 
             if (i <= poly.handles.size() - 4 && poly.handles[i+1].quality > 0 && poly.handles[i+2].quality > 0) {
-                const float iter = 1.0f / MAX(poly.handles[i+1].quality, poly.handles[i+2].quality);
-                for(float t = iter; t < 1.0f; t += iter) {
+                const auto iter = 1.0f / MAX(poly.handles[i+1].quality, poly.handles[i+2].quality);
+                for(auto t = iter; t < 1.0f; t += iter) {
                     this_poly.points.push_back(Geometry::evaluate_spline(
                         poly.handles[i+0].point,
                         poly.handles[i+1].point,

@@ -36,30 +36,30 @@ World::World(const uint8_t *serialized, int serialized_length)
 
 World World::lerp_to(const World& next, float t) const
 {
-    World world = next;
+    auto world = next;
     world.player.position = glm::mix(player.position, next.player.position, t);
     return world;
 }
 
-static const float DT = Config::MILLIS_PER_TICK / 1000.0f;
-static const float GRAVITY = 30.0f * DT * DT;
-static const float RADIUS = 0.5f;
-static const float WALK_ACCEL = 30.0f * DT * DT;
-static const float PUMP_ACCEL = 80.0f * DT * DT;
-static const float MAX_RUN_SPEED = 35.0f * DT;
-static const float TURN_AROUND_MULTIPLIER = 3.0f;
-static const float JUMP_SPEED = 10.0f * DT;
-static const int LATE_JUMP_FRAMES = 5;
+static constexpr float DT = Config::MILLIS_PER_TICK / 1000.0f;
+static constexpr float GRAVITY = 30.0f * DT * DT;
+static constexpr float RADIUS = 0.5f;
+static constexpr float WALK_ACCEL = 30.0f * DT * DT;
+static constexpr float PUMP_ACCEL = 80.0f * DT * DT;
+static constexpr float MAX_RUN_SPEED = 35.0f * DT;
+static constexpr float TURN_AROUND_MULTIPLIER = 3.0f;
+static constexpr float JUMP_SPEED = 10.0f * DT;
+static constexpr int LATE_JUMP_FRAMES = 5;
 
 World World::step(const SharedInputState& old_input, const SharedInputState& new_input) const
 {
-    World next = *this;
+    auto next = *this;
 
     next.frame_counter++;
 
     // ----- Horizontal motion -----
 
-    float walk_accel =
+    auto walk_accel =
         new_input.left ? -WALK_ACCEL :
         new_input.right ? WALK_ACCEL : 0.0f;
 

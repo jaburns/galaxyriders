@@ -6,16 +6,16 @@
 
 bool Geometry::line_intersect(glm::vec2 p00, glm::vec2 p01, glm::vec2 p10, glm::vec2 p11, glm::vec2 *const result)
 {
-    auto dx1x3 = p00.x - p10.x;
-    auto dy1y3 = p00.y - p10.y;
-    auto dx2x1 = p01.x - p00.x;
-    auto dy2y1 = p01.y - p00.y;
-    auto dx4x3 = p11.x - p10.x;
-    auto dy4y3 = p11.y - p10.y;
+    const auto dx1x3 = p00.x - p10.x;
+    const auto dy1y3 = p00.y - p10.y;
+    const auto dx2x1 = p01.x - p00.x;
+    const auto dy2y1 = p01.y - p00.y;
+    const auto dx4x3 = p11.x - p10.x;
+    const auto dy4y3 = p11.y - p10.y;
 
-    auto denom = dy4y3*dx2x1 - dx4x3*dy2y1;
-    auto numa  = dx4x3*dy1y3 - dy4y3*dx1x3;
-    auto numb  = dx2x1*dy1y3 - dy2y1*dx1x3;
+    const auto denom = dy4y3*dx2x1 - dx4x3*dy2y1;
+    auto numa = dx4x3*dy1y3 - dy4y3*dx1x3;
+    auto numb = dx2x1*dy1y3 - dy2y1*dx1x3;
 
     if (denom == 0) return false;
 
@@ -61,12 +61,12 @@ bool Geometry::point_in_line_perp_space(glm::vec2 a, glm::vec2 b, glm::vec2 p)
     return _cy > yMin && _cy < yMax;
 }
 
-static const float ACCURACY     = float(10000);
-static const float ACCURACY_INV = 1.0f / ACCURACY;
+static constexpr float ACCURACY     = 10000.0f;
+static constexpr float ACCURACY_INV = 1.0f / ACCURACY;
 
 glm::vec2 Geometry::project_point_on_line(float m, glm::vec2 p)
 {
-    auto abs_m = fabs(m);
+    const auto abs_m = fabs(m);
     if (abs_m < ACCURACY_INV) {
         return { p.x, 0.0f };
     } else if (abs_m > ACCURACY) {
@@ -81,9 +81,9 @@ glm::vec2 Geometry::project_point_on_line(float m, glm::vec2 p)
 
 glm::vec2 Geometry::evaluate_spline(glm::vec2 a, glm::vec2 b, glm::vec2 c, glm::vec2 d, float t)
 {
-    auto u = 1.0f - t;
-    auto u2 = u * u;
-    auto t2 = t * t;
+    const auto u = 1.0f - t;
+    const auto u2 = u * u;
+    const auto t2 = t * t;
     return u2*u*a + 3.0f*u2*t*b + 3.0f*u*t2*c + t2*t*d;
 }
 
