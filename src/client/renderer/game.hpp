@@ -1,11 +1,7 @@
 #pragma once
 
-#include <memory>
-#include <cstdint>
-#include "../resources.hpp"
-#include "../state.hpp"
 #include "../../shared/lang_utils.hpp"
-#include "../../shared/world.hpp"
+#include "../state.hpp"
 #include "skybox.hpp"
 #include "player.hpp"
 #include "level.hpp"

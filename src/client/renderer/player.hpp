@@ -1,22 +1,15 @@
 #pragma once
 
-#define _USE_MATH_DEFINES
-
-#include <memory>
-#include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
-#include "../../shared/world.hpp"
 #include "../state.hpp"
+#include "../../shared/lang_utils.hpp"
 #include "sprite.hpp"
 #include "wire.hpp"
 
-class PlayerRenderer
+class PlayerRenderer : public NoCopy
 {
-    std::unique_ptr<SpriteRenderer> m_sprite_renderer;
-    std::unique_ptr<WireRenderer> m_wire_sphere_renderer;
-
-    PlayerRenderer(const PlayerRenderer&) =delete;
-    PlayerRenderer& operator=(const PlayerRenderer&) =delete;
+    const SpriteRenderer m_sprite_renderer;
+    const WireRenderer m_wire_sphere_renderer;
 
 public:
     PlayerRenderer();

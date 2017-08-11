@@ -17,10 +17,11 @@ static GLfloat quad_vertices[] = {
 };
 
 SpriteRenderer::SpriteRenderer(const std::string& sprite_name, const glm::vec2& origin)
-    : m_sprite_name(sprite_name), m_origin(origin)
+:   m_sprite_name(sprite_name), 
+    m_origin(origin),
+    m_program("res/shaders/sprite.vert", "res/shaders/sprite.frag"),
+    m_texture("res/sprites/" + sprite_name + ".sdf.png")
 {
-    m_program = std::make_unique<const ShaderProgram>("res/shaders/sprite.vert", "res/shaders/sprite.frag");;
-    m_texture = std::make_unique<const Texture>("res/sprites/" + m_sprite_name + ".sdf.png");
     load_frames();
 
     glGenVertexArrays(1, &m_vao);
@@ -29,8 +30,8 @@ SpriteRenderer::SpriteRenderer(const std::string& sprite_name, const glm::vec2& 
     glGenBuffers(1, &m_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quad_vertices), &quad_vertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(*m_program, "position"));
-    glVertexAttribPointer(glGetAttribLocation(*m_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
+    glEnableVertexAttribArray(glGetAttribLocation(m_program, "position"));
+    glVertexAttribPointer(glGetAttribLocation(m_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, (void*)0);
 }
 
 void SpriteRenderer::load_frames()
@@ -85,13 +86,13 @@ SpriteRenderer::~SpriteRenderer()
 void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection) const
 {
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, *m_texture);
+    glBindTexture(GL_TEXTURE_2D, m_texture);
 
-    glUseProgram(*m_program);
-    glUniformMatrix4fv(glGetUniformLocation(*m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(*m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform3fv(glGetUniformLocation(*m_program, "main_color"), 1, glm::value_ptr(Palette::COLOR_LIFE));
-    glUniform1i(glGetUniformLocation(*m_program, "sprite_texture"), 0);
+    glUseProgram(m_program);
+    glUniformMatrix4fv(glGetUniformLocation(m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
+    glUniformMatrix4fv(glGetUniformLocation(m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform3fv(glGetUniformLocation(m_program, "main_color"), 1, glm::value_ptr(Palette::COLOR_LIFE));
+    glUniform1i(glGetUniformLocation(m_program, "sprite_texture"), 0);
 
     glBindVertexArray(m_vao);
 
@@ -120,8 +121,8 @@ void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float 
         glm::scale(scale_vec) *
         glm::mat4x4(1.0f);
 
-    glUniform4fv(glGetUniformLocation(*m_program, "sprite_source"), 1, glm::value_ptr(m_frames[frame].sprite_source));
-    glUniformMatrix4fv(glGetUniformLocation(*m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
+    glUniform4fv(glGetUniformLocation(m_program, "sprite_source"), 1, glm::value_ptr(m_frames[frame].sprite_source));
+    glUniformMatrix4fv(glGetUniformLocation(m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }

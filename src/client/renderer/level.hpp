@@ -1,9 +1,7 @@
 #pragma once
 
-#include <memory>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-#include "../gfx.hpp"
 #include "../resources.hpp"
 #include "../level_mesh.hpp"
 #include "../../shared/lang_utils.hpp"

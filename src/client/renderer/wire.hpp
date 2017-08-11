@@ -1,21 +1,18 @@
 #pragma once
 
-#include <memory>
-#include <array>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include "../gfx.hpp"
 #include "../resources.hpp"
+#include "../../shared/lang_utils.hpp"
 
 class WireRenderer
 {
     GLuint m_vao;
     GLuint m_vertex_buffer;
-    std::unique_ptr<const ShaderProgram> m_program;
     GLsizei m_lines_size;
-
-    WireRenderer(const WireRenderer&) =delete;
-    WireRenderer& operator=(const WireRenderer&) =delete;
+    
+    const ShaderProgram m_program;
 
 public:
     WireRenderer(const WireMesh& mesh);
