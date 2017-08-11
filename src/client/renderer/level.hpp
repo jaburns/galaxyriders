@@ -19,7 +19,6 @@ class LevelRenderer : public NoCopy
     const Texture m_ground_texture;
 
 public:
-    LevelRenderer() {};
     LevelRenderer(const BakedLevel& level);
     ~LevelRenderer();
 

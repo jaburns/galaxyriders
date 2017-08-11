@@ -2,11 +2,11 @@
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-#include "../gfx.hpp"
+#include "../gl.hpp"
 #include "../resources.hpp"
 #include "../../shared/lang_utils.hpp"
 
-class WireRenderer
+class WireRenderer : public NoCopy
 {
     GLuint m_vao;
     GLuint m_vertex_buffer;

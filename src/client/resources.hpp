@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 #include <glm/vec3.hpp>
-#include "gfx.hpp"
+#include "gl.hpp"
 #include "../shared/lang_utils.hpp"
 
 struct WireMesh

@@ -2,11 +2,6 @@
 
 #include <glm/glm.hpp>
 
-static constexpr float MOVEMENT_SPEED = 5.0f;
-
-#include <iostream>
-#define DLOG(x) (std::cout << (x) << std::endl)
-
 ClientState::PlayerAnimation ClientState::PlayerAnimation::step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right) const
 {
     auto new_anim = *this;

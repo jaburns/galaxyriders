@@ -1,19 +1,22 @@
-#include "gfx.hpp"
+#include "core.hpp"
 
+#include <unordered_set>
 #include <cstdlib>
 #include <cstdio>
+#include "gl.hpp"
 #include "palette.hpp"
-
-#include "readinput.hpp" // Only needed for as long as we're hacking the input directly from here across to the readinput module.
 
 static SDL_Window* s_window;
 static SDL_GLContext s_context;
 
-int Gfx::g_window_width;
-int Gfx::g_window_height;
-bool Gfx::g_should_close_window = false;
+static std::unordered_set<SDL_Keycode> keys_down;
+static InputState state;
 
-void Gfx::init()
+int Core::g_window_width;
+int Core::g_window_height;
+bool Core::g_should_close_window = false;
+
+void Core::init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         exit(EXIT_FAILURE);
@@ -59,7 +62,23 @@ void Gfx::init()
     glLineWidth(1.0f);
 }
 
-void Gfx::flip_and_poll_events()
+static void handle_key_event(SDL_Keycode keycode, bool press)
+{
+    if (press) {
+        keys_down.insert(keycode);
+    } else {
+        keys_down.erase(keycode);
+    }
+
+    state.shared.left  = keys_down.count(SDLK_LEFT);
+    state.shared.right = keys_down.count(SDLK_RIGHT);
+    state.shared.up    = keys_down.count(SDLK_UP);
+    state.shared.down  = keys_down.count(SDLK_DOWN);
+    state.debug_pause  = keys_down.count(SDLK_p);
+    state.debug_step   = keys_down.count(SDLK_PERIOD);
+}
+
+void Core::flip_frame_and_poll_events()
 {
     SDL_GL_SwapWindow(s_window);
 
@@ -82,17 +101,62 @@ void Gfx::flip_and_poll_events()
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
                     g_should_close_window = true;
                 }
-                Input::GLOBAL_key_callback(event.key.keysym.sym, true);
+                handle_key_event(event.key.keysym.sym, true);
                 break;
 
             case SDL_KEYUP:
-                Input::GLOBAL_key_callback(event.key.keysym.sym, false);
+                handle_key_event(event.key.keysym.sym, false);
                 break;
         }
     }
 }
+// 
+// static void mouse_button_callback(SDL_Window* window, int button, int action, int mods)
+// {
+// //  if (button == GLFW_MOUSE_BUTTON_LEFT) {
+// //      if (action == GLFW_PRESS) {
+// //          state.mouse_click = true;
+// //      } else if (action == GLFW_RELEASE) {
+// //          state.mouse_click = false;
+// //      }
+// //  }
+// }
 
-void Gfx::deinit()
+// static void cursor_pos_callback(SDL_Window* window, double xpos, double ypos)
+// {
+// //  int width, height;
+// //  glfwGetFramebufferSize(window, &width, &height);
+
+// //  const auto fwidth  = static_cast<float>(width);
+// //  const auto fheight = static_cast<float>(height);
+
+// //  state.mouse_pos = glm::vec2(
+// //      2.0f * xpos / fwidth - 1.0f,
+// //      1.0f - 2.0f * ypos / fheight
+// //  );
+// }
+
+// glm::vec3 Input::get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
+// {
+//     glm::vec4 ray_clip = glm::vec4(mouse_pos, -1.0f, 1.0f);
+
+//     glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+//     ray_eye.z = -1.0f;
+//     ray_eye.w =  0.0f;
+
+//     glm::vec4 ray_world = glm::inverse(view) * ray_eye;
+//     ray_world.w = 0.0f;
+//     ray_world = glm::normalize(ray_world);
+
+//     return ray_world;
+// }
+
+InputState Core::read_input_state()
+{
+    return state;
+}
+
+void Core::deinit()
 {
 	SDL_GL_DeleteContext(s_context);
 	SDL_DestroyWindow(s_window);

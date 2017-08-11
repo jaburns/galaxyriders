@@ -1,6 +1,7 @@
 #include "skybox.hpp"
 
 #include <glm/gtc/type_ptr.hpp>
+#include "../gl.hpp"
 
 static constexpr GLfloat skybox_vertices[] = {
     -1.0f,  1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f, -1.0f, -1.0f, 1.0f, -1.0f, -1.0f, -1.0f,  1.0f, -1.0f, 1.0f,  1.0f, -1.0f,

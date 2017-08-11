@@ -5,6 +5,7 @@
 #include <tinyxml2.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
+#include "../gl.hpp"
 #include "../palette.hpp"
 
 static constexpr GLfloat quad_vertices[] = {

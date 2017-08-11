@@ -1,8 +1,8 @@
 #include "wire.hpp"
 
-#include <tinyxml2.h>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "../gl.hpp"
 
 WireRenderer::WireRenderer(const WireMesh& mesh)
 :   m_program("res/shaders/wire.vert", "res/shaders/wire.frag")
@@ -16,7 +16,7 @@ WireRenderer::WireRenderer(const WireMesh& mesh)
     glEnableVertexAttribArray(glGetAttribLocation(m_program, "position"));
     glVertexAttribPointer(glGetAttribLocation(m_program, "position"), 3, GL_FLOAT, GL_FALSE, sizeof(GLfloat)*3, (void*)0);
 
-    m_lines_size = mesh.size / sizeof(GLfloat) / 3;
+    m_lines_size = static_cast<GLsizei>(mesh.size / sizeof(GLfloat) / 3);
 }
 
 WireRenderer::~WireRenderer()

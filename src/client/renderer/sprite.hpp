@@ -5,7 +5,7 @@
 #include <glm/vec3.hpp>
 #include <glm/vec4.hpp>
 #include <glm/mat4x4.hpp>
-#include "../gfx.hpp"
+#include "../gl.hpp"
 #include "../resources.hpp"
 #include "../../shared/lang_utils.hpp"
 
@@ -31,9 +31,6 @@ class SpriteRenderer : public NoCopy
 
     float m_aspect;
     glm::vec2 m_scaled_origin;
-
-    SpriteRenderer(const SpriteRenderer&) =delete;
-    SpriteRenderer& operator=(const SpriteRenderer&) =delete;
 
     void load_frames();
 

@@ -1,6 +1,8 @@
 #include "game.hpp"
 
 #include <glm/gtc/matrix_transform.hpp>
+#include "../gl.hpp"
+#include "../core.hpp"
 #include "../../shared/level.hpp"
 #include "../level_mesh.hpp"
 
@@ -20,7 +22,7 @@ void GameRenderer::render(const ClientState& state)
         state.camera_dist
     );
 
-    const auto p = glm::perspective(3.14159f / 3.0f, Gfx::g_window_width / (float)Gfx::g_window_height, 0.1f, 1024.0f);
+    const auto p = glm::perspective(3.14159f / 3.0f, Core::g_window_width / (float)Core::g_window_height, 0.1f, 1024.0f);
     const auto v = glm::translate(glm::lookAt(glm::vec3(0.0f), { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f }), -cam_pos);
 
     //TODO draw something at ray_pos

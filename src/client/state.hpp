@@ -3,7 +3,7 @@
 #include <glm/vec3.hpp>
 #include <cstdint>
 #include "../shared/world.hpp"
-#include "readinput.hpp"
+#include "core.hpp"
 
 struct ClientState
 {
