@@ -78,6 +78,14 @@ static void handle_key_event(SDL_Keycode keycode, bool press)
     state.debug_step   = keys_down.count(SDLK_PERIOD);
 }
 
+static void handle_mouse_motion(SDL_MouseMotionEvent event)
+{
+    state.mouse_pos = glm::vec2(
+        2.0f * event.x / static_cast<float>(Core::g_window_width) - 1.0f,
+        1.0f - 2.0f * event.y /static_cast<float>(Core::g_window_height) 
+    );
+}
+
 void Core::flip_frame_and_poll_events()
 {
     SDL_GL_SwapWindow(s_window);
@@ -107,53 +115,40 @@ void Core::flip_frame_and_poll_events()
             case SDL_KEYUP:
                 handle_key_event(event.key.keysym.sym, false);
                 break;
+
+            case SDL_MOUSEMOTION:
+                handle_mouse_motion(event.motion);
+                break;
+
+            case SDL_MOUSEBUTTONDOWN:
+                state.mouse_click = true;
+                break;
+
+            case SDL_MOUSEBUTTONUP:
+                state.mouse_click = false;
+                break;
         }
     }
 }
-// 
-// static void mouse_button_callback(SDL_Window* window, int button, int action, int mods)
-// {
-// //  if (button == GLFW_MOUSE_BUTTON_LEFT) {
-// //      if (action == GLFW_PRESS) {
-// //          state.mouse_click = true;
-// //      } else if (action == GLFW_RELEASE) {
-// //          state.mouse_click = false;
-// //      }
-// //  }
-// }
-
-// static void cursor_pos_callback(SDL_Window* window, double xpos, double ypos)
-// {
-// //  int width, height;
-// //  glfwGetFramebufferSize(window, &width, &height);
-
-// //  const auto fwidth  = static_cast<float>(width);
-// //  const auto fheight = static_cast<float>(height);
-
-// //  state.mouse_pos = glm::vec2(
-// //      2.0f * xpos / fwidth - 1.0f,
-// //      1.0f - 2.0f * ypos / fheight
-// //  );
-// }
-
-// glm::vec3 Input::get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
-// {
-//     glm::vec4 ray_clip = glm::vec4(mouse_pos, -1.0f, 1.0f);
-
-//     glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-//     ray_eye.z = -1.0f;
-//     ray_eye.w =  0.0f;
-
-//     glm::vec4 ray_world = glm::inverse(view) * ray_eye;
-//     ray_world.w = 0.0f;
-//     ray_world = glm::normalize(ray_world);
-
-//     return ray_world;
-// }
 
 InputState Core::read_input_state()
 {
     return state;
+}
+
+glm::vec3 Core::get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
+{
+    glm::vec4 ray_clip = glm::vec4(mouse_pos, -1.0f, 1.0f);
+
+    glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+    ray_eye.z = -1.0f;
+    ray_eye.w =  0.0f;
+
+    glm::vec4 ray_world = glm::inverse(view) * ray_eye;
+    ray_world.w = 0.0f;
+    ray_world = glm::normalize(ray_world);
+
+    return ray_world;
 }
 
 void Core::deinit()
