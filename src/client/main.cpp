@@ -2,9 +2,10 @@
 #include <chrono>
 #include <cstring>
 #include <cstdint>
+#include "gfx.hpp"
 #include "state.hpp"
 #include "readinput.hpp"
-#include "render.hpp"
+#include "renderer/game.hpp"
 #include "../shared/network.hpp"
 #include "../shared/config.hpp"
 
@@ -14,8 +15,7 @@
 
 void main_net()
 {
-    Renderer renderer;
-    Input::bind_handlers(renderer.raw_glfw_window());
+    GameRenderer renderer;
 
     UDPSocket socket;
     SocketAddress send_address = UDPSocket::get_host_address("localhost", Config::DEFAULT_PORT);
@@ -32,7 +32,7 @@ void main_net()
     auto last_receive_world = std::chrono::high_resolution_clock::now();
     float millis_per_tick = 100.0f;
 
-    while (!renderer.should_close_window()) {
+    while (!Gfx::g_should_close_window) {
         int message_len = 0;
         if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
             last_world = new_world;
@@ -52,20 +52,20 @@ void main_net()
         } else {
         //  renderer.render(new_world);
         }
+
+        Gfx::flip_and_poll_events();
     }
 }
 
 void main_local()
 {
-    Renderer renderer;
-    Input::bind_handlers(renderer.raw_glfw_window());
-
+    GameRenderer renderer;
     ClientState last_state, new_state;
 
     auto current_time = std::chrono::high_resolution_clock::now();
     float accumulator = 0.0f;
 
-    while (!renderer.should_close_window()) {
+    while (!Gfx::g_should_close_window) {
         const auto new_time = std::chrono::high_resolution_clock::now();
         const float frame_millis = static_cast<const float>(std::chrono::duration_cast<std::chrono::milliseconds>(new_time - current_time).count());
         current_time = new_time;
@@ -78,16 +78,23 @@ void main_local()
         }
 
         renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK));
+
+        Gfx::flip_and_poll_events();
     }
 }
 
 int main(int argc, char** argv)
 {
+    Gfx::init();
+    Input::bind_handlers(nullptr);
+
     if (argc >= 2 && std::strcmp(argv[1], "net") == 0) {
         main_net();
     } else {
         main_local();
     }
+
+    Gfx::deinit();
 
     return 0;
 }

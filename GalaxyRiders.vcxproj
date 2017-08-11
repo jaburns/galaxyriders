@@ -27,9 +27,10 @@
   <ItemGroup>
     <ClInclude Include="src\client\gen\wire_meshes.hpp" />
     <ClInclude Include="src\client\gfx.hpp" />
+    <ClInclude Include="src\client\level_mesh.hpp" />
     <ClInclude Include="src\client\palette.hpp" />
     <ClInclude Include="src\client\readinput.hpp" />
-    <ClInclude Include="src\client\render.hpp" />
+    <ClInclude Include="src\client\renderer\game.hpp" />
     <ClInclude Include="src\client\renderer\level.hpp" />
     <ClInclude Include="src\client\renderer\player.hpp" />
     <ClInclude Include="src\client\renderer\wire.hpp" />
@@ -41,6 +42,7 @@
     <ClInclude Include="src\shared\config.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
     <ClInclude Include="src\shared\input.hpp" />
+    <ClInclude Include="src\shared\lang_utils.hpp" />
     <ClInclude Include="src\shared\level.hpp" />
     <ClInclude Include="src\shared\network.hpp" />
     <ClInclude Include="src\shared\serialization.hpp" />
@@ -51,9 +53,11 @@
     <ClCompile Include="external\lodepng\lodepng.cpp" />
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\client\gen\wire_meshes.cpp" />
+    <ClCompile Include="src\client\gfx.cpp" />
+    <ClCompile Include="src\client\level_mesh.cpp" />
     <ClCompile Include="src\client\main.cpp" />
     <ClCompile Include="src\client\readinput.cpp" />
-    <ClCompile Include="src\client\render.cpp" />
+    <ClCompile Include="src\client\renderer\game.cpp" />
     <ClCompile Include="src\client\renderer\level.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>

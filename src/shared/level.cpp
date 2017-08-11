@@ -119,7 +119,7 @@ static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos
 
 BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 position, glm::vec2 velocity, float radius, float bounce) const
 {
-    glm::vec2 normal;
+    glm::vec2 normal(0.0f);
     bool collided = false;
     auto distance_remaining = glm::length(velocity);
 

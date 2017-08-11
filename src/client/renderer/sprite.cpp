@@ -82,7 +82,7 @@ SpriteRenderer::~SpriteRenderer()
     glDeleteBuffers(1, &m_vertex_buffer);
 }
 
-void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
+void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection) const
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, *m_texture);
@@ -100,7 +100,7 @@ void SpriteRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
-void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float scale, int frame, bool flipx)
+void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float scale, int frame, bool flipx) const
 {
     frame %= m_frames.size();
 
@@ -126,7 +126,7 @@ void SpriteRenderer::draw(const glm::vec3& position, float rotation_rads, float 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 }
 
-void SpriteRenderer::done()
+void SpriteRenderer::done() const
 {
     glDisable(GL_BLEND);
     glEnable(GL_CULL_FACE);

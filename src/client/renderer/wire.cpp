@@ -27,7 +27,7 @@ WireRenderer::~WireRenderer()
     glDeleteBuffers(1, &m_vertex_buffer);
 }
 
-void WireRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
+void WireRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection) const
 {
     glUseProgram(*m_program);
     glUniformMatrix4fv(glGetUniformLocation(*m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
@@ -36,7 +36,7 @@ void WireRenderer::use(const glm::mat4x4& view, const glm::mat4x4& projection)
     glBindVertexArray(m_vao);
 }
 
-void WireRenderer::draw(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color)
+void WireRenderer::draw(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color) const
 {
     auto m = glm::scale(glm::translate(glm::mat4(1.0f), position), scale);
     glUniform3fv(glGetUniformLocation(*m_program, "line_color"), 1, glm::value_ptr(color));
@@ -44,7 +44,7 @@ void WireRenderer::draw(const glm::vec3& position, const glm::vec3& scale, const
     glDrawArrays(GL_LINES, 0, m_lines_size);
 }
 
-void WireRenderer::done()
+void WireRenderer::done() const
 {
     // nop
 }

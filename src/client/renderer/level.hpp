@@ -5,35 +5,25 @@
 #include <glm/mat4x4.hpp>
 #include "../gfx.hpp"
 #include "../resources.hpp"
-#include "../../shared/level.hpp"
+#include "../level_mesh.hpp"
+#include "../../shared/lang_utils.hpp"
 
-class LevelRenderer
+class LevelRenderer : public NoCopy
 {
-    struct Mesh {
-        std::vector<glm::vec2> vertices;
-        std::vector<glm::vec2> surface_pos;
-        std::vector<uint32_t> indices;
-    };
+    GLuint m_vao = 0;
+    GLuint m_vertex_buffer = 0;
+    GLuint m_surface_pos_buffer = 0;
+    GLuint m_index_buffer = 0;
 
-    GLuint m_vao;
-    GLuint m_vertex_buffer;
-    GLuint m_surface_pos_buffer;
-    GLuint m_index_buffer;
-
-    Mesh m_mesh;
-    std::unique_ptr<const ShaderProgram> m_program;
-    std::unique_ptr<const Texture> m_noise_texture;
-    std::unique_ptr<const Texture> m_ground_texture;
-
-    static Mesh load_mesh(const BakedLevel& level);
-    static void push_poly(Mesh& mesh, const BakedLevel::Poly& p);
-
-    LevelRenderer(const LevelRenderer&) =delete;
-    LevelRenderer& operator=(const LevelRenderer&) =delete;
+    const LevelMesh m_mesh;
+    const ShaderProgram m_program;
+    const Texture m_noise_texture;
+    const Texture m_ground_texture;
 
 public:
+    LevelRenderer() {};
     LevelRenderer(const BakedLevel& level);
     ~LevelRenderer();
 
-    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position);
+    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const;
 };

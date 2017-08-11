@@ -21,7 +21,7 @@ public:
     SkyboxRenderer();
     ~SkyboxRenderer();
 
-    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection);
+    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection) const;
 
-    std::shared_ptr<const CubeMap> get_skybox_cubemap() { return m_cubemap; }
+    std::shared_ptr<const CubeMap> get_skybox_cubemap() const { return m_cubemap; }
 };

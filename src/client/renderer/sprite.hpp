@@ -41,7 +41,7 @@ public:
     SpriteRenderer(const std::string& sprite_name, const glm::vec2& origin);
     ~SpriteRenderer();
 
-    void use(const glm::mat4x4& view, const glm::mat4x4& projection);
-    void draw(const glm::vec3& position, float rotation_rads, float scale, int frame, bool flipx = false);
-    void done();
+    void use(const glm::mat4x4& view, const glm::mat4x4& projection) const;
+    void draw(const glm::vec3& position, float rotation_rads, float scale, int frame, bool flipx = false) const;
+    void done() const;
 };

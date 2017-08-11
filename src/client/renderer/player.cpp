@@ -14,7 +14,7 @@ PlayerRenderer::PlayerRenderer()
 void PlayerRenderer::draw_once(
     const glm::mat4x4& view, const glm::mat4x4& projection,
     const World::Player& player, const ClientState::PlayerAnimation& anim
-) {
+) const {
     const auto pos3 = glm::vec3(player.position, 0.0f);
 
 //  m_wire_sphere_renderer->use(view, projection);

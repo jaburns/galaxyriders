@@ -21,7 +21,7 @@ public:
     WireRenderer(const WireMesh& mesh);
     ~WireRenderer();
 
-    void use(const glm::mat4x4& view, const glm::mat4x4& projection);
-    void draw(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color);
-    void done();
+    void use(const glm::mat4x4& view, const glm::mat4x4& projection) const;
+    void draw(const glm::vec3& position, const glm::vec3& scale, const glm::vec3& color) const;
+    void done() const;
 };

@@ -24,5 +24,5 @@ public:
     void draw_once(
         const glm::mat4x4& view, const glm::mat4x4& projection,
         const World::Player& player, const ClientState::PlayerAnimation& anim
-    );
+    ) const;
 };
