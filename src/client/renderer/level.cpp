@@ -23,9 +23,9 @@ LevelRenderer::LevelRenderer(const BakedLevel& level)
 
     glGenBuffers(1, &m_surface_pos_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_surface_pos_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.surface_pos.size() * sizeof(glm::vec2), m_mesh.surface_pos.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(m_program, "surface_pos"));
-    glVertexAttribPointer(glGetAttribLocation(m_program, "surface_pos"), 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*) 0);
+    glBufferData(GL_ARRAY_BUFFER, m_mesh.surface_info.size() * sizeof(glm::vec3), m_mesh.surface_info.data(), GL_STATIC_DRAW);
+    glEnableVertexAttribArray(glGetAttribLocation(m_program, "surface_info"));
+    glVertexAttribPointer(glGetAttribLocation(m_program, "surface_info"), 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*) 0);
 
     glGenBuffers(1, &m_index_buffer);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);

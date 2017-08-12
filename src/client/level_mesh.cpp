@@ -45,12 +45,12 @@ static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
         const auto base_tri_index = mesh.indices.size();
 
         mesh.vertices.reserve(base_vert_index + inset_pts.size());
-        mesh.surface_pos.reserve(base_vert_index + inset_pts.size());
+        mesh.surface_info.reserve(base_vert_index + inset_pts.size());
         mesh.indices.reserve(base_tri_index + inner_indices.size());
 
         for (auto i = 0; i < inset_pts.size(); ++i) {
             mesh.vertices.push_back(inset_pts[i]);
-            mesh.surface_pos.push_back({ 0.0f, 1.0f });
+            mesh.surface_info.push_back({ 1.0f, 0.0f, 1.0f });
         }
 
         for (auto i = 0; i < inner_indices.size(); ++i) {
@@ -65,10 +65,8 @@ static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
         const auto new_vert_count = 4 * poly.points.size();
 
         mesh.vertices.reserve(base_vert_index + new_vert_count);
-        mesh.surface_pos.reserve(base_vert_index + new_vert_count);
+        mesh.surface_info.reserve(base_vert_index + new_vert_count);
         mesh.indices.reserve(base_tri_index + 6 * poly.points.size());
-
-        auto surface_run = 0.0f;
 
         for (auto i = 0; i < poly.points.size(); i++) {
             const auto j = (i + 1) % poly.points.size();
@@ -79,22 +77,13 @@ static void push_poly(LevelMesh& mesh, const BakedLevel::Poly& poly)
             mesh.vertices.push_back(inset_pts[j]);
 
             const auto surface_vec = poly.points[j] - poly.points[i];
-            const auto surface_run_b = surface_run + glm::length(surface_vec);
-
             const auto tangent = glm::normalize(surface_vec);
             const auto normal = Geometry::vec2_rotate90(tangent);
 
-            const auto inset_a_vec = inset_pts[i] - poly.points[i];
-            const auto inset_a_offset = glm::dot(inset_a_vec, tangent);
-            const auto inset_b_vec = inset_pts[j] - poly.points[j];
-            const auto inset_b_offset = glm::dot(inset_b_vec, tangent);
-
-            mesh.surface_pos.push_back(glm::vec2(surface_run, 0.0f));
-            mesh.surface_pos.push_back(glm::vec2(surface_run + inset_a_offset, 1.0f));
-            mesh.surface_pos.push_back(glm::vec2(surface_run_b, 0.0f));
-            mesh.surface_pos.push_back(glm::vec2(surface_run_b + inset_b_offset, 1.0f));
-
-            surface_run = surface_run_b;
+            mesh.surface_info.push_back(glm::vec3(normal, 0.0f));
+            mesh.surface_info.push_back(glm::vec3(normal, 1.0f));
+            mesh.surface_info.push_back(glm::vec3(normal, 0.0f));
+            mesh.surface_info.push_back(glm::vec3(normal, 1.0f));
         }
 
         for (auto i = 0; i < new_vert_count; i += 4) {

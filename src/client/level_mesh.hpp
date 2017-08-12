@@ -8,7 +8,7 @@
 struct LevelMesh
 {
     std::vector<glm::vec2> vertices;
-    std::vector<glm::vec2> surface_pos;
+    std::vector<glm::vec3> surface_info;
     std::vector<uint32_t> indices;
 
 public:
