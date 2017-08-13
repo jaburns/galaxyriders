@@ -34,7 +34,7 @@ void GameRenderer::render(const ClientState& state)
     const auto ray_pos = cam_pos + t * mouse_ray;
 
     m_level_renderer.draw_once(v, p, { 0.0f, 0.0f, -0.01f });
-    m_skybox_renderer.draw_once(v, p);
+//  m_skybox_renderer.draw_once(v, p);
     m_player_renderer.draw_once(v, p, state.world.player, state.player_anim);
 
     m_mouse_renderer.use(v, p);

@@ -8,7 +8,7 @@
 
 static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 {
-    static constexpr auto DEPTH = 1.0f;
+    static constexpr auto DEPTH = 5.0f;
 
     std::vector<glm::vec2> result(points.size());
 
