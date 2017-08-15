@@ -16,7 +16,6 @@ class LevelRenderer : public NoCopy
     const LevelMesh m_mesh;
     const ShaderProgram m_program;
     const Texture m_noise_texture;
-    const Texture m_ground_texture;
 
 public:
     LevelRenderer(const BakedLevel& level);

@@ -9,8 +9,7 @@
 LevelRenderer::LevelRenderer(const BakedLevel& level)
 :   m_mesh(level),
     m_program("res/shaders/level.vert", "res/shaders/level.frag"),
-    m_noise_texture("res/textures/noise.png"),
-    m_ground_texture("res/textures/ground.png")
+    m_noise_texture("res/textures/noise.png")
 {
     glGenVertexArrays(1, &m_vao);
     glBindVertexArray(m_vao);
@@ -45,14 +44,11 @@ void LevelRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projec
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_noise_texture);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, m_ground_texture);
 
     glUseProgram(m_program);
     glUniformMatrix4fv(glGetUniformLocation(m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
     glUniform1i(glGetUniformLocation(m_program, "noise_texture"), 0);
-    glUniform1i(glGetUniformLocation(m_program, "ground_texture"), 1);
 
     glBindVertexArray(m_vao);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);

@@ -5,7 +5,6 @@ in vec3 v_surface_info;
 
 out vec4 color;
 
-uniform sampler2D ground_texture;
 uniform sampler2D noise_texture;
 
 const vec3 A = vec3(223.0 / 255.0, 61.0 / 255.0, 161.0 / 255.0);
@@ -21,16 +20,10 @@ vec3 stripes(vec2 xy)
 
     if (f > 0.25 && f < 0.75) {
         float w = fwidth(f) / 2.0;
-        int int_i = int(i);
-        return mix(STRIPES[int_i % 8], STRIPES[(int_i + 1) % 8], smoothstep(0.5 - w, 0.5 + w, f));
+        return mix(STRIPES[int(i) % 8], STRIPES[(int(i) + 1) % 8], smoothstep(0.5 - w, 0.5 + w, f));
     }
 
     return STRIPES[int(t + 0.5) % 8];
-}
-
-vec3 stripes_FROM_TEX(vec2 uv)
-{
-    return texture(ground_texture, uv).rgb;
 }
 
 void main()
