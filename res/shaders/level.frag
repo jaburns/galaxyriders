@@ -8,26 +8,23 @@ out vec4 color;
 uniform sampler2D ground_texture;
 uniform sampler2D noise_texture;
 
-const vec3 A = vec3(223. / 255., 61. / 255., 161. / 255.);
-const vec3 B = vec3(192. / 255., 52. / 255., 133. / 255.);
-const vec3 C = vec3(166. / 255., 55. / 255., 115. / 255.);
+const vec3 A = vec3(223.0 / 255.0, 61.0 / 255.0, 161.0 / 255.0);
+const vec3 B = vec3(192.0 / 255.0, 52.0 / 255.0, 133.0 / 255.0);
+const vec3 C = vec3(166.0 / 255.0, 55.0 / 255.0, 115.0 / 255.0);
+const vec3 STRIPES[] = vec3[](A,B,C,B,A,C,B,C);
 
 vec3 stripes(vec2 xy)
 {
-    vec2 uv = vec2(mod(xy.x, 1.0), mod(xy.y, 1.0));
-    for (float f = 0.0f; f < 1.5f; f += 1.0f) {
-        if (uv.x < f + uv.y - 0.875) return A;
-        if (uv.x < f + uv.y - 0.750) return B;
-        if (uv.x < f + uv.y - 0.625) return C;
-        if (uv.x < f + uv.y - 0.500) return B;
-        if (uv.x < f + uv.y - 0.375) return A;
-        if (uv.x < f + uv.y - 0.250) return C;
-        if (uv.x < f + uv.y - 0.125) return B;
-        if (uv.x < f + uv.y        ) return C;
-    }
+    vec2 uv = mod(xy, vec2(1.0));
+    float t = 8.0 * (uv.x + 2.0 - uv.y);
+    float i;
+    float f = modf(t, i);
+    float w = fwidth(f) / 2.0;
+    int int_i = int(i);
+    return mix(STRIPES[int_i % 8], STRIPES[(int_i + 1) % 8], smoothstep(0.5 - w, 0.5 + w, f));
 }
 
-vec3 get_ground_A(vec2 uv)
+vec3 stripes_FROM_TEX(vec2 uv)
 {
     return texture(ground_texture, uv).rgb;
 }
@@ -41,7 +38,7 @@ void main()
     float color_noise = texture(noise_texture, v_world_pos.xy * 0.1 + round_off * v_surface_info.xy).r;
     vec3 color_dirt = (0.8 + 0.2*color_noise)*color_raw_ground;
 
-    // TODO clamp roundoff to prevent the single pixel of black aliasing in and out.
+    // TODO clamp roundoff to prevent the single pixel of black aliasing in and out at surface.
     float lightness = 1 - 0.65*round_off; // *dot(normalize(vec2(1,-1)),v_surface_info.xy);
 
     color = vec4(lightness * color_dirt, 1);
