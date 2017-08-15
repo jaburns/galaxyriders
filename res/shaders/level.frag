@@ -13,14 +13,19 @@ const vec3 B = vec3(192.0 / 255.0, 52.0 / 255.0, 133.0 / 255.0);
 const vec3 C = vec3(166.0 / 255.0, 55.0 / 255.0, 115.0 / 255.0);
 const vec3 STRIPES[] = vec3[](A,B,C,B,A,C,B,C);
 
-// TODO On Mac this doesn't draw the pixel row in the middle of the stripes correctly. Possibly due to modf failing.
 vec3 stripes(vec2 xy)
 {
     vec2 uv = mod(xy, vec2(1.0));
-    float i, f = modf(8.0 * (uv.x + 2.0 - uv.y), i);
-    float w = fwidth(f) / 2.0;
-    int int_i = int(i);
-    return mix(STRIPES[int_i % 8], STRIPES[(int_i + 1) % 8], smoothstep(0.5 - w, 0.5 + w, f));
+    float t = 8.0 * (uv.x + 2.0 - uv.y);
+    float i, f = modf(t, i);
+
+    if (f > 0.25 && f < 0.75) {
+        float w = fwidth(f) / 2.0;
+        int int_i = int(i);
+        return mix(STRIPES[int_i % 8], STRIPES[(int_i + 1) % 8], smoothstep(0.5 - w, 0.5 + w, f));
+    }
+
+    return STRIPES[int(t + 0.5) % 8];
 }
 
 vec3 stripes_FROM_TEX(vec2 uv)
