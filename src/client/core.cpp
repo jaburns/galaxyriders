@@ -30,17 +30,18 @@ void Core::init()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1); 
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
     SDL_GL_SetSwapInterval(1); // 1: vsync, 0: fast
 
     s_window = SDL_CreateWindow(
-        "Galaxy Riders", 
+        "Galaxy Riders",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         g_window_width, g_window_height,
         SDL_WINDOW_OPENGL
     );
 
     SDL_SetWindowResizable(s_window, SDL_TRUE);
+    SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     s_context = SDL_GL_CreateContext(s_window);
 
@@ -82,7 +83,7 @@ static void handle_mouse_motion(SDL_MouseMotionEvent event)
 {
     state.mouse_pos = glm::vec2(
         2.0f * event.x / static_cast<float>(Core::g_window_width) - 1.0f,
-        1.0f - 2.0f * event.y /static_cast<float>(Core::g_window_height) 
+        1.0f - 2.0f * event.y /static_cast<float>(Core::g_window_height)
     );
 }
 
