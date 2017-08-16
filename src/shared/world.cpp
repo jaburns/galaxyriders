@@ -51,11 +51,9 @@ static constexpr float TURN_AROUND_MULTIPLIER = 3.0f;
 static constexpr float JUMP_SPEED = 10.0f * DT;
 static constexpr int LATE_JUMP_FRAMES = 5;
 
-World World::step(const SharedInputState& old_input, const SharedInputState& new_input) const
+void World::step(const SharedInputState& old_input, const SharedInputState& new_input)
 {
-    auto next = *this;
-
-    next.frame_counter++;
+    frame_counter++;
 
     // ----- Horizontal motion -----
 
@@ -63,48 +61,46 @@ World World::step(const SharedInputState& old_input, const SharedInputState& new
         new_input.left ? -WALK_ACCEL :
         new_input.right ? WALK_ACCEL : 0.0f;
 
-    if (walk_accel * next.player.velocity.x < -1e-9f) {
+    if (walk_accel * player.velocity.x < -1e-9f) {
         walk_accel *= TURN_AROUND_MULTIPLIER;
-    } else if (fabs(next.player.velocity.x) > MAX_RUN_SPEED) {
+    } else if (fabs(player.velocity.x) > MAX_RUN_SPEED) {
         walk_accel = 0.0f;
     }
 
-    next.player.velocity.x += walk_accel;
+    player.velocity.x += walk_accel;
 
     // ----- Vertical motion -----
 
-    next.player.velocity.y -= GRAVITY;
+    player.velocity.y -= GRAVITY;
 
     if (!old_input.down && new_input.down) {
-        if (next.player.velocity.y > 0.0f) next.player.velocity.y = 0.0f;
-        next.player.grounded = 0;
+        if (player.velocity.y > 0.0f) player.velocity.y = 0.0f;
+        player.grounded = 0;
     }
 
     if (new_input.down) {
-        next.player.air_stomping = true;
-        next.player.velocity.y -= PUMP_ACCEL;
+        player.air_stomping = true;
+        player.velocity.y -= PUMP_ACCEL;
     }
 
-    if (!old_input.up && new_input.up && next.player.grounded > 0) {
-        next.player.grounded = 0;
-        next.player.velocity.y += JUMP_SPEED;
+    if (!old_input.up && new_input.up && player.grounded > 0) {
+        player.grounded = 0;
+        player.velocity.y += JUMP_SPEED;
     }
 
     // ----- Collision detection and resolution -----
 
-    const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, next.player.velocity , RADIUS, 0.0f);
-    next.player.position = collision.position;
-    next.player.velocity = collision.velocity;
+    const auto collision = BAKED_LEVEL.move_and_collide_circle(player.position, player.velocity , RADIUS, 0.0f);
+    player.position = collision.position;
+    player.velocity = collision.velocity;
 
     if (collision.collided) {
-        next.player.ground_normal = collision.normal;
+        player.ground_normal = collision.normal;
         if (collision.normal.y > 0.5f) {
-            next.player.grounded = LATE_JUMP_FRAMES;
+            player.grounded = LATE_JUMP_FRAMES;
         }
-        next.player.air_stomping = false;
-    } else if (next.player.grounded > 0) {
-        next.player.grounded--;
+        player.air_stomping = false;
+    } else if (player.grounded > 0) {
+        player.grounded--;
     }
-
-    return next;
 }

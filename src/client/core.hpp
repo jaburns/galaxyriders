@@ -10,11 +10,13 @@ struct InputState
     bool mouse_click;
     bool debug_pause;
     bool debug_step;
+    bool debug_zoom_in;
+    bool debug_zoom_out;
 
     SharedInputState shared;
 };
 
-namespace Core 
+namespace Core
 {
     extern bool g_should_close_window;
     extern int g_window_width, g_window_height;

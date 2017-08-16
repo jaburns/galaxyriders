@@ -41,7 +41,7 @@ void Core::init()
     );
 
     SDL_SetWindowResizable(s_window, SDL_TRUE);
-    SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+//  SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     s_context = SDL_GL_CreateContext(s_window);
 
@@ -71,12 +71,14 @@ static void handle_key_event(SDL_Keycode keycode, bool press)
         keys_down.erase(keycode);
     }
 
-    state.shared.left  = keys_down.count(SDLK_LEFT);
-    state.shared.right = keys_down.count(SDLK_RIGHT);
-    state.shared.up    = keys_down.count(SDLK_UP);
-    state.shared.down  = keys_down.count(SDLK_DOWN);
-    state.debug_pause  = keys_down.count(SDLK_p);
-    state.debug_step   = keys_down.count(SDLK_PERIOD);
+    state.shared.left    = keys_down.count(SDLK_LEFT);
+    state.shared.right   = keys_down.count(SDLK_RIGHT);
+    state.shared.up      = keys_down.count(SDLK_UP);
+    state.shared.down    = keys_down.count(SDLK_DOWN);
+    state.debug_pause    = keys_down.count(SDLK_p);
+    state.debug_step     = keys_down.count(SDLK_PERIOD);
+    state.debug_zoom_in  = keys_down.count(SDLK_a);
+    state.debug_zoom_out = keys_down.count(SDLK_z);
 }
 
 static void handle_mouse_motion(SDL_MouseMotionEvent event)
@@ -154,7 +156,7 @@ glm::vec3 Core::get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& pro
 
 void Core::deinit()
 {
-	SDL_GL_DeleteContext(s_context);
-	SDL_DestroyWindow(s_window);
-	SDL_Quit();
+    SDL_GL_DeleteContext(s_context);
+    SDL_DestroyWindow(s_window);
+    SDL_Quit();
 }

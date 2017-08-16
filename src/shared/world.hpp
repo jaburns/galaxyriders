@@ -25,7 +25,8 @@ struct World
     World(const uint8_t *serialized, int serialized_length);
     std::vector<uint8_t> serialize() const;
     World lerp_to(const World& next, float t) const;
-    World step(const SharedInputState& old_input, const SharedInputState& new_input) const;
+
+    void step(const SharedInputState& old_input, const SharedInputState& new_input);
 
     static const BakedLevel BAKED_LEVEL;
 };

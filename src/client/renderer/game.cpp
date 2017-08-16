@@ -18,11 +18,13 @@ void GameRenderer::render(const ClientState& state)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    const auto cam_pos = glm::vec3(
-        state.world.player.position.x,
-        state.world.player.position.y,
-        state.camera_dist
-    );
+    const auto cam_pos = state.debug_paused
+        ? state.debug_camera_pos
+        : glm::vec3(
+            state.world.player.position.x,
+            state.world.player.position.y,
+            state.camera_dist
+        );
 
     const auto p = glm::perspective(3.14159f / 3.0f, Core::g_window_width / (float)Core::g_window_height, 0.1f, 1024.0f);
     const auto v = glm::translate(glm::lookAt(glm::vec3(0.0f), { 0.0f, 0.0f, -1.0f }, { 0.0f, 1.0f, 0.0f }), -cam_pos);

@@ -69,7 +69,7 @@ void main_local()
 
         while (accumulator >= Config::MILLIS_PER_TICK) {
             last_state = new_state;
-            new_state = new_state.step(Core::read_input_state());
+            new_state.step(Core::read_input_state());
             accumulator -= Config::MILLIS_PER_TICK;
         }
 
