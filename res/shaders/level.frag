@@ -34,10 +34,12 @@ void main()
     float one_minus_gnd = 1 - clamp(v_surface_info.z, fwidth(v_surface_info.z), 1.0);
     float round_off = 1 - sqrt(1 - one_minus_gnd*one_minus_gnd);
 
-    float color_noise = texture(noise_texture, v_world_pos.xy * 0.1 + round_off * v_surface_info.xy).r;
+    vec2 noise_lookup = 0.1*v_world_pos.xy + round_off*v_surface_info.xy;
+    float noise_val = texture(noise_texture, noise_lookup).r;
+    float unrounded_noise = texture(noise_texture, 0.1*v_world_pos.xy).r;
 
-    vec3 color_raw_ground = stripes(v_world_pos.xy * 0.05 + 0.2*vec2(-round_off, round_off) + SWIRLY*vec2(color_noise,-color_noise));
-    vec3 color_dirt = (0.8 + 0.2*color_noise)*color_raw_ground;
+    vec3 color_raw_ground = stripes(0.05*v_world_pos.xy + 0.2*vec2(-round_off,round_off) + SWIRLY*vec2(-unrounded_noise,unrounded_noise));
+    vec3 color_dirt = (0.8 + 0.2*noise_val)*color_raw_ground;
 
     float light_add = round_off * dot(LIGHT, v_surface_info.xy);
     float lightness = 0.5 + 0.5*light_add;
