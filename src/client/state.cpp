@@ -44,6 +44,29 @@ void ClientState::PlayerAnimation::step(const World::Player& old_player, const W
     }
 }
 
+static void step_game_mode(ClientState& state, const InputState& input)
+{
+    const auto old_player = state.world.player;
+    state.world.step(state.last_input.shared, input.shared);
+
+    const auto target_dist = 10.0f + 20.0f * glm::length(state.world.player.velocity);
+    state.camera_dist += (target_dist - state.camera_dist) / 10.0f;
+    state.player_anim.step(old_player, state.world.player, input.shared.left, input.shared.right);
+}
+
+static constexpr float DEBUG_CAMERA_SLIDE = 0.05f;
+static constexpr float DEBUG_CAMERA_ZOOM  = 1.05f;
+
+static void step_debug_mode(ClientState& state, const InputState& input)
+{
+    if (input.shared.right)   state.debug_camera_pos.x += DEBUG_CAMERA_SLIDE * state.debug_camera_pos.z;
+    if (input.shared.left)    state.debug_camera_pos.x -= DEBUG_CAMERA_SLIDE * state.debug_camera_pos.z;
+    if (input.shared.up)      state.debug_camera_pos.y += DEBUG_CAMERA_SLIDE * state.debug_camera_pos.z;
+    if (input.shared.down)    state.debug_camera_pos.y -= DEBUG_CAMERA_SLIDE * state.debug_camera_pos.z;
+    if (input.debug_zoom_out) state.debug_camera_pos.z *= DEBUG_CAMERA_ZOOM;
+    if (input.debug_zoom_in)  state.debug_camera_pos.z /= DEBUG_CAMERA_ZOOM;
+}
+
 void ClientState::step(const InputState& input)
 {
     if (input.debug_pause && !last_input.debug_pause) {
@@ -55,20 +78,9 @@ void ClientState::step(const InputState& input)
     }
 
     if (!debug_paused || (input.debug_step && !last_input.debug_step)) {
-        const auto old_player = world.player;
-
-        world.step(last_input.shared, input.shared);
-
-        const auto target_dist = 10.0f + 20.0f * glm::length(world.player.velocity);
-        camera_dist += (target_dist - camera_dist) / 10.0f;
-        player_anim.step(old_player, world.player, input.shared.left, input.shared.right);
+        step_game_mode(*this, input);
     } else {
-        if (input.shared.right)   debug_camera_pos.x += 1.0;
-        if (input.shared.left)    debug_camera_pos.x -= 1.0;
-        if (input.shared.up)      debug_camera_pos.y += 1.0;
-        if (input.shared.down)    debug_camera_pos.y -= 1.0;
-        if (input.debug_zoom_out) debug_camera_pos.z += 1.0;
-        if (input.debug_zoom_in)  debug_camera_pos.z -= 1.0;
+        step_debug_mode(*this, input);
     }
 
     last_input = input;
