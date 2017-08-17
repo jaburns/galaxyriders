@@ -15,7 +15,7 @@ mkdir -p "$BUNDLE_FILENAME/Contents/Resources"
 
 [[ ! -e "$BINARY_FILENAME" ]] && make
 cp "$BINARY_FILENAME" "$BUNDLE_FILENAME/Contents/MacOS"
-cp asset_src/game.icns "$BUNDLE_FILENAME/Contents/Resources"
+cp asset_src/osx_icons.icns "$BUNDLE_FILENAME/Contents/Resources"
 cp -r res "$BUNDLE_FILENAME/Contents/MacOS"
 
 get_external_lib_names() {
@@ -30,12 +30,12 @@ remove_path_from_filename() {
     echo "$1" | sed 's:^.*/::'
 }
 
-get_external_lib_names game | while read -r lib; do
+get_external_lib_names "$BINARY_FILENAME" | while read -r lib; do
     cp "$lib" "$BUNDLE_FILENAME/Contents/MacOS"
     install_name_tool -change "$lib" "@executable_path/$(remove_path_from_filename $lib)" "$BUNDLE_FILENAME/Contents/MacOS/$BINARY_FILENAME"
 done
 
-cat >Game.app/Contents/Info.plist <<EOF
+cat >"$BUNDLE_FILENAME/Contents/Info.plist" <<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
@@ -49,7 +49,7 @@ cat >Game.app/Contents/Info.plist <<EOF
     <key>CFBundleName</key>
     <string>$BUNDLE_NAME</string>
     <key>CFBundleIconFile</key>
-    <string>game.icns</string>
+    <string>osx_icons.icns</string>
     <key>CFBundleShortVersionString</key>
     <string>$MAJOR_VERSION.$MINOR_VERSION</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -64,9 +64,9 @@ cat >Game.app/Contents/Info.plist <<EOF
 </plist>
 EOF
 
-cat >Game.app/Contents/MacOS/launcher <<EOF
+cat >"$BUNDLE_FILENAME/Contents/MacOS/launcher" <<EOF
 #!/usr/bin/env bash
 cd "\${0%/*}"
-./game
+./$BINARY_FILENAME
 EOF
-chmod +x Game.app/Contents/MacOS/launcher
+chmod +x "$BUNDLE_FILENAME/Contents/MacOS/launcher"
