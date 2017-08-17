@@ -24,9 +24,7 @@ struct ClientState
     };
 
     bool debug_paused = false;
-    glm::vec3 debug_camera_pos;
-
-    float camera_dist = 10.0f;
+    glm::vec3 camera_pos = { 0.0f, 0.0f, 10.0f };
 
     InputState last_input;
     PlayerAnimation player_anim;
