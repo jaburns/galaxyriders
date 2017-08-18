@@ -34,7 +34,6 @@
     <ClInclude Include="src\client\renderer\level.hpp" />
     <ClInclude Include="src\client\renderer\player.hpp" />
     <ClInclude Include="src\client\renderer\wire.hpp" />
-    <ClInclude Include="src\client\renderer\skybox.hpp" />
     <ClInclude Include="src\client\renderer\sprite.hpp" />
     <ClInclude Include="src\client\resources.hpp" />
     <ClInclude Include="src\client\state.hpp" />
@@ -63,7 +62,6 @@
     </ClCompile>
     <ClCompile Include="src\client\renderer\player.cpp" />
     <ClCompile Include="src\client\renderer\wire.cpp" />
-    <ClCompile Include="src\client\renderer\skybox.cpp" />
     <ClCompile Include="src\client\renderer\sprite.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
     <ClCompile Include="src\client\state.cpp" />
