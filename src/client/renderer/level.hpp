@@ -18,7 +18,7 @@ class LevelRenderer : public NoCopy
     const Texture m_noise_texture;
 
 public:
-    LevelRenderer(const BakedLevel& level);
+    LevelRenderer(const Level& level);
     ~LevelRenderer();
 
     void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const;

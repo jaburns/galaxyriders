@@ -28,5 +28,5 @@ struct World
 
     void step(const SharedInputState& old_input, const SharedInputState& new_input);
 
-    static const BakedLevel BAKED_LEVEL;
+    static const Level GLOBAL_LEVEL;
 };

@@ -6,8 +6,11 @@
 #include "../triangulator.hpp"
 #include "../palette.hpp"
 
-LevelRenderer::LevelRenderer(const BakedLevel& level)
-:   m_mesh(level),
+// TODO This should become LevelMeshRenderer, LevelRenderer should invoke it as well as
+// additional renderers for the editor handles.
+
+LevelRenderer::LevelRenderer(const Level& level)
+:   m_mesh(BakedLevel::from_level(level)),
     m_program("res/shaders/level.vert", "res/shaders/level.frag"),
     m_noise_texture("res/textures/noise.png")
 {
