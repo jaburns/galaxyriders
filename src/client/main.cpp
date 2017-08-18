@@ -79,11 +79,11 @@ void main_local()
     }
 }
 
-int main(int argc, char** argv)
+int common_main(std::vector<std::string> args)
 {
     Core::init();
 
-    if (argc >= 2 && std::strcmp(argv[1], "net") == 0) {
+    if (args.size() > 0 && args[0] == "net") {
         main_net();
     } else {
         main_local();
@@ -93,3 +93,45 @@ int main(int argc, char** argv)
 
     return 0;
 }
+
+
+#if _WIN32 && !_DEBUG
+
+#pragma comment(linker, "/SUBSYSTEM:windows")
+#include <Windows.h>
+
+int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)
+{
+    int argc;
+    PWSTR *wargv = CommandLineToArgvW(GetCommandLineW(), &argc);
+    std::vector<std::string> args;
+
+    for (auto i = 1; i < argc; ++i) {
+        std::wstring wide_arg(wargv[i]);
+        std::string out_str;
+        out_str.resize(wide_arg.length());
+        size_t chars_converted = 0;
+        wcstombs_s(&chars_converted, &out_str[0], wide_arg.length() + 1, wide_arg.c_str(), wide_arg.length());
+        args.push_back(out_str);
+    }
+
+    int result = common_main(args);
+
+    LocalFree(wargv);
+
+    return result;
+}
+
+#else 
+
+int main(int argc, char **argv)
+{
+    std::vector<std::string> args;
+    for (int i = 1; i < argc; ++i) {
+        args.push_back(std::string(argv[i]));
+    }
+
+    return common_main(args);
+}
+
+#endif
