@@ -2,20 +2,13 @@
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
+#include "level_mesh.hpp"
 #include "../resources.hpp"
-#include "../level_mesh.hpp"
 #include "../../shared/lang_utils.hpp"
 
 class LevelRenderer : public NoCopy
 {
-    GLuint m_vao = 0;
-    GLuint m_vertex_buffer = 0;
-    GLuint m_surface_pos_buffer = 0;
-    GLuint m_index_buffer = 0;
-
-    const LevelMesh m_mesh;
-    const ShaderProgram m_program;
-    const Texture m_noise_texture;
+    const LevelMeshRenderer m_level_mesh_renderer;
 
 public:
     LevelRenderer(const Level& level);

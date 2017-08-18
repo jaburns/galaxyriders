@@ -1,63 +1,15 @@
 #include "level.hpp"
 
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include "../gl.hpp"
-#include "../triangulator.hpp"
-#include "../palette.hpp"
-
-// TODO This should become LevelMeshRenderer, LevelRenderer should invoke it as well as
-// additional renderers for the editor handles.
-
 LevelRenderer::LevelRenderer(const Level& level)
-:   m_mesh(BakedLevel::from_level(level)),
-    m_program("res/shaders/level.vert", "res/shaders/level.frag"),
-    m_noise_texture("res/textures/noise.png")
+:   m_level_mesh_renderer(level)
 {
-    glGenVertexArrays(1, &m_vao);
-    glBindVertexArray(m_vao);
-
-    glGenBuffers(1, &m_vertex_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.vertices.size() * sizeof(glm::vec2), m_mesh.vertices.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(m_program, "position"));
-    glVertexAttribPointer(glGetAttribLocation(m_program, "position"), 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*) 0);
-
-    glGenBuffers(1, &m_surface_pos_buffer);
-    glBindBuffer(GL_ARRAY_BUFFER, m_surface_pos_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.surface_info.size() * sizeof(glm::vec3), m_mesh.surface_info.data(), GL_STATIC_DRAW);
-    glEnableVertexAttribArray(glGetAttribLocation(m_program, "surface_info"));
-    glVertexAttribPointer(glGetAttribLocation(m_program, "surface_info"), 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*) 0);
-
-    glGenBuffers(1, &m_index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_mesh.indices.size() * sizeof(uint32_t), m_mesh.indices.data(), GL_STATIC_DRAW);
 }
 
 LevelRenderer::~LevelRenderer()
 {
-    glBindVertexArray(0);
-    glDeleteVertexArrays(1, &m_vao);
-    glDeleteBuffers(1, &m_vertex_buffer);
-    glDeleteBuffers(1, &m_surface_pos_buffer);
-    glDeleteBuffers(1, &m_index_buffer);
 }
 
 void LevelRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const
 {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, m_noise_texture);
-
-    glUseProgram(m_program);
-    glUniformMatrix4fv(glGetUniformLocation(m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
-    glUniformMatrix4fv(glGetUniformLocation(m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-    glUniform1i(glGetUniformLocation(m_program, "noise_texture"), 0);
-
-    glBindVertexArray(m_vao);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
-
-    const auto m = glm::translate(glm::mat4(1.0f), position);
-    glUniformMatrix4fv(glGetUniformLocation(m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
-
-    glDrawElements(GL_TRIANGLES, m_mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
+    m_level_mesh_renderer.draw_once(view, projection, position);
 }

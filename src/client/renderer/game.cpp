@@ -4,7 +4,6 @@
 #include "../gl.hpp"
 #include "../core.hpp"
 #include "../../shared/level.hpp"
-#include "../level_mesh.hpp"
 #include "../gen/wire_meshes.hpp"
 
 GameRenderer::GameRenderer()

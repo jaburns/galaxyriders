@@ -28,7 +28,7 @@
     <ClInclude Include="src\client\gen\wire_meshes.hpp" />
     <ClInclude Include="src\client\core.hpp" />
     <ClInclude Include="src\client\gl.hpp" />
-    <ClInclude Include="src\client\level_mesh.hpp" />
+    <ClInclude Include="src\client\renderer\level_mesh.hpp" />
     <ClInclude Include="src\client\palette.hpp" />
     <ClInclude Include="src\client\renderer\game.hpp" />
     <ClInclude Include="src\client\renderer\level.hpp" />
@@ -54,7 +54,7 @@
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\client\gen\wire_meshes.cpp" />
     <ClCompile Include="src\client\core.cpp" />
-    <ClCompile Include="src\client\level_mesh.cpp" />
+    <ClCompile Include="src\client\renderer\level_mesh.cpp" />
     <ClCompile Include="src\client\main.cpp" />
     <ClCompile Include="src\client\renderer\game.cpp" />
     <ClCompile Include="src\client\renderer\level.cpp">
