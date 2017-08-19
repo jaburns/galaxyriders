@@ -3,18 +3,25 @@
 #include <unordered_set>
 #include <cstdlib>
 #include <cstdio>
+#include <glm/gtc/matrix_transform.hpp>
 #include "gl.hpp"
 #include "palette.hpp"
 
 static SDL_Window* s_window;
 static SDL_GLContext s_context;
+static int s_window_width;
+static int s_window_height;
+static glm::mat4x4 s_perspective_matrix;
 
 static std::unordered_set<SDL_Keycode> keys_down;
 static InputState state;
 
-int Core::g_window_width;
-int Core::g_window_height;
 bool Core::g_should_close_window = false;
+
+static void recompute_perspective()
+{
+    s_perspective_matrix= glm::perspective(3.14159f / 3.0f, s_window_width / (float)s_window_height, 0.1f, 1024.0f);
+}
 
 void Core::init()
 {
@@ -22,8 +29,9 @@ void Core::init()
         exit(EXIT_FAILURE);
     }
 
-    g_window_width = 1280;
-    g_window_height = 720;
+    s_window_width = 1280;
+    s_window_height = 720;
+    recompute_perspective();
 
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1); // MSAA
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
@@ -36,9 +44,10 @@ void Core::init()
     s_window = SDL_CreateWindow(
         "Galaxy Riders",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        g_window_width, g_window_height,
+        s_window_width, s_window_height,
         SDL_WINDOW_OPENGL
     );
+
 
     SDL_SetWindowResizable(s_window, SDL_TRUE);
 //  SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
@@ -84,8 +93,8 @@ static void handle_key_event(SDL_Keycode keycode, bool press)
 static void handle_mouse_motion(SDL_MouseMotionEvent event)
 {
     state.mouse_pos = glm::vec2(
-        2.0f * event.x / static_cast<float>(Core::g_window_width) - 1.0f,
-        1.0f - 2.0f * event.y /static_cast<float>(Core::g_window_height)
+        2.0f * event.x / static_cast<float>(s_window_width) - 1.0f,
+        1.0f - 2.0f * event.y /static_cast<float>(s_window_height)
     );
 }
 
@@ -102,9 +111,10 @@ void Core::flip_frame_and_poll_events()
 
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    g_window_width = event.window.data1;
-                    g_window_height = event.window.data2;
-                    glViewport(0, 0, g_window_width, g_window_height);
+                    s_window_width = event.window.data1;
+                    s_window_height = event.window.data2;
+                    recompute_perspective();
+                    glViewport(0, 0, s_window_width, s_window_height);
                 }
                 break;
 
@@ -152,6 +162,16 @@ static glm::vec3 get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& pr
     ray_world = glm::normalize(ray_world);
 
     return ray_world;
+}
+
+const glm::mat4x4& Core::get_perspective_matrix()
+{
+    return s_perspective_matrix;
+}
+
+glm::mat4x4 Core::get_view_matrix(const glm::vec3& camera_pos)
+{
+    return glm::translate(glm::lookAt(glm::vec3(0.0f), {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}), -camera_pos);
 }
 
 glm::vec2 Core::get_mouse_world_pos(const glm::vec3& camera_pos, const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
