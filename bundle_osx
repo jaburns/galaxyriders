@@ -18,6 +18,12 @@ cp "$BINARY_FILENAME" "$BUNDLE_FILENAME/Contents/MacOS"
 cp asset_src/osx_icons.icns "$BUNDLE_FILENAME/Contents/Resources"
 cp -r res "$BUNDLE_FILENAME/Contents/MacOS"
 
+pushd "$BUNDLE_FILENAME/Contents/MacOS/res" >/dev/null
+    cat '../../../../resources_ignore' | while read file; do
+        rm "$file"
+    done
+popd >/dev/null
+
 get_external_lib_names() {
     otool -L "$1" \
         | grep -v "^[^\t]*:" \
