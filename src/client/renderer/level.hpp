@@ -14,9 +14,11 @@ class LevelRenderer : public NoCopy
     const LevelMeshRenderer m_level_mesh_renderer;
     const WireRenderer m_handle_renderer;
 
+    void draw_handle(const glm::vec2& mouse_pos, const Level::Handle& handle) const;
+
 public:
     LevelRenderer(const Level& level);
     ~LevelRenderer();
 
-    void draw_once(bool edit_mode, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const;
+    void draw_once(bool edit_mode, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const;
 };

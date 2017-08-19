@@ -139,7 +139,7 @@ InputState Core::read_input_state()
     return state;
 }
 
-glm::vec3 Core::get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
+static glm::vec3 get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
 {
     glm::vec4 ray_clip = glm::vec4(mouse_pos, -1.0f, 1.0f);
 
@@ -152,6 +152,15 @@ glm::vec3 Core::get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& pro
     ray_world = glm::normalize(ray_world);
 
     return ray_world;
+}
+
+glm::vec2 Core::get_mouse_world_pos(const glm::vec3& camera_pos, const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
+{
+    const auto mouse_ray = get_mouse_ray(Core::read_input_state().mouse_pos, projection, view);
+    const auto plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    const auto plane_coord = glm::vec3(0.0f);
+    const auto t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, camera_pos)) / glm::dot(plane_normal, mouse_ray);
+    return camera_pos + t * mouse_ray;
 }
 
 void Core::deinit()

@@ -26,7 +26,7 @@ namespace Core
     void flip_frame_and_poll_events();
 
     InputState read_input_state();
-    glm::vec3 get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view);
+    glm::vec2 get_mouse_world_pos(const glm::vec3& camera_pos, const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view);
 
     void deinit();
 };
