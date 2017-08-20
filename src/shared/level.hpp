@@ -39,3 +39,11 @@ struct BakedLevel
 
     CollisionResult move_and_collide_circle(glm::vec2 position, glm::vec2 delta, float radius, float bounce) const;
 };
+
+namespace LoadedLevel
+{
+    Level& get();
+    void set(const Level& level);
+    void bake();
+    const BakedLevel& get_baked();
+}

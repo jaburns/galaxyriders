@@ -7,7 +7,7 @@
 #include "../gen/wire_meshes.hpp"
 
 GameRenderer::GameRenderer()
-:   m_level_renderer(World::GLOBAL_LEVEL),
+:   m_level_renderer(LoadedLevel::get()),
     m_player_renderer(),
     m_mouse_renderer(WireMeshes::CIRCLE)
 { }
