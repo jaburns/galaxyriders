@@ -75,7 +75,7 @@ static void step_edit_mode(ClientState& state, const InputState& input)
     if (input.editmode_zoom_in)  state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
 
     if (input.mouse_click) {
-        const auto& mouse_pos = Core::get_mouse_world_pos(state.camera_pos, input.mouse_pos, Core::get_perspective_matrix(), Core::get_view_matrix(state.camera_pos));
+        const auto& mouse_pos = Core::get_mouse_world_pos(state.camera_pos, input.mouse_pos);
 
         state.edit_mode.selected_handle = 0;
         state.edit_mode.selected_poly = 0;
