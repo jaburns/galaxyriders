@@ -23,7 +23,13 @@ struct ClientState
         void step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right);
     };
 
-    bool debug_paused = false;
+    struct EditModeState {
+        bool enabled = false;
+        int32_t selected_poly = -1;
+        int32_t selected_handle = -1;
+    };
+
+    EditModeState edit_mode;
     glm::vec3 camera_pos = { 0.0f, 0.0f, 10.0f };
 
     InputState last_input;

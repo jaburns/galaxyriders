@@ -48,7 +48,6 @@ void Core::init()
         SDL_WINDOW_OPENGL
     );
 
-
     SDL_SetWindowResizable(s_window, SDL_TRUE);
 //  SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
@@ -84,10 +83,10 @@ static void handle_key_event(SDL_Keycode keycode, bool press)
     state.shared.right   = keys_down.count(SDLK_RIGHT);
     state.shared.up      = keys_down.count(SDLK_UP);
     state.shared.down    = keys_down.count(SDLK_DOWN);
-    state.debug_pause    = keys_down.count(SDLK_p);
-    state.debug_step     = keys_down.count(SDLK_PERIOD);
-    state.debug_zoom_in  = keys_down.count(SDLK_a);
-    state.debug_zoom_out = keys_down.count(SDLK_z);
+    state.editmode_toggle    = keys_down.count(SDLK_p);
+    state.editmode_step     = keys_down.count(SDLK_PERIOD);
+    state.editmode_zoom_in  = keys_down.count(SDLK_a);
+    state.editmode_zoom_out = keys_down.count(SDLK_z);
 }
 
 static void handle_mouse_motion(SDL_MouseMotionEvent event)
@@ -174,9 +173,9 @@ glm::mat4x4 Core::get_view_matrix(const glm::vec3& camera_pos)
     return glm::translate(glm::lookAt(glm::vec3(0.0f), {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}), -camera_pos);
 }
 
-glm::vec2 Core::get_mouse_world_pos(const glm::vec3& camera_pos, const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
+glm::vec2 Core::get_mouse_world_pos(const glm::vec3& camera_pos, const glm::vec2& mouse_pos)
 {
-    const auto mouse_ray = get_mouse_ray(Core::read_input_state().mouse_pos, projection, view);
+    const auto mouse_ray = get_mouse_ray(Core::read_input_state().mouse_pos, Core::get_perspective_matrix(), Core::get_view_matrix(camera_pos));
     const auto plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
     const auto plane_coord = glm::vec3(0.0f);
     const auto t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, camera_pos)) / glm::dot(plane_normal, mouse_ray);

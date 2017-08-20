@@ -8,9 +8,8 @@
 
 class GameRenderer : public NoCopy
 {
-    const LevelRenderer m_level_renderer;
     const PlayerRenderer m_player_renderer;
-    const WireRenderer m_mouse_renderer;
+    LoadedLevelRenderer m_level_renderer;
 
 public:
     GameRenderer();

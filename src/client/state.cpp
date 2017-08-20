@@ -1,6 +1,9 @@
 #include "state.hpp"
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
+#include <glm/gtx/norm.hpp>
 
 void ClientState::PlayerAnimation::step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right)
 {
@@ -59,29 +62,51 @@ static void step_game_mode(ClientState& state, const InputState& input, bool sin
     state.player_anim.step(old_player, state.world.player, input.shared.left, input.shared.right);
 }
 
-static constexpr float DEBUG_CAMERA_SLIDE = 0.05f;
-static constexpr float DEBUG_CAMERA_ZOOM  = 1.05f;
+static constexpr float EDITMODE_CAMERA_SLIDE = 0.05f;
+static constexpr float EDITMODE_CAMERA_ZOOM  = 1.05f;
 
-static void step_debug_mode(ClientState& state, const InputState& input)
+static void step_edit_mode(ClientState& state, const InputState& input)
 {
-    if (input.shared.right)   state.camera_pos.x += DEBUG_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.shared.left)    state.camera_pos.x -= DEBUG_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.shared.up)      state.camera_pos.y += DEBUG_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.shared.down)    state.camera_pos.y -= DEBUG_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.debug_zoom_out) state.camera_pos.z *= DEBUG_CAMERA_ZOOM;
-    if (input.debug_zoom_in)  state.camera_pos.z /= DEBUG_CAMERA_ZOOM;
+    if (input.shared.right)   state.camera_pos.x += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.shared.left)    state.camera_pos.x -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.shared.up)      state.camera_pos.y += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.shared.down)    state.camera_pos.y -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.editmode_zoom_out) state.camera_pos.z *= EDITMODE_CAMERA_ZOOM;
+    if (input.editmode_zoom_in)  state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
+
+    if (input.mouse_click) {
+        const auto& mouse_pos = Core::get_mouse_world_pos(state.camera_pos, input.mouse_pos, Core::get_perspective_matrix(), Core::get_view_matrix(state.camera_pos));
+
+        state.edit_mode.selected_handle = 0;
+        state.edit_mode.selected_poly = 0;
+        float min_dist2 = 1e20f;
+        for (int32_t i = 0; i < LoadedLevel::get().polys.size(); ++i) {
+            for (int32_t j = 0; j < LoadedLevel::get().polys[i].handles.size(); ++j) {
+                const auto& h = LoadedLevel::get().polys[i].handles[j];
+                const auto new_d2 = glm::distance2(mouse_pos, h.point);
+                if (new_d2 < min_dist2) {
+                    state.edit_mode.selected_handle = i;
+                    state.edit_mode.selected_poly = j;
+                    min_dist2 = new_d2;
+                }
+            }
+        }
+
+        LoadedLevel::get().polys[state.edit_mode.selected_handle].handles[state.edit_mode.selected_poly].point = mouse_pos;
+        LoadedLevel::bake();
+    }
 }
 
 void ClientState::step(const InputState& input)
 {
-    if (input.debug_pause && !last_input.debug_pause) {
-        debug_paused = !debug_paused;
+    if (input.editmode_toggle && !last_input.editmode_toggle) {
+        edit_mode.enabled = !edit_mode.enabled;
     }
 
-    if (!debug_paused || (input.debug_step && !last_input.debug_step)) {
-        step_game_mode(*this, input, debug_paused);
+    if (!edit_mode.enabled || (input.editmode_step && !last_input.editmode_step)) {
+        step_game_mode(*this, input, edit_mode.enabled);
     } else {
-        step_debug_mode(*this, input);
+        step_edit_mode(*this, input);
     }
 
     last_input = input;

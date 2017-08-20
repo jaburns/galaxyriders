@@ -115,9 +115,8 @@ static LevelMeshRenderer::Mesh create_mesh(const BakedLevel& level)
     return result;
 }
 
-LevelMeshRenderer::LevelMeshRenderer(const Level& level)
-:   m_mesh(create_mesh(BakedLevel::from_level(level))),
-    m_program("res/shaders/level.vert", "res/shaders/level.frag"),
+LevelMeshRenderer::LevelMeshRenderer(const BakedLevel& level)
+:   m_program("res/shaders/level.vert", "res/shaders/level.frag"),
     m_noise_texture("res/textures/noise.png")
 {
     glGenVertexArrays(1, &m_vao);
@@ -125,19 +124,17 @@ LevelMeshRenderer::LevelMeshRenderer(const Level& level)
 
     glGenBuffers(1, &m_vertex_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.vertices.size() * sizeof(glm::vec2), m_mesh.vertices.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(m_program, "position"));
     glVertexAttribPointer(glGetAttribLocation(m_program, "position"), 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*) 0);
 
     glGenBuffers(1, &m_surface_pos_buffer);
     glBindBuffer(GL_ARRAY_BUFFER, m_surface_pos_buffer);
-    glBufferData(GL_ARRAY_BUFFER, m_mesh.surface_info.size() * sizeof(glm::vec3), m_mesh.surface_info.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(glGetAttribLocation(m_program, "surface_info"));
     glVertexAttribPointer(glGetAttribLocation(m_program, "surface_info"), 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*) 0);
 
     glGenBuffers(1, &m_index_buffer);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_mesh.indices.size() * sizeof(uint32_t), m_mesh.indices.data(), GL_STATIC_DRAW);
+
+    rebuild_mesh(level);
 }
 
 LevelMeshRenderer::~LevelMeshRenderer()
@@ -147,6 +144,20 @@ LevelMeshRenderer::~LevelMeshRenderer()
     glDeleteBuffers(1, &m_vertex_buffer);
     glDeleteBuffers(1, &m_surface_pos_buffer);
     glDeleteBuffers(1, &m_index_buffer);
+}
+
+void LevelMeshRenderer::rebuild_mesh(const BakedLevel& level)
+{
+    m_mesh = create_mesh(level);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_vertex_buffer);
+    glBufferData(GL_ARRAY_BUFFER, m_mesh.vertices.size() * sizeof(glm::vec2), m_mesh.vertices.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, m_surface_pos_buffer);
+    glBufferData(GL_ARRAY_BUFFER, m_mesh.surface_info.size() * sizeof(glm::vec3), m_mesh.surface_info.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_index_buffer);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_mesh.indices.size() * sizeof(uint32_t), m_mesh.indices.data(), GL_STATIC_DRAW);
 }
 
 void LevelMeshRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const

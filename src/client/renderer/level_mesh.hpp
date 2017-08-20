@@ -24,13 +24,15 @@ private:
     GLuint m_surface_pos_buffer = 0;
     GLuint m_index_buffer = 0;
 
-    const Mesh m_mesh;
     const ShaderProgram m_program;
     const Texture m_noise_texture;
+    Mesh m_mesh;
 
 public:
-    LevelMeshRenderer(const Level& level);
+    LevelMeshRenderer(const BakedLevel& level);
     ~LevelMeshRenderer();
+
+    void rebuild_mesh(const BakedLevel& level);
 
     void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const;
 };

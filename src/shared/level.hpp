@@ -17,7 +17,9 @@ struct Level
 
     std::vector<Poly> polys;
 
-    static Level from_data(const std::vector<float>& data);
+    Level(const std::vector<float>& data);
+
+    uint32_t checksum();
 };
 
 struct BakedLevel
@@ -35,7 +37,7 @@ struct BakedLevel
 
     std::vector<Poly> polys;
 
-    static BakedLevel from_level(const Level& level);
+    BakedLevel(const Level& level);
 
     CollisionResult move_and_collide_circle(glm::vec2 position, glm::vec2 delta, float radius, float bounce) const;
 };

@@ -2,9 +2,8 @@
 #include "geometry.hpp"
 #include <glm/geometric.hpp>
 
-Level Level::from_data(const std::vector<float>& data)
+Level::Level(const std::vector<float>& data)
 {
-    Level level;
     size_t read = 0;
 
     const auto total_polys = data[read++];
@@ -20,16 +19,26 @@ Level Level::from_data(const std::vector<float>& data)
             this_poly.handles.push_back(this_handle);
         }
 
-        level.polys.push_back(this_poly);
+        polys.push_back(this_poly);
     }
-
-    return level;
 }
 
-BakedLevel BakedLevel::from_level(const Level& level)
+uint32_t Level::checksum()
+{
+    uint32_t sum = 0;
+    for (const auto& p : polys) {
+        for (const auto& h : p.handles) {
+            sum += *reinterpret_cast<const uint32_t*>(&h.point.x);
+            sum += *reinterpret_cast<const uint32_t*>(&h.point.y);
+            sum *= 1 + h.quality;
+        }
+    }
+    return sum;
+}
+
+BakedLevel::BakedLevel(const Level& level)
 {
 #   define MAX(x,y) ((x) > (y) ? (x) : (y))
-    BakedLevel baked;
 
     for (auto& poly : level.polys) {
         BakedLevel::Poly this_poly;
@@ -52,10 +61,9 @@ BakedLevel BakedLevel::from_level(const Level& level)
             }
         }
 
-        baked.polys.push_back(this_poly);
+        polys.push_back(this_poly);
     }
 
-    return baked;
 #   undef MAX
 }
 
@@ -152,8 +160,8 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
     return { collided, position, velocity, normal };
 }
 
-static Level s_loaded_level = Level::from_data({1.0f,39.0f,0.0f,383.5131f,-106.7458f,0.0f,-113.6776f,-105.6847f,0.0f,-113.6746f,60.29282f,0.0f,-96.52872f,32.61086f,0.0f,-50.92356f,45.47921f,0.0f,-18.6964f,45.29268f,50.0f,-25.01754f,-11.05426f,50.0f,-17.72211f,-17.35335f,0.0f,-7.363365f,-17.46777f,0.0f,42.68919f,-17.48897f,0.0f,42.70433f,-35.73095f,0.0f,51.56719f,-35.63853f,0.0f,51.57977f,-17.30403f,0.0f,72.65042f,-17.24803f,50.0f,84.98267f,-17.37347f,50.0f,104.8119f,-23.64916f,0.0f,119.17f,-24.08519f,0.0f,140.9189f,-24.10562f,0.0f,140.8984f,-32.22205f,0.0f,158.9607f,-32.22999f,0.0f,158.9369f,-24.02389f,0.0f,169.9889f,-24.09263f,0.0f,169.8818f,-32.26975f,0.0f,187.3026f,-32.27576f,0.0f,187.3126f,-24.13411f,0.0f,198.1484f,-24.13497f,0.0f,198.1618f,-32.24654f,0.0f,214.8907f,-32.1848f,0.0f,214.8486f,-24.13108f,0.0f,249.9169f,-24.10995f,50.0f,260.3928f,-24.31205f,50.0f,268.3945f,-22.60493f,0.0f,280.6699f,-6.108091f,0.0f,290.0646f,8.905025f,0.0f,306.7936f,9.556507f,50.0f,318.8844f,-10.8901f,50.0f,336.2576f,-6.70936f,0.0f,342.5138f,24.31914f,0.0f,383.6403f,245.7591f});
-static BakedLevel s_loaded_level_baked = BakedLevel::from_level(s_loaded_level);
+static Level s_loaded_level({1.0f,39.0f,0.0f,383.5131f,-106.7458f,0.0f,-113.6776f,-105.6847f,0.0f,-113.6746f,60.29282f,0.0f,-96.52872f,32.61086f,0.0f,-50.92356f,45.47921f,0.0f,-18.6964f,45.29268f,50.0f,-25.01754f,-11.05426f,50.0f,-17.72211f,-17.35335f,0.0f,-7.363365f,-17.46777f,0.0f,42.68919f,-17.48897f,0.0f,42.70433f,-35.73095f,0.0f,51.56719f,-35.63853f,0.0f,51.57977f,-17.30403f,0.0f,72.65042f,-17.24803f,50.0f,84.98267f,-17.37347f,50.0f,104.8119f,-23.64916f,0.0f,119.17f,-24.08519f,0.0f,140.9189f,-24.10562f,0.0f,140.8984f,-32.22205f,0.0f,158.9607f,-32.22999f,0.0f,158.9369f,-24.02389f,0.0f,169.9889f,-24.09263f,0.0f,169.8818f,-32.26975f,0.0f,187.3026f,-32.27576f,0.0f,187.3126f,-24.13411f,0.0f,198.1484f,-24.13497f,0.0f,198.1618f,-32.24654f,0.0f,214.8907f,-32.1848f,0.0f,214.8486f,-24.13108f,0.0f,249.9169f,-24.10995f,50.0f,260.3928f,-24.31205f,50.0f,268.3945f,-22.60493f,0.0f,280.6699f,-6.108091f,0.0f,290.0646f,8.905025f,0.0f,306.7936f,9.556507f,50.0f,318.8844f,-10.8901f,50.0f,336.2576f,-6.70936f,0.0f,342.5138f,24.31914f,0.0f,383.6403f,245.7591f});
+static BakedLevel s_loaded_level_baked(s_loaded_level);
 
 Level& LoadedLevel::get()
 {
@@ -168,7 +176,7 @@ void LoadedLevel::set(const Level& level)
 
 void LoadedLevel::bake()
 {
-    s_loaded_level_baked = BakedLevel::from_level(s_loaded_level);
+    s_loaded_level_baked = BakedLevel(s_loaded_level);
 }
 
 const BakedLevel& LoadedLevel::get_baked()
