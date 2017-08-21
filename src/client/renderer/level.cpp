@@ -36,6 +36,7 @@ void LoadedLevelRenderer::draw_handle(const glm::vec2& mouse_pos, const Level::H
 
 void LoadedLevelRenderer::draw_once(bool edit_mode, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position)
 {
+//  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (edit_mode) {
         const auto new_checksum = LoadedLevel::get().checksum();
         if (new_checksum != m_level_checksum) {
@@ -45,6 +46,7 @@ void LoadedLevelRenderer::draw_once(bool edit_mode, const glm::vec2& mouse_pos, 
     }
 
     m_level_mesh_renderer.draw_once(view, projection, position);
+//  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
     if (edit_mode) {
         m_handle_renderer.use(view, projection);
