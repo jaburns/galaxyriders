@@ -9,14 +9,14 @@
 #include "../../shared/geometry.hpp"
 #include "../triangulator.hpp"
 
-//#define WIRE_FRAME_MODE 1
+  #define WIRE_FRAME_MODE 1
 
-static void repair_inset_points(const std::vector<glm::vec2>& original, std::vector<glm::vec2>& inset, bool keep_degenerates)
+static void repair_inset_points(const std::vector<BakedLevel::Point>& original, std::vector<glm::vec2>& inset, bool keep_degenerates)
 {
     std::unordered_set<int> dead_indices;
 
     for (auto i = 1; i < inset.size(); ++i) {
-        if (Geometry::line_intersect(original[i-1], inset[i-1], original[i], inset[i])) {
+        if (Geometry::line_intersect(original[i-1].pos, inset[i-1], original[i].pos, inset[i])) {
             inset[i] = inset[i-1];
             dead_indices.insert(i);
         }
@@ -37,7 +37,7 @@ static void repair_inset_points(const std::vector<glm::vec2>& original, std::vec
     // we are still treating it like a quad as of yet.
 }
 
-static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
+static std::vector<glm::vec2> inset_points(const std::vector<BakedLevel::Point>& points)
 {
     static constexpr auto DEPTH = 5.0f;
 
@@ -46,7 +46,7 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
     for (auto i = 0; i < points.size(); ++i) {
         const auto i0 = i == 0 ? points.size() - 1 : i - 1;
         const auto i1 = i == points.size() - 1 ? 0 : i + 1;
-        const auto a = points[i0], b = points[i], c = points[i1];
+        const auto a = points[i0].pos, b = points[i].pos, c = points[i1].pos;
 
         const auto b_a = glm::normalize(b - a);
         const auto c_b = glm::normalize(c - b);
@@ -108,12 +108,12 @@ static void push_poly(LevelMeshRenderer::Mesh& mesh, const BakedLevel::Poly& pol
         for (auto i = 0; i < poly.points.size(); i++) {
             const auto j = (i + 1) % poly.points.size();
 
-            mesh.vertices.push_back(poly.points[i]);
+            mesh.vertices.push_back(poly.points[i].pos);
             mesh.vertices.push_back(inset_pts[i]);
-            mesh.vertices.push_back(poly.points[j]);
+            mesh.vertices.push_back(poly.points[j].pos);
             mesh.vertices.push_back(inset_pts[j]);
 
-            const auto surface_vec = poly.points[j] - poly.points[i];
+            const auto surface_vec = poly.points[j].pos - poly.points[i].pos;
             const auto tangent = glm::normalize(surface_vec);
             const auto normal = Geometry::vec2_rotate90(tangent);
 

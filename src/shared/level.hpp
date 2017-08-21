@@ -24,8 +24,13 @@ struct Level
 
 struct BakedLevel
 {
+    struct Point {
+        glm::vec2 pos;
+        bool is_curve = false;
+    };
+
     struct Poly {
-        std::vector<glm::vec2> points;
+        std::vector<Point> points;
     };
 
     struct CollisionResult {

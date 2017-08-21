@@ -44,18 +44,21 @@ BakedLevel::BakedLevel(const Level& level)
         BakedLevel::Poly this_poly;
 
         for (auto i = 0; i < poly.handles.size(); ++i) {
-            this_poly.points.push_back(poly.handles[i].point);
+            this_poly.points.push_back({ poly.handles[i].point, false });
 
             if (i <= poly.handles.size() - 4 && poly.handles[i+1].quality > 0 && poly.handles[i+2].quality > 0) {
                 const auto iter = 1.0f / MAX(poly.handles[i+1].quality, poly.handles[i+2].quality);
                 for(auto t = iter; t < 1.0f; t += iter) {
-                    this_poly.points.push_back(Geometry::evaluate_spline(
-                        poly.handles[i+0].point,
-                        poly.handles[i+1].point,
-                        poly.handles[i+2].point,
-                        poly.handles[i+3].point,
-                        t
-                    ));
+                    this_poly.points.push_back({
+                        Geometry::evaluate_spline(
+                            poly.handles[i+0].point,
+                            poly.handles[i+1].point,
+                            poly.handles[i+2].point,
+                            poly.handles[i+3].point,
+                            t
+                        ),
+                        true
+                    });
                 }
                 i += 2;
             }
@@ -85,8 +88,8 @@ static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos
         test_pos = pos;
 
         for (auto i = 0; i < poly.points.size(); ++i) {
-            const auto a = poly.points[i];
-            const auto b = poly.points[(i+1) % poly.points.size()];
+            const auto a = poly.points[i].pos;
+            const auto b = poly.points[(i+1) % poly.points.size()].pos;
 
             if (Geometry::point_in_line_perp_space(a, b, test_pos)) {
                 const auto m  = (b.y-a.y)/(b.x-a.x);
@@ -112,11 +115,11 @@ static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos
         }
 
         for (auto i = 0; i < poly.points.size(); ++i) {
-            const auto ds = pos - poly.points[i];
+            const auto ds = pos - poly.points[i].pos;
             const auto d2 = ds.x*ds.x + ds.y*ds.y;
             if (d2 < r2) {
                 normal = glm::normalize(ds);
-                test_pos = poly.points[i] + normal * r;
+                test_pos = poly.points[i].pos + normal * r;
                 return { true, normal, test_pos };
             }
         }
