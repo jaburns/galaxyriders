@@ -34,5 +34,5 @@ public:
 
     void rebuild_mesh(const BakedLevel& level);
 
-    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const;
+    void draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position, bool wireframe = false) const;
 };

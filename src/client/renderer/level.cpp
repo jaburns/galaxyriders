@@ -34,7 +34,8 @@ void LoadedLevelRenderer::draw_handle(const glm::vec2& mouse_pos, const Level::H
     m_handle_renderer.draw(glm::vec3(handle.point, 0.1f), glm::vec3(1.0f), color);
 }
 
-void LoadedLevelRenderer::draw_once(bool edit_mode, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position)
+
+void LoadedLevelRenderer::draw_once(bool edit_mode, bool wireframe, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position)
 {
     if (edit_mode) {
         const auto new_checksum = LoadedLevel::get().checksum();
@@ -44,7 +45,7 @@ void LoadedLevelRenderer::draw_once(bool edit_mode, const glm::vec2& mouse_pos, 
         m_level_checksum = new_checksum;
     }
 
-    m_level_mesh_renderer.draw_once(view, projection, position);
+    m_level_mesh_renderer.draw_once(view, projection, position, wireframe);
 
     if (edit_mode) {
         m_handle_renderer.use(view, projection);

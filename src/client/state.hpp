@@ -29,6 +29,8 @@ struct ClientState
         int32_t selected_handle = -1;
     };
 
+    bool debug_wireframe_mode = false;
+
     EditModeState edit_mode;
     glm::vec3 camera_pos = { 0.0f, 0.0f, 10.0f };
 

@@ -9,16 +9,25 @@
 #include "../../shared/geometry.hpp"
 #include "../triangulator.hpp"
 
-  #define WIRE_FRAME_MODE 1
-
 static void repair_inset_points(const std::vector<BakedLevel::Point>& original, std::vector<glm::vec2>& inset, bool keep_degenerates)
 {
     std::unordered_set<int> dead_indices;
 
-    for (auto i = 1; i < inset.size(); ++i) {
-        if (Geometry::line_intersect(original[i-1].pos, inset[i-1], original[i].pos, inset[i])) {
-            inset[i] = inset[i-1];
-            dead_indices.insert(i);
+    for (int i = 1; i < inset.size(); ++i) {
+        if (original[i].is_curve) {
+            if (Geometry::line_intersect(original[i-1].pos, inset[i-1], original[i].pos, inset[i])) {
+                inset[i] = inset[i-1];
+                dead_indices.insert(i);
+            }
+        }
+    }
+
+    for (int i = inset.size() - 2; i >= 0; --i) {
+        if (original[i].is_curve) {
+            if (Geometry::line_intersect(original[i+1].pos, inset[i+1], original[i].pos, inset[i])) {
+                inset[i] = inset[i+1];
+                dead_indices.insert(i);
+            }
         }
     }
 
@@ -30,11 +39,6 @@ static void repair_inset_points(const std::vector<BakedLevel::Point>& original, 
             }
         }
     }
-
-    // TODO: This repair function results in nearly the correct results, but its use is quite hacky.
-    // Inside of push_poly, we `keep_degenerates` which results in sometimes having degenerate triangles.
-    // When points degenerate in the repair process, what was once a surface quad becomes a triangle, but
-    // we are still treating it like a quad as of yet.
 }
 
 static std::vector<glm::vec2> inset_points(const std::vector<BakedLevel::Point>& points)
@@ -104,6 +108,8 @@ static void push_poly(LevelMeshRenderer::Mesh& mesh, const BakedLevel::Poly& pol
         mesh.vertices.reserve(base_vert_index + new_vert_count);
         mesh.surface_info.reserve(base_vert_index + new_vert_count);
         mesh.indices.reserve(base_tri_index + 6 * poly.points.size());
+
+        // TODO When quads are degenerated to triangles by repair_inset_points, don't try to draw quads.
 
         for (auto i = 0; i < poly.points.size(); i++) {
             const auto j = (i + 1) % poly.points.size();
@@ -195,7 +201,7 @@ void LevelMeshRenderer::rebuild_mesh(const BakedLevel& level)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_mesh.indices.size() * sizeof(uint32_t), m_mesh.indices.data(), GL_STATIC_DRAW);
 }
 
-void LevelMeshRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position) const
+void LevelMeshRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position, bool wireframe) const
 {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, m_noise_texture);
@@ -203,6 +209,7 @@ void LevelMeshRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& pr
     glUseProgram(m_program);
     glUniformMatrix4fv(glGetUniformLocation(m_program, "view"), 1, GL_FALSE, glm::value_ptr(view));
     glUniformMatrix4fv(glGetUniformLocation(m_program, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+    glUniform1i(glGetUniformLocation(m_program, "wireframe_mode"), wireframe ? 1 : 0);
     glUniform1i(glGetUniformLocation(m_program, "noise_texture"), 0);
 
     glBindVertexArray(m_vao);
@@ -211,11 +218,7 @@ void LevelMeshRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& pr
     const auto m = glm::translate(glm::mat4(1.0f), position);
     glUniformMatrix4fv(glGetUniformLocation(m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
-#ifdef WIRE_FRAME_MODE
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-#endif
+    if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glDrawElements(GL_TRIANGLES, m_mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
-#ifdef WIRE_FRAME_MODE
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-#endif
+    if (wireframe) glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }

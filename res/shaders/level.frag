@@ -6,6 +6,7 @@ in vec3 v_surface_info;
 out vec4 color;
 
 uniform sampler2D noise_texture;
+uniform bool wireframe_mode;
 
 const vec3 A = vec3(223.0 / 255.0, 61.0 / 255.0, 161.0 / 255.0);
 const vec3 B = vec3(192.0 / 255.0, 52.0 / 255.0, 133.0 / 255.0);
@@ -31,6 +32,11 @@ vec3 stripes(vec2 xy)
 
 void main()
 {
+    if (wireframe_mode) {
+        color = vec4(1);
+        return;
+    }
+
     float one_minus_gnd = 1 - clamp(v_surface_info.z, fwidth(v_surface_info.z), 1.0);
     float round_off = 1 - sqrt(1 - one_minus_gnd*one_minus_gnd);
 

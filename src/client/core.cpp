@@ -83,10 +83,11 @@ static void handle_key_event(SDL_Keycode keycode, bool press)
     state.shared.right   = keys_down.count(SDLK_RIGHT);
     state.shared.up      = keys_down.count(SDLK_UP);
     state.shared.down    = keys_down.count(SDLK_DOWN);
-    state.editmode_toggle    = keys_down.count(SDLK_p);
+    state.editmode_toggle   = keys_down.count(SDLK_p);
     state.editmode_step     = keys_down.count(SDLK_PERIOD);
     state.editmode_zoom_in  = keys_down.count(SDLK_a);
     state.editmode_zoom_out = keys_down.count(SDLK_z);
+    state.debug_toggle_wireframe = keys_down.count(SDLK_w);
 }
 
 static void handle_mouse_motion(SDL_MouseMotionEvent event)

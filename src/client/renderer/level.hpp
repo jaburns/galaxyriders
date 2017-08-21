@@ -21,5 +21,5 @@ public:
     LoadedLevelRenderer();
     ~LoadedLevelRenderer();
 
-    void draw_once(bool edit_mode, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position);
+    void draw_once(bool edit_mode, bool wireframe, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position);
 };
