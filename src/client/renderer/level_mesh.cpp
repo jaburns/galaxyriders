@@ -5,8 +5,37 @@
 #include <glm/geometric.hpp>
 #include <vector>
 #include <algorithm>
+#include <unordered_set>
 #include "../../shared/geometry.hpp"
 #include "../triangulator.hpp"
+
+//#define WIRE_FRAME_MODE 1
+
+static void repair_inset_points(const std::vector<glm::vec2>& original, std::vector<glm::vec2>& inset, bool keep_degenerates)
+{
+    std::unordered_set<int> dead_indices;
+
+    for (auto i = 1; i < inset.size(); ++i) {
+        if (Geometry::line_intersect(original[i-1], inset[i-1], original[i], inset[i])) {
+            inset[i] = inset[i-1];
+            dead_indices.insert(i);
+        }
+    }
+
+    if (!keep_degenerates) {
+        for (auto i = 1, j = 1; i < inset.size(); ++i, ++j) {
+            if (dead_indices.count(j)) {
+                inset.erase(inset.begin() + i);
+                i--;
+            }
+        }
+    }
+
+    // TODO: This repair function results in nearly the correct results, but its use is quite hacky.
+    // Inside of push_poly, we `keep_degenerates` which results in sometimes having degenerate triangles.
+    // When points degenerate in the repair process, what was once a surface quad becomes a triangle, but
+    // we are still treating it like a quad as of yet.
+}
 
 static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 {
@@ -37,10 +66,13 @@ static std::vector<glm::vec2> inset_points(const std::vector<glm::vec2>& points)
 
 static void push_poly(LevelMeshRenderer::Mesh& mesh, const BakedLevel::Poly& poly)
 {
-    const auto inset_pts = inset_points(poly.points);
+    const auto inset_main = inset_points(poly.points);
 
     // ----- Inner-earth mesh building -----
     {
+        auto inset_pts = inset_main;
+        repair_inset_points(poly.points, inset_pts, false);
+
         const auto inner_indices = Triangulator::triangulate(inset_pts);
 
         const auto base_vert_index = mesh.vertices.size();
@@ -62,6 +94,9 @@ static void push_poly(LevelMeshRenderer::Mesh& mesh, const BakedLevel::Poly& pol
 
     // ----- Outer crust mesh building
     {
+        auto inset_pts = inset_main;
+        repair_inset_points(poly.points, inset_pts, true);
+
         const auto base_vert_index = mesh.vertices.size();
         const auto base_tri_index = mesh.indices.size();
         const auto new_vert_count = 4 * poly.points.size();
@@ -176,5 +211,11 @@ void LevelMeshRenderer::draw_once(const glm::mat4x4& view, const glm::mat4x4& pr
     const auto m = glm::translate(glm::mat4(1.0f), position);
     glUniformMatrix4fv(glGetUniformLocation(m_program, "model"), 1, GL_FALSE, glm::value_ptr(m));
 
+#ifdef WIRE_FRAME_MODE
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+#endif
     glDrawElements(GL_TRIANGLES, m_mesh.indices.size(), GL_UNSIGNED_INT, (void*)0);
+#ifdef WIRE_FRAME_MODE
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+#endif
 }
