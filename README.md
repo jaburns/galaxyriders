@@ -2,15 +2,11 @@
 
 #### Win64 setup
 
-From a WSL bash shell:
-```
-sudo apt-get -y install wget unzip g++
-git clone git@github.com:jaburns/galaxyriders
-cd galaxyriders
-./setup_win64
-```
-
-Now open ``GalaxyRiders.sln`` in Visual Studio and the project should build and run normally.
+- From a shell with git available, in the project directory, run: ``git submodule update --init --recursive``
+- From PowerShell, run: ``setup_win64.ps1``
+- Open ``GalaxyRiders.sln`` in Visual Studio.
+- Right click the *GalaxyRiders_tools* project in Solution Explorer, and select *Debug -> Start new instance*.
+- Once the tools finish, press F5 to build and run the game.
 
 #### OSX setup
 
@@ -19,11 +15,7 @@ brew install sdl2
 git clone git@github.com:jaburns/galaxyriders
 cd galaxyriders
 git submodule update --init --recursive
-pushd tools
-./build
-./compute_sdfs
-./generate_wire_meshes
-popd
+tools/build run
 ./configure_osx
 make run
 ```

@@ -4,11 +4,11 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 mkdir -p ../src/client/gen
 
-OPTIMIZE='-O3'
-
 g++ -o tools \
         *.cpp \
         ../external/lodepng/lodepng.cpp \
-    $OPTIMIZE \
+    -O3 \
     -I../external/lodepng \
     -std=c++11
+
+[[ "$1" == 'run' ]] && ./tools
