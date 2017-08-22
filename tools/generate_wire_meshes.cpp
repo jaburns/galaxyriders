@@ -70,7 +70,7 @@ static std::string join_floats(const std::vector<float>& floats)
     return result.str();
 }
 
-int main(int argc, char **argv)
+int generate_wire_meshes_main()
 {
     std::stringstream hpp_stream;
     std::stringstream cpp_stream;

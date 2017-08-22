@@ -107,7 +107,7 @@ static uint8_t distance_to_shade(int8_t d)
     return 127 + d;
 }
 
-int main(int argc, char **argv)
+int compute_sdfs_main()
 {
     Image input("../res/sprites/guy.png");
     Image edges(input.width(), input.height());
