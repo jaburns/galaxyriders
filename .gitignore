@@ -4,9 +4,8 @@ Debug
 Release
 GLGame.vcxproj.user
 src/client/gen
-tools/*
-!tools/build
-!tools/*.cpp
+tools/tools
+tools/build
 *.sdf.png
 build
 Makefile

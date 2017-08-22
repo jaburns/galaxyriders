@@ -87,9 +87,10 @@
       <PrecompiledHeader>
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
-      <Optimization>Disabled</Optimization>
+      <Optimization>MaxSpeed</Optimization>
       <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -145,10 +146,6 @@
     <ClCompile Include="tools\generate_wire_meshes.cpp" />
     <ClCompile Include="external\lodepng\lodepng.cpp" />
     <ClCompile Include="tools\main.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="tools\compute_sdfs.hpp" />
-    <ClInclude Include="tools\generate_wire_meshes.hpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

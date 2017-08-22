@@ -20,7 +20,7 @@ static void run_task(std::string message, int (*task)())
 
 int main(int argc, char **argv)
 {
-    run_task("Computing signed distance fields for sprites", compute_sdfs_main);
     run_task("Generating wire meshes", generate_wire_meshes_main);
+    run_task("Computing signed distance fields for sprites", compute_sdfs_main);
     return 0;
 }
