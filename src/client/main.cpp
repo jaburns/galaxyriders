@@ -63,9 +63,9 @@ void main_local()
 
     while (!Core::g_should_close_window) {
         const auto new_time = std::chrono::high_resolution_clock::now();
-        const auto frame_millis = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(new_time - current_time).count());
+        const std::chrono::duration<float> diff = new_time - current_time;
         current_time = new_time;
-        accumulator += frame_millis;
+        accumulator += diff.count() * 1000.0f;
 
         while (accumulator >= Config::MILLIS_PER_TICK) {
             last_state = new_state;
