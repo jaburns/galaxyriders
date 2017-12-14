@@ -48,12 +48,12 @@ void Core::init()
         SDL_WINDOW_OPENGL
     );
 
-    SDL_SetWindowResizable(s_window, SDL_TRUE);
+//  SDL_SetWindowResizable(s_window, SDL_TRUE);
 //  SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     s_context = SDL_GL_CreateContext(s_window);
 
-#ifdef _WIN32
+#ifndef __APPLE__
     glewExperimental = GL_TRUE;
     const auto glewInitResult = glewInit();
     if (glewInitResult != GLEW_OK) {

@@ -4,8 +4,13 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 CC='cc'
 CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2'
-LDFLAGS='-lstdc++ -lSDL2 -framework OpenGL'
 BIN_FILE='game'
+
+if [[ "$OSTYPE" == "darwin"* ]]; then
+    LDFLAGS='-lstdc++ -lSDL2 -framework OpenGL'
+else
+    LDFLAGS='-lstdc++ -lGL -lGLEW -lSDL2 -lSDL2main -lm'
+fi
 
 cpp_to_obj() {
     printf 'build/'

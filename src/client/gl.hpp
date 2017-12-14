@@ -7,5 +7,6 @@
 #   include <GL/glew.h>
 #   include <SDL.h>
 #else
-#   error "Unsupported platform"
+#   include <GL/glew.h>
+#   include <SDL2/SDL.h>
 #endif
