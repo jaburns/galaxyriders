@@ -2,7 +2,7 @@ game
 server_bin
 Debug
 Release
-GLGame.vcxproj.user
+*.vcxproj.user
 src/client/gen
 tools/tools
 tools/build
