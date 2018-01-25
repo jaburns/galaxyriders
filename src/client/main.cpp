@@ -22,7 +22,12 @@ void main_net()
     sprintf((char*)buffer, "This is packet");
     socket.send(send_address, buffer, static_cast<int>(strlen((char*)buffer)));
 
-    World last_world, new_world;
+    ClientState last_state, new_state, blank_state;
+    InputState blank_input;
+
+    last_state.step(blank_input);
+    new_state.step(blank_input);
+    blank_state.step(blank_input);
 
     auto receive_world = std::chrono::high_resolution_clock::now();
     auto last_receive_world = std::chrono::high_resolution_clock::now();
@@ -31,8 +36,8 @@ void main_net()
     while (!Core::g_should_close_window) {
         int32_t message_len = 0;
         if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
-            last_world = new_world;
-            new_world = World(buffer, message_len);
+            last_state = new_state;
+            new_state.world = World(buffer, message_len);
 
             last_receive_world = receive_world;
             receive_world = std::chrono::high_resolution_clock::now();
@@ -44,9 +49,9 @@ void main_net()
 
         const auto inp = Core::read_input_state();
         if (inp.mouse_click) {
-        //  renderer.render(last_world.lerp_to(new_world, millis_since_update / millis_per_tick));
+            renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick));
         } else {
-        //  renderer.render(new_world);
+            renderer.render(new_state);
         }
 
         Core::flip_frame_and_poll_events();

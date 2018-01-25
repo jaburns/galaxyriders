@@ -2,8 +2,8 @@
 
 struct SharedInputState
 {
-    bool left;
-    bool right;
-    bool up;
-    bool down;
+    bool left = false;
+    bool right = false;
+    bool up = false;
+    bool down = false;
 };

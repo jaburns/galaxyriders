@@ -4,6 +4,9 @@
 #include <glm/mat4x4.hpp>
 #include "../shared/input.hpp"
 
+// Get Debug:: everywhere
+#include "../shared/debug.hpp"
+
 struct InputState
 {
     glm::vec2 mouse_pos;

@@ -23,12 +23,13 @@ int main(int argc, char **argv)
     std::cout << "Starting simulation!" << std::endl;
 
     World world;
-    InputState input;
+    SharedInputState input;
 
     for (;;) {
         auto frame_start = std::chrono::high_resolution_clock::now();
 
-        world = world.step(input);
+        world.step(input, input);
+
         auto buf = world.serialize();
         socket.send(client_address, buf.data(), buf.size());
         std::cout << "Bytes sent: " << buf.size() << std::endl;
