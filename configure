@@ -5,6 +5,7 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 CC='cc'
 CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2'
 BIN_FILE='game'
+SERVER_BIN_FILE='server_bin'
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     LDFLAGS='-lstdc++ -lSDL2 -framework OpenGL'
@@ -17,33 +18,56 @@ cpp_to_obj() {
     echo "$1" | sed 's/cpp$/o/;s:/:_:g'
 }
 
-make_cmd() {
-    local obj_file="$(cpp_to_obj "$1")"
-    $CC $CFLAGS -MM -MT "$obj_file" -c "$1"
-    echo -e "\t$CC $CFLAGS -o $obj_file -c $1"
-}
-
-file_list() {
+client_file_list() {
     find src/client src/shared -iname '*.cpp'
     echo external/lodepng/lodepng.cpp
     echo external/tinyxml2/tinyxml2.cpp
 }
 
-print_makefile() {
+server_file_list() {
+    find src/server src/shared -iname '*.cpp'
+}
+
+all_file_list() {
+    ( client_file_list; server_file_list ) | sort | uniq
+}
+
+rule_binary() {
     local all_objs=''
-    for f in $(file_list); do
+    for f in $(client_file_list); do
         all_objs="$all_objs $(cpp_to_obj $f)"
     done
     echo "$BIN_FILE: $all_objs"
     echo -e "\t$CC -o $BIN_FILE $all_objs $LDFLAGS"
+}
 
-    for f in $(file_list); do
-        make_cmd "$f"
+rule_server_binary() {
+    # TODO Don't link SDL + OpenGL in the server binary
+    local all_objs=''
+    for f in $(server_file_list); do
+        all_objs="$all_objs $(cpp_to_obj $f)"
     done
+    echo "$SERVER_BIN_FILE: $all_objs"
+    echo -e "\t$CC -o $SERVER_BIN_FILE $all_objs $LDFLAGS"
+}
+
+rule_all_objects() {
+    for f in $(all_file_list); do
+        local obj_file="$(cpp_to_obj "$f")"
+        $CC $CFLAGS -MM -MT "$obj_file" -c "$f"
+        echo -e "\t$CC $CFLAGS -o $obj_file -c $f"
+    done
+}
+
+print_makefile() {
+    rule_binary
+    rule_server_binary
+    rule_all_objects
 
     echo '.PHONY: clean run'
     echo -e "clean:\n\t find . -iname '*.o' | xargs rm && rm -f ./game"
     echo -e "run: $BIN_FILE \n\t ./$BIN_FILE"
+    echo -e "server: $SERVER_BIN_FILE"
 }
 
 mkdir -p build
