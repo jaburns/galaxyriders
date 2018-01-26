@@ -9,15 +9,15 @@
 
 struct InputState
 {
-    glm::vec2 mouse_pos;
-    bool mouse_click;
+    glm::vec2 mouse_pos = { 0.0f, 0.0f };
+    bool mouse_click = false;
 
-    bool editmode_toggle;
-    bool editmode_step;
-    bool editmode_zoom_in;
-    bool editmode_zoom_out;
+    bool editmode_toggle = false;
+    bool editmode_step = false;
+    bool editmode_zoom_in = false;
+    bool editmode_zoom_out = false;
 
-    bool debug_toggle_wireframe;
+    bool debug_toggle_wireframe = false;
 
     SharedInputState shared;
 };

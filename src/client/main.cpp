@@ -22,12 +22,10 @@ void main_net()
     sprintf((char*)buffer, "This is packet");
     socket.send(send_address, buffer, static_cast<int>(strlen((char*)buffer)));
 
-    ClientState last_state, new_state, blank_state;
+    ClientState last_state, new_state;
     InputState blank_input;
 
-    last_state.step(blank_input);
     new_state.step(blank_input);
-    blank_state.step(blank_input);
 
     auto receive_world = std::chrono::high_resolution_clock::now();
     auto last_receive_world = std::chrono::high_resolution_clock::now();
@@ -53,6 +51,8 @@ void main_net()
         } else {
             renderer.render(new_state);
         }
+
+        Debug::log(new_state.camera_pos.x, new_state.camera_pos.y, new_state.camera_pos.z);
 
         Core::flip_frame_and_poll_events();
     }
@@ -88,7 +88,8 @@ int common_main(std::vector<std::string> args)
 {
     Core::init();
 
-    if (args.size() > 0 && args[0] == "net") {
+    //if (args.size() > 0 && args[0] == "net") {
+    if (true) {
         main_net();
     } else {
         main_local();
@@ -127,7 +128,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLin
     return result;
 }
 
-#else 
+#else
 
 int main(int argc, char **argv)
 {
