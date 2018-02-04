@@ -47,16 +47,21 @@ void ClientState::PlayerAnimation::step(const World::Player& old_player, const W
     }
 }
 
+static void step_camera(ClientState& state)
+{
+    const auto target_dist = 10.0f + 20.0f * glm::length(state.world.player.velocity);
+    state.camera_pos.x = state.world.player.position.x;
+    state.camera_pos.y = state.world.player.position.y;
+    state.camera_pos.z += (target_dist - state.camera_pos.z) / 10.0f;
+}
+
 static void step_game_mode(ClientState& state, const InputState& input, bool single_step)
 {
     const auto old_player = state.world.player;
     state.world.step(state.last_input.shared, input.shared);
 
     if (!single_step) {
-        const auto target_dist = 10.0f + 20.0f * glm::length(state.world.player.velocity);
-        state.camera_pos.x = state.world.player.position.x;
-        state.camera_pos.y = state.world.player.position.y;
-        state.camera_pos.z += (target_dist - state.camera_pos.z) / 10.0f;
+        step_camera(state);
     }
 
     state.player_anim.step(old_player, state.world.player, input.shared.left, input.shared.right);
@@ -114,6 +119,15 @@ void ClientState::step(const InputState& input)
     }
 
     last_input = input;
+}
+
+void ClientState::step_with_world(const World& new_world)
+{
+    const auto old_player = world.player;
+    world = new_world;
+
+    step_camera(*this);
+    player_anim.step(old_player, world.player, false, false); // TODO get inputs here
 }
 
 ClientState ClientState::lerp_to(const ClientState& next, float t) const

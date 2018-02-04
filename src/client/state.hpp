@@ -39,5 +39,7 @@ struct ClientState
     World world;
 
     void step(const InputState& input);
+    void step_with_world(const World& new_world);
+
     ClientState lerp_to(const ClientState& next, float t) const;
 };

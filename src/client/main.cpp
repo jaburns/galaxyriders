@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS // For sprintf
+#define _CRT_SECURE_NO_WARNINGS // For sprintf for now
 
 #include <iostream>
 #include <chrono>
@@ -20,12 +20,9 @@ void main_net()
 
     std::cout << "Sending ack packet to server port " << Config::DEFAULT_PORT << std::endl;
     sprintf((char*)buffer, "This is packet");
-    socket.send(send_address, buffer, static_cast<int>(strlen((char*)buffer)));
+    socket.send(send_address, buffer, static_cast<int>(strnlen((char*)buffer, Config::MAX_PACKET_SIZE)));
 
     ClientState last_state, new_state;
-    InputState blank_input;
-
-    new_state.step(blank_input);
 
     auto receive_world = std::chrono::high_resolution_clock::now();
     auto last_receive_world = std::chrono::high_resolution_clock::now();
@@ -35,7 +32,7 @@ void main_net()
         int32_t message_len = 0;
         if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
             last_state = new_state;
-            new_state.world = World(buffer, message_len);
+            new_state.step_with_world(World(buffer, message_len));
 
             last_receive_world = receive_world;
             receive_world = std::chrono::high_resolution_clock::now();
@@ -45,14 +42,7 @@ void main_net()
         const auto this_frame = std::chrono::high_resolution_clock::now();
         const auto millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
-        const auto inp = Core::read_input_state();
-        if (inp.mouse_click) {
-            renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick));
-        } else {
-            renderer.render(new_state);
-        }
-
-        Debug::log(new_state.camera_pos.x, new_state.camera_pos.y, new_state.camera_pos.z);
+        renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick));
 
         Core::flip_frame_and_poll_events();
     }
