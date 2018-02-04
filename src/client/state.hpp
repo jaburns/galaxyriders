@@ -38,7 +38,7 @@ struct ClientState
     glm::vec3 camera_pos = { 0.0f, 0.0f, 10.0f };
 
     InputState last_input;
-    PlayerAnimation player_anim;
+    std::vector<PlayerAnimation> player_anims;
     World world;
 
     void step(const InputState& input);

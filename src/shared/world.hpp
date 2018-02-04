@@ -20,7 +20,7 @@ struct World
     };
 
     int frame_counter = 0;
-    Player player;
+    std::vector<Player> players;
 
     World() { }
     World(const uint8_t *serialized, int serialized_length);

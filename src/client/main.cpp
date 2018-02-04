@@ -55,10 +55,13 @@ void main_net()
 void main_local()
 {
     GameRenderer renderer;
-    ClientState last_state, new_state;
 
     auto current_time = std::chrono::high_resolution_clock::now();
     auto accumulator = 0.0f;
+
+    ClientState new_state;
+    new_state.world.players.push_back(World::Player());
+    auto last_state = new_state;
 
     do {
         const auto new_time = std::chrono::high_resolution_clock::now();
@@ -82,7 +85,7 @@ int common_main(std::vector<std::string> args)
     Core::init();
 
     //if (args.size() > 0 && args[0] == "net") {
-    if (true) {
+    if (false) {
         main_net();
     } else {
         main_local();

@@ -52,22 +52,22 @@ void ClientState::PlayerAnimation::step(const World::Player& old_player, const W
 
 static void step_camera(ClientState& state)
 {
-    const auto target_dist = 10.0f + 20.0f * glm::length(state.world.player.velocity);
-    state.camera_pos.x = state.world.player.position.x;
-    state.camera_pos.y = state.world.player.position.y;
+    const auto target_dist = 10.0f + 20.0f * glm::length(state.world.players[0].velocity);
+    state.camera_pos.x = state.world.players[0].position.x;
+    state.camera_pos.y = state.world.players[0].position.y;
     state.camera_pos.z += (target_dist - state.camera_pos.z) / 10.0f;
 }
 
 static void step_game_mode(ClientState& state, const InputState& input, bool single_step)
 {
-    const auto old_player = state.world.player;
+    const auto old_player = state.world.players[0];
     state.world.step(state.last_input.player, input.player);
 
     if (!single_step) {
         step_camera(state);
     }
 
-    state.player_anim.step(old_player, state.world.player, input.player.left, input.player.right);
+    state.player_anims[0].step(old_player, state.world.players[0], input.player.left, input.player.right);
 }
 
 static void step_edit_mode(ClientState& state, const InputState& input)
@@ -104,6 +104,14 @@ static void step_edit_mode(ClientState& state, const InputState& input)
 
 void ClientState::step(const InputState& input)
 {
+    while (world.players.size() > player_anims.size()) { 
+        player_anims.push_back(ClientState::PlayerAnimation());
+    }
+
+    while (world.players.size() < player_anims.size()) {
+        player_anims.pop_back();
+    }
+
     if (input.editmode_toggle && !last_input.editmode_toggle) {
         edit_mode.enabled = !edit_mode.enabled;
     }
@@ -123,11 +131,20 @@ void ClientState::step(const InputState& input)
 
 void ClientState::step_with_world(const World& new_world, const PlayerInput& input)
 {
-    const auto old_player = world.player;
-    world = new_world;
+    while (new_world.players.size() > player_anims.size()) { 
+        player_anims.push_back(ClientState::PlayerAnimation());
+    }
 
+    while (new_world.players.size() < player_anims.size()) {
+        player_anims.pop_back();
+    }
+
+    for (auto i = 0; i < world.players.size() && i < new_world.players.size(); ++i) {
+        player_anims[i].step(world.players[i], new_world.players[i], input.left, input.right);
+    }
+
+    world = new_world;
     step_camera(*this);
-    player_anim.step(old_player, world.player, input.left, input.right);
 }
 
 ClientState ClientState::lerp_to(const ClientState& next, float t) const
@@ -135,6 +152,10 @@ ClientState ClientState::lerp_to(const ClientState& next, float t) const
     auto new_state = next;
     new_state.world = this->world.lerp_to(next.world, t);
     new_state.camera_pos = glm::mix(camera_pos, next.camera_pos, t);
-    new_state.player_anim.radians = glm::mix(player_anim.radians, next.player_anim.radians, t);
+
+    for (auto i = 0; i < new_state.player_anims.size() && i < player_anims.size(); ++i) {
+        new_state.player_anims[i].radians = glm::mix(player_anims[i].radians, next.player_anims[i].radians, t);
+    }
+
     return new_state;
 }

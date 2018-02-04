@@ -6,45 +6,6 @@
 #include "config.hpp"
 #include "serialization.hpp"
 
-std::vector<uint8_t> World::serialize() const
-{
-    SerializationBuffer buf;
-
-    buf.write_val32(frame_counter);
-    buf.write_val32(player.velocity.x);
-    buf.write_val32(player.velocity.y);
-    buf.write_val32(player.position.x);
-    buf.write_val32(player.position.y);
-    buf.write_val32(player.ground_normal.x);
-    buf.write_val32(player.ground_normal.y);
-    buf.write_byte(player.grounded);
-    buf.write_byte(player.air_stomping ? 0xFF : 0x00);
-
-    return buf.buffer;
-}
-
-World::World(const uint8_t *serialized, int serialized_length)
-{
-    DeserializationBuffer buf(serialized, serialized_length);
-
-    frame_counter = buf.read_val32<int32_t>();
-    player.velocity.x = buf.read_val32<float>();
-    player.velocity.y = buf.read_val32<float>();
-    player.position.x = buf.read_val32<float>();
-    player.position.y = buf.read_val32<float>();
-    player.ground_normal.x = buf.read_val32<float>();
-    player.ground_normal.y = buf.read_val32<float>();
-    player.grounded = buf.read_byte();
-    player.air_stomping = buf.read_byte() != 0;
-}
-
-World World::lerp_to(const World& next, float t) const
-{
-    auto world = next;
-    world.player.position = glm::mix(player.position, next.player.position, t);
-    return world;
-}
-
 static constexpr float DT = Config::MILLIS_PER_TICK / 1000.0f;
 static constexpr float GRAVITY = 30.0f * DT * DT;
 static constexpr float RADIUS = 0.5f;
@@ -55,10 +16,59 @@ static constexpr float TURN_AROUND_MULTIPLIER = 3.0f;
 static constexpr float JUMP_SPEED = 10.0f * DT;
 static constexpr int LATE_JUMP_FRAMES = 5;
 
-void World::step(const PlayerInput& old_input, const PlayerInput& new_input)
+std::vector<uint8_t> World::serialize() const
 {
-    frame_counter++;
+    SerializationBuffer buf;
 
+    buf.write_val32(frame_counter);
+    buf.write_byte(players.size());
+
+    for (auto i = 0; i < players.size(); ++i) {
+        buf.write_val32(players[i].velocity.x);
+        buf.write_val32(players[i].velocity.y);
+        buf.write_val32(players[i].position.x);
+        buf.write_val32(players[i].position.y);
+        buf.write_val32(players[i].ground_normal.x);
+        buf.write_val32(players[i].ground_normal.y);
+        buf.write_byte(players[i].grounded);
+        buf.write_byte(players[i].air_stomping ? 0xFF : 0x00);
+    }
+
+    return buf.buffer;
+}
+
+World::World(const uint8_t *serialized, int serialized_length)
+{
+    DeserializationBuffer buf(serialized, serialized_length);
+
+    frame_counter = buf.read_val32<int32_t>();
+    players.resize(buf.read_byte());
+
+    for (auto i = 0; i < players.size(); ++i) {
+        players[i].velocity.x = buf.read_val32<float>();
+        players[i].velocity.y = buf.read_val32<float>();
+        players[i].position.x = buf.read_val32<float>();
+        players[i].position.y = buf.read_val32<float>();
+        players[i].ground_normal.x = buf.read_val32<float>();
+        players[i].ground_normal.y = buf.read_val32<float>();
+        players[i].grounded = buf.read_byte();
+        players[i].air_stomping = buf.read_byte() != 0;
+    }
+}
+
+World World::lerp_to(const World& next, float t) const
+{
+    auto world = next;
+
+    for (auto i = 0; i < world.players.size() && i < players.size(); ++i) {
+        world.players[i].position = glm::mix(players[i].position, next.players[i].position, t);
+    }
+
+    return world;
+}
+
+static void update_player(World::Player& player, const PlayerInput& old_input, const PlayerInput& new_input)
+{
     // ----- Horizontal motion -----
 
     auto walk_accel =
@@ -106,5 +116,14 @@ void World::step(const PlayerInput& old_input, const PlayerInput& new_input)
         player.air_stomping = false;
     } else if (player.grounded > 0) {
         player.grounded--;
+    }
+}
+
+void World::step(const PlayerInput& old_input, const PlayerInput& new_input)
+{
+    frame_counter++;
+
+    for (auto& p : players) {
+        update_player(p, old_input, new_input);
     }
 }

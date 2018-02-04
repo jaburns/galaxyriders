@@ -26,6 +26,8 @@ int main(int argc, char **argv)
     World world;
     PlayerInput last_input, current_input;
 
+    world.players.push_back(World::Player());
+
     for (;;) {
         const auto frame_start = std::chrono::high_resolution_clock::now();
 
