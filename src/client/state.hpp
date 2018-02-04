@@ -7,8 +7,10 @@
 
 struct ClientState
 {
-    struct PlayerAnimation {
-        enum Mode {
+    struct PlayerAnimation 
+    {
+        enum Mode 
+        {
             STANDING,
             OLLIE,
             FLIPPING,
@@ -23,7 +25,8 @@ struct ClientState
         void step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right);
     };
 
-    struct EditModeState {
+    struct EditModeState 
+    {
         bool enabled = false;
         int32_t selected_poly = -1;
         int32_t selected_handle = -1;

@@ -5,6 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
+static constexpr float EDITMODE_CAMERA_SLIDE = 0.05f;
+static constexpr float EDITMODE_CAMERA_ZOOM  = 1.05f;
+
 void ClientState::PlayerAnimation::step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right)
 {
     if (new_player.grounded > 0) {
@@ -66,9 +69,6 @@ static void step_game_mode(ClientState& state, const InputState& input, bool sin
 
     state.player_anim.step(old_player, state.world.player, input.shared.left, input.shared.right);
 }
-
-static constexpr float EDITMODE_CAMERA_SLIDE = 0.05f;
-static constexpr float EDITMODE_CAMERA_ZOOM  = 1.05f;
 
 static void step_edit_mode(ClientState& state, const InputState& input)
 {

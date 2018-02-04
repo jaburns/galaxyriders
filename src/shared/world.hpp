@@ -10,7 +10,8 @@
 
 struct World
 {
-    struct Player {
+    struct Player 
+    {
         glm::vec2 position = { -0.0f, -12.0f };
         glm::vec2 velocity = { -0.0f, 0.0f };
         glm::vec2 ground_normal = { 0.0f, 1.0f };

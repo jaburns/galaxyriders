@@ -6,12 +6,14 @@
 
 struct Level
 {
-    struct Handle {
+    struct Handle 
+    {
         glm::vec2 point;
         uint32_t quality;
     };
 
-    struct Poly {
+    struct Poly 
+    {
         std::vector<Handle> handles;
     };
 
@@ -24,16 +26,19 @@ struct Level
 
 struct BakedLevel
 {
-    struct Point {
+    struct Point 
+    {
         glm::vec2 pos;
         bool is_curve = false;
     };
 
-    struct Poly {
+    struct Poly 
+    {
         std::vector<Point> points;
     };
 
-    struct CollisionResult {
+    struct CollisionResult 
+    {
         bool collided = false;
         glm::vec2 position;
         glm::vec2 velocity;
