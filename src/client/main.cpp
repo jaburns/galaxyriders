@@ -31,12 +31,17 @@ void main_net()
     do {
         int32_t message_len = 0;
         if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
+            const auto input = Core::read_input_state().shared;
+
             last_state = new_state;
-            new_state.step_with_world(World(buffer, message_len));
+            new_state.step_with_world(World(buffer, message_len), input);
 
             last_receive_world = receive_world;
             receive_world = std::chrono::high_resolution_clock::now();
             millis_per_tick = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(receive_world - last_receive_world).count());
+
+            const auto input_buf = input.serialize();
+            socket.send(send_address, input_buf.data(), input_buf.size());
         }
 
         const auto this_frame = std::chrono::high_resolution_clock::now();

@@ -72,6 +72,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)_server\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)_server\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -156,6 +158,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\shared\geometry.cpp" />
+    <ClCompile Include="src\shared\input.cpp" />
     <ClCompile Include="src\shared\level.cpp" />
     <ClCompile Include="src\shared\network.cpp" />
     <ClCompile Include="src\shared\world.cpp" />

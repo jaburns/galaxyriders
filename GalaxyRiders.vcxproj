@@ -68,6 +68,7 @@
     <ClCompile Include="src\client\state.cpp" />
     <ClCompile Include="src\client\triangulator.cpp" />
     <ClCompile Include="src\shared\geometry.cpp" />
+    <ClCompile Include="src\shared\input.cpp" />
     <ClCompile Include="src\shared\level.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)</ObjectFileName>

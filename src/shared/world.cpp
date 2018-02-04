@@ -15,6 +15,10 @@ std::vector<uint8_t> World::serialize() const
     buf.write_val32(player.velocity.y);
     buf.write_val32(player.position.x);
     buf.write_val32(player.position.y);
+    buf.write_val32(player.ground_normal.x);
+    buf.write_val32(player.ground_normal.y);
+    buf.write_byte(player.grounded);
+    buf.write_byte(player.air_stomping ? 0xFF : 0x00);
 
     return buf.buffer;
 }
@@ -28,6 +32,10 @@ World::World(const uint8_t *serialized, int serialized_length)
     player.velocity.y = buf.read_val32<float>();
     player.position.x = buf.read_val32<float>();
     player.position.y = buf.read_val32<float>();
+    player.ground_normal.x = buf.read_val32<float>();
+    player.ground_normal.y = buf.read_val32<float>();
+    player.grounded = buf.read_byte();
+    player.air_stomping = buf.read_byte() != 0;
 }
 
 World World::lerp_to(const World& next, float t) const

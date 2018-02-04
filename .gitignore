@@ -14,3 +14,4 @@ glew32.dll
 external/SDL2-2.0.5
 external/glew-2.1.0
 Game.app
+x64/Debug_server/

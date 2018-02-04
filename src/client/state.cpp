@@ -121,13 +121,13 @@ void ClientState::step(const InputState& input)
     last_input = input;
 }
 
-void ClientState::step_with_world(const World& new_world)
+void ClientState::step_with_world(const World& new_world, const SharedInputState& input)
 {
     const auto old_player = world.player;
     world = new_world;
 
     step_camera(*this);
-    player_anim.step(old_player, world.player, false, false); // TODO get inputs here
+    player_anim.step(old_player, world.player, input.left, input.right);
 }
 
 ClientState ClientState::lerp_to(const ClientState& next, float t) const
