@@ -42,7 +42,7 @@ struct ClientState
     World world;
 
     void step(const InputState& input);
-    void step_with_world(const World& new_world, const SharedInputState& input);
+    void step_with_world(const World& new_world, const PlayerInput& input);
 
     ClientState lerp_to(const ClientState& next, float t) const;
 };

@@ -1,7 +1,7 @@
 #include "input.hpp"
 #include "serialization.hpp"
 
-std::vector<uint8_t> SharedInputState::serialize() const
+std::vector<uint8_t> PlayerInput::serialize() const
 {
     SerializationBuffer buf;
     uint32_t bit_flags = 0;
@@ -16,7 +16,7 @@ std::vector<uint8_t> SharedInputState::serialize() const
     return buf.buffer;
 }
 
-SharedInputState::SharedInputState(const uint8_t *serialized, int serialized_length)
+PlayerInput::PlayerInput(const uint8_t *serialized, int serialized_length)
 {
     DeserializationBuffer buf(serialized, serialized_length);
     const auto bit_flags = buf.read_val32<uint32_t>();

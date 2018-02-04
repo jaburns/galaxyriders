@@ -77,10 +77,10 @@ static void handle_key_event(SDL_Keycode keycode, bool press)
         keys_down.erase(keycode);
     }
 
-    state.shared.left    = keys_down.count(SDLK_LEFT);
-    state.shared.right   = keys_down.count(SDLK_RIGHT);
-    state.shared.up      = keys_down.count(SDLK_UP);
-    state.shared.down    = keys_down.count(SDLK_DOWN);
+    state.player.left    = keys_down.count(SDLK_LEFT);
+    state.player.right   = keys_down.count(SDLK_RIGHT);
+    state.player.up      = keys_down.count(SDLK_UP);
+    state.player.down    = keys_down.count(SDLK_DOWN);
     state.editmode_toggle   = keys_down.count(SDLK_p);
     state.editmode_step     = keys_down.count(SDLK_PERIOD);
     state.editmode_zoom_in  = keys_down.count(SDLK_a);

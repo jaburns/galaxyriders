@@ -55,7 +55,7 @@ static constexpr float TURN_AROUND_MULTIPLIER = 3.0f;
 static constexpr float JUMP_SPEED = 10.0f * DT;
 static constexpr int LATE_JUMP_FRAMES = 5;
 
-void World::step(const SharedInputState& old_input, const SharedInputState& new_input)
+void World::step(const PlayerInput& old_input, const PlayerInput& new_input)
 {
     frame_counter++;
 

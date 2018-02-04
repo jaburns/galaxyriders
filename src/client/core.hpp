@@ -19,7 +19,7 @@ struct InputState
 
     bool debug_toggle_wireframe = false;
 
-    SharedInputState shared;
+    PlayerInput player;
 };
 
 namespace Core

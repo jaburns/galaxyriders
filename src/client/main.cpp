@@ -31,7 +31,7 @@ void main_net()
     do {
         int32_t message_len = 0;
         if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
-            const auto input = Core::read_input_state().shared;
+            const auto input = Core::read_input_state().player;
 
             last_state = new_state;
             new_state.step_with_world(World(buffer, message_len), input);

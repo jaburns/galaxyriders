@@ -61,21 +61,21 @@ static void step_camera(ClientState& state)
 static void step_game_mode(ClientState& state, const InputState& input, bool single_step)
 {
     const auto old_player = state.world.player;
-    state.world.step(state.last_input.shared, input.shared);
+    state.world.step(state.last_input.player, input.player);
 
     if (!single_step) {
         step_camera(state);
     }
 
-    state.player_anim.step(old_player, state.world.player, input.shared.left, input.shared.right);
+    state.player_anim.step(old_player, state.world.player, input.player.left, input.player.right);
 }
 
 static void step_edit_mode(ClientState& state, const InputState& input)
 {
-    if (input.shared.right)   state.camera_pos.x += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.shared.left)    state.camera_pos.x -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.shared.up)      state.camera_pos.y += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.shared.down)    state.camera_pos.y -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.player.right)   state.camera_pos.x += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.player.left)    state.camera_pos.x -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.player.up)      state.camera_pos.y += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
+    if (input.player.down)    state.camera_pos.y -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
     if (input.editmode_zoom_out) state.camera_pos.z *= EDITMODE_CAMERA_ZOOM;
     if (input.editmode_zoom_in)  state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
 
@@ -121,7 +121,7 @@ void ClientState::step(const InputState& input)
     last_input = input;
 }
 
-void ClientState::step_with_world(const World& new_world, const SharedInputState& input)
+void ClientState::step_with_world(const World& new_world, const PlayerInput& input)
 {
     const auto old_player = world.player;
     world = new_world;

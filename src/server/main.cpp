@@ -24,14 +24,14 @@ int main(int argc, char **argv)
     std::cout << "Starting simulation!" << std::endl;
 
     World world;
-    SharedInputState last_input, current_input;
+    PlayerInput last_input, current_input;
 
     for (;;) {
         const auto frame_start = std::chrono::high_resolution_clock::now();
 
         while (socket.receive(client_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
             last_input = current_input;
-            current_input = SharedInputState(buffer, message_len);
+            current_input = PlayerInput(buffer, message_len);
         }
 
         world.step(last_input, current_input);

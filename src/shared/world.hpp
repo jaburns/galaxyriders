@@ -27,5 +27,5 @@ struct World
     std::vector<uint8_t> serialize() const;
     World lerp_to(const World& next, float t) const;
 
-    void step(const SharedInputState& old_input, const SharedInputState& new_input);
+    void step(const PlayerInput& old_input, const PlayerInput& new_input);
 };
