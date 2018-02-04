@@ -28,7 +28,7 @@ void main_net()
     auto last_receive_world = std::chrono::high_resolution_clock::now();
     auto millis_per_tick = 100.0f;
 
-    while (!Core::g_should_close_window) {
+    do {
         int32_t message_len = 0;
         if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
             last_state = new_state;
@@ -43,9 +43,8 @@ void main_net()
         const auto millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
         renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick));
-
-        Core::flip_frame_and_poll_events();
-    }
+    } 
+    while (Core::flip_frame_and_poll_events());
 }
 
 void main_local()
@@ -56,7 +55,7 @@ void main_local()
     auto current_time = std::chrono::high_resolution_clock::now();
     auto accumulator = 0.0f;
 
-    while (!Core::g_should_close_window) {
+    do {
         const auto new_time = std::chrono::high_resolution_clock::now();
         const std::chrono::duration<float> diff = new_time - current_time;
         current_time = new_time;
@@ -69,9 +68,8 @@ void main_local()
         }
 
         renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK));
-
-        Core::flip_frame_and_poll_events();
-    }
+    } 
+    while (Core::flip_frame_and_poll_events());
 }
 
 int common_main(std::vector<std::string> args)

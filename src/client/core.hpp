@@ -24,10 +24,8 @@ struct InputState
 
 namespace Core
 {
-    extern bool g_should_close_window;
-
     void init();
-    void flip_frame_and_poll_events();
+    bool flip_frame_and_poll_events();
     void deinit();
 
     InputState read_input_state();

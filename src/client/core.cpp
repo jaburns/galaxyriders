@@ -16,11 +16,9 @@ static glm::mat4x4 s_perspective_matrix;
 static std::unordered_set<SDL_Keycode> keys_down;
 static InputState state;
 
-bool Core::g_should_close_window = false;
-
 static void recompute_perspective()
 {
-    s_perspective_matrix= glm::perspective(3.14159f / 3.0f, s_window_width / (float)s_window_height, 0.1f, 1024.0f);
+    s_perspective_matrix = glm::perspective(3.14159f / 3.0f, s_window_width / (float)s_window_height, 0.1f, 1024.0f);
 }
 
 void Core::init()
@@ -98,15 +96,16 @@ static void handle_mouse_motion(SDL_MouseMotionEvent event)
     );
 }
 
-void Core::flip_frame_and_poll_events()
+bool Core::flip_frame_and_poll_events()
 {
+    bool still_running = true;
     SDL_GL_SwapWindow(s_window);
 
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         switch (event.type) {
             case SDL_QUIT:
-                g_should_close_window = true;
+                still_running = false;
                 break;
 
             case SDL_WINDOWEVENT:
@@ -120,7 +119,7 @@ void Core::flip_frame_and_poll_events()
 
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE) {
-                    g_should_close_window = true;
+                    still_running = false;
                 }
                 handle_key_event(event.key.keysym.sym, true);
                 break;
@@ -142,6 +141,8 @@ void Core::flip_frame_and_poll_events()
                 break;
         }
     }
+
+    return still_running;
 }
 
 InputState Core::read_input_state()
