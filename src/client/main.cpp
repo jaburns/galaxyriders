@@ -6,42 +6,34 @@
 #include <cstdint>
 #include "core.hpp"
 #include "state.hpp"
+#include "net_game.hpp"
 #include "renderer/game.hpp"
-#include "../shared/network.hpp"
 #include "../shared/config.hpp"
+#include "../shared/world.hpp"
 
 void main_net()
 {
     GameRenderer renderer;
-    UDPSocket socket;
-    const auto send_address = UDPSocket::get_host_address("localhost", Config::DEFAULT_PORT);
-    SocketAddress receive_address;
-    uint8_t buffer[Config::MAX_PACKET_SIZE];
-
-    std::cout << "Sending ack packet to server port " << Config::DEFAULT_PORT << std::endl;
-    sprintf((char*)buffer, "This is packet");
-    socket.send(send_address, buffer, static_cast<int>(strnlen((char*)buffer, Config::MAX_PACKET_SIZE)));
-
     ClientState last_state, new_state;
+    NetGame net_game;
+    World received_world;
+
+    net_game.connect("localhost", Config::DEFAULT_PORT);
 
     auto receive_world = std::chrono::high_resolution_clock::now();
     auto last_receive_world = std::chrono::high_resolution_clock::now();
     auto millis_per_tick = 100.0f;
 
     do {
-        int32_t message_len = 0;
-        if (socket.receive(receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
-            const auto input = Core::read_input_state().player;
+        const auto input = Core::read_input_state().player;
 
+        if (net_game.update(input, received_world)) {
             last_state = new_state;
-            new_state.step_with_world(World(buffer, message_len), input);
+            new_state.step_with_world(received_world, input);
 
             last_receive_world = receive_world;
             receive_world = std::chrono::high_resolution_clock::now();
             millis_per_tick = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(receive_world - last_receive_world).count());
-
-            const auto input_buf = input.serialize();
-            socket.send(send_address, input_buf.data(), input_buf.size());
         }
 
         const auto this_frame = std::chrono::high_resolution_clock::now();
@@ -85,7 +77,7 @@ int common_main(std::vector<std::string> args)
     Core::init();
 
     //if (args.size() > 0 && args[0] == "net") {
-    if (false) {
+    if (true) {
         main_net();
     } else {
         main_local();

@@ -54,6 +54,7 @@
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="src\client\gen\wire_meshes.cpp" />
     <ClCompile Include="src\client\core.cpp" />
+    <ClCompile Include="src\client\net_game.cpp" />
     <ClCompile Include="src\client\renderer\level_mesh.cpp" />
     <ClCompile Include="src\client\main.cpp" />
     <ClCompile Include="src\client\renderer\game.cpp" />
@@ -87,6 +88,7 @@
     <None Include="res\shaders\skybox.vert" />
     <None Include="res\shaders\sprite.frag" />
     <None Include="res\shaders\sprite.vert" />
+    <None Include="src\client\net_game.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

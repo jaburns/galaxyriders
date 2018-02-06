@@ -1,11 +1,15 @@
 #include <chrono>
 #include <thread>
 #include <iostream>
+#include <unordered_map>
 #include <cstring>
 #include <cstdint>
 #include "../shared/network.hpp"
+#include "../shared/serialization.hpp"
 #include "../shared/world.hpp"
 #include "../shared/config.hpp"
+
+static std::unordered_map<int32_t, SocketAddress> connections;
 
 int main(int argc, char **argv)
 {
@@ -15,25 +19,43 @@ int main(int argc, char **argv)
     uint8_t buffer[Config::MAX_PACKET_SIZE];
 
     std::cout << "GalaxyRiders Server - Built " << __TIME__ << std::endl;
-    std::cout << "Waiting for client on port " << Config::DEFAULT_PORT << std::endl;
+    std::cout << "Waiting for clients on port " << Config::DEFAULT_PORT << std::endl;
 
-    uint32_t cycles = 0;
-    int message_len = 0;
-    while (! socket.receive(client_address, buffer, Config::MAX_PACKET_SIZE, message_len)) cycles++;
-    std::cout << "Spun for: " << cycles << " Received message: " << buffer << std::endl;
+    int32_t message_len = 0;
+    while (!socket.receive(client_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {}
+
+    if (buffer[0] != 0xFF) {
+        std::cout << "UNEXPECTED PACKET";
+        exit(1);
+    }
+
+    std::cout << "Received request to join game from " << client_address.address << ":" << client_address.port << std::endl;
+    std::cout << "Sending player ID: " << 1337 << std::endl;
+
+    SerializationBuffer sb;
+    sb.write_val32<int32_t>(1337);
+
+    socket.send(client_address, sb.buffer.data(), sb.buffer.size());
+
     std::cout << "Starting simulation!" << std::endl;
 
     World world;
     PlayerInput last_input, current_input;
 
-    world.players.push_back(World::Player());
+    world.players.push_back(World::Player()); // TODO world.players should be unordered_map<int32_t, Player> instead of vector
 
     for (;;) {
         const auto frame_start = std::chrono::high_resolution_clock::now();
 
         while (socket.receive(client_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
+            if (buffer[0] != 0x01) {
+                std::cout << "UNEXPECTED PACKET";
+                exit(1);
+            }
+             // TODO check for additional connections 
+
             last_input = current_input;
-            current_input = PlayerInput(buffer, message_len);
+            current_input = PlayerInput(&buffer[1], message_len);
         }
 
         world.step(last_input, current_input);
