@@ -2,6 +2,7 @@
 
 #include <glm/vec3.hpp>
 #include <cstdint>
+#include <unordered_map>
 #include "../shared/world.hpp"
 #include "core.hpp"
 
@@ -38,7 +39,7 @@ struct ClientState
     glm::vec3 camera_pos = { 0.0f, 0.0f, 10.0f };
 
     InputState last_input;
-    std::vector<PlayerAnimation> player_anims;
+    std::unordered_map<int32_t, PlayerAnimation> player_anims;
     World world;
 
     void step(const InputState& input);

@@ -1,5 +1,7 @@
 #include "world.hpp"
 
+                #include "debug.hpp"
+
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
 #include <cmath>
@@ -23,15 +25,16 @@ std::vector<uint8_t> World::serialize() const
     buf.write_val32(frame_counter);
     buf.write_byte(players.size());
 
-    for (auto i = 0; i < players.size(); ++i) {
-        buf.write_val32(players[i].velocity.x);
-        buf.write_val32(players[i].velocity.y);
-        buf.write_val32(players[i].position.x);
-        buf.write_val32(players[i].position.y);
-        buf.write_val32(players[i].ground_normal.x);
-        buf.write_val32(players[i].ground_normal.y);
-        buf.write_byte(players[i].grounded);
-        buf.write_byte(players[i].air_stomping ? 0xFF : 0x00);
+    for (const auto& p : players) {
+        buf.write_val32(p.first);
+        buf.write_val32(p.second.velocity.x);
+        buf.write_val32(p.second.velocity.y);
+        buf.write_val32(p.second.position.x);
+        buf.write_val32(p.second.position.y);
+        buf.write_val32(p.second.ground_normal.x);
+        buf.write_val32(p.second.ground_normal.y);
+        buf.write_byte(p.second.grounded);
+        buf.write_byte(p.second.air_stomping ? 0xFF : 0x00);
     }
 
     return buf.buffer;
@@ -42,26 +45,37 @@ World::World(const uint8_t *serialized, int serialized_length)
     DeserializationBuffer buf(serialized, serialized_length);
 
     frame_counter = buf.read_val32<int32_t>();
-    players.resize(buf.read_byte());
+    const auto num_players = buf.read_byte();
 
-    for (auto i = 0; i < players.size(); ++i) {
-        players[i].velocity.x = buf.read_val32<float>();
-        players[i].velocity.y = buf.read_val32<float>();
-        players[i].position.x = buf.read_val32<float>();
-        players[i].position.y = buf.read_val32<float>();
-        players[i].ground_normal.x = buf.read_val32<float>();
-        players[i].ground_normal.y = buf.read_val32<float>();
-        players[i].grounded = buf.read_byte();
-        players[i].air_stomping = buf.read_byte() != 0;
+    players.clear();
+    for (auto i = 0; i < num_players; ++i) {
+        const auto id = buf.read_val32<int32_t>();
+        players[id].velocity.x = buf.read_val32<float>();
+        players[id].velocity.y = buf.read_val32<float>();
+        players[id].position.x = buf.read_val32<float>();
+        players[id].position.y = buf.read_val32<float>();
+        players[id].ground_normal.x = buf.read_val32<float>();
+        players[id].ground_normal.y = buf.read_val32<float>();
+        players[id].grounded = buf.read_byte();
+        players[id].air_stomping = buf.read_byte() != 0;
     }
+}
+
+static World::Player lerp_player(const World::Player& first, const World::Player& next, float t)
+{
+    World::Player result = next;
+    result.position = glm::mix(first.position, next.position, t);
+    return result;
 }
 
 World World::lerp_to(const World& next, float t) const
 {
     auto world = next;
 
-    for (auto i = 0; i < world.players.size() && i < players.size(); ++i) {
-        world.players[i].position = glm::mix(players[i].position, next.players[i].position, t);
+    for (auto& p : world.players) {
+        if (players.find(p.first) == players.end()) continue;
+
+        p.second.position = glm::mix(players.at(p.first).position, p.second.position, t);
     }
 
     return world;
@@ -124,6 +138,6 @@ void World::step(const PlayerInput& old_input, const PlayerInput& new_input)
     frame_counter++;
 
     for (auto& p : players) {
-        update_player(p, old_input, new_input);
+        update_player(p.second, old_input, new_input);
     }
 }

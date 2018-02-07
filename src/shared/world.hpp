@@ -3,6 +3,7 @@
 #include <deque>
 #include <cstdint>
 #include <vector>
+#include <unordered_map>
 #include <glm/vec2.hpp>
 #include <glm/vec3.hpp>
 #include "input.hpp"
@@ -20,7 +21,7 @@ struct World
     };
 
     int frame_counter = 0;
-    std::vector<Player> players;
+    std::unordered_map<int32_t, Player> players;
 
     World() { }
     World(const uint8_t *serialized, int serialized_length);

@@ -52,7 +52,7 @@ void main_local()
     auto accumulator = 0.0f;
 
     ClientState new_state;
-    new_state.world.players.push_back(World::Player());
+    new_state.world.players[1337];
     auto last_state = new_state;
 
     do {

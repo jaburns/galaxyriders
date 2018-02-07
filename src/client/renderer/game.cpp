@@ -22,7 +22,7 @@ void GameRenderer::render(const ClientState& state)
 
     m_level_renderer.draw_once(state.edit_mode.enabled, state.debug_wireframe_mode, mouse_pos, v, p, {0.0f, 0.0f, -0.01f});
 
-    for (auto i = 0; i < state.player_anims.size() && i < state.world.players.size(); ++i) {
-        m_player_renderer.draw_once(v, p, state.world.players[i], state.player_anims[i]);
+    for (const auto& pl : state.world.players) {
+        m_player_renderer.draw_once(v, p, pl.second, state.player_anims.at(pl.first));
     }
 }

@@ -104,12 +104,8 @@ static void step_edit_mode(ClientState& state, const InputState& input)
 
 void ClientState::step(const InputState& input)
 {
-    while (world.players.size() > player_anims.size()) { 
-        player_anims.push_back(ClientState::PlayerAnimation());
-    }
-
-    while (world.players.size() < player_anims.size()) {
-        player_anims.pop_back();
+    for (const auto& p : world.players) {
+        player_anims[p.first];
     }
 
     if (input.editmode_toggle && !last_input.editmode_toggle) {
@@ -131,16 +127,8 @@ void ClientState::step(const InputState& input)
 
 void ClientState::step_with_world(const World& new_world, const PlayerInput& input)
 {
-    while (new_world.players.size() > player_anims.size()) { 
-        player_anims.push_back(ClientState::PlayerAnimation());
-    }
-
-    while (new_world.players.size() < player_anims.size()) {
-        player_anims.pop_back();
-    }
-
-    for (auto i = 0; i < world.players.size() && i < new_world.players.size(); ++i) {
-        player_anims[i].step(world.players[i], new_world.players[i], input.left, input.right);
+    for (auto& p : new_world.players) {
+        player_anims[p.first].step(p.second, new_world.players.at(p.first), input.left, input.right);
     }
 
     world = new_world;
@@ -153,8 +141,10 @@ ClientState ClientState::lerp_to(const ClientState& next, float t) const
     new_state.world = this->world.lerp_to(next.world, t);
     new_state.camera_pos = glm::mix(camera_pos, next.camera_pos, t);
 
-    for (auto i = 0; i < new_state.player_anims.size() && i < player_anims.size(); ++i) {
-        new_state.player_anims[i].radians = glm::mix(player_anims[i].radians, next.player_anims[i].radians, t);
+    for (auto& p : new_state.player_anims) {
+        if (player_anims.count(p.first) < 1) continue;
+
+        p.second.radians = glm::mix(player_anims.at(p.first).radians, p.second.radians, t);
     }
 
     return new_state;
