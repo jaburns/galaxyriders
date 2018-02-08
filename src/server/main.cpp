@@ -8,6 +8,7 @@
 #include "../shared/serialization.hpp"
 #include "../shared/world.hpp"
 #include "../shared/config.hpp"
+#include "../shared/debug.hpp"
 
 static std::unordered_map<int32_t, SocketAddress> connections;
 
@@ -52,13 +53,14 @@ int main(int argc, char **argv)
                 std::cout << "UNEXPECTED PACKET";
                 exit(1);
             }
-             // TODO check for additional connections 
 
             last_input = current_input;
             current_input = PlayerInput(&buffer[1], message_len);
         }
 
         world.step(last_input, current_input);
+
+        Debug::log(world.players.size(), world.players[1337].position.y);
 
         const auto buf = world.serialize();
         socket.send(client_address, buf.data(), buf.size());

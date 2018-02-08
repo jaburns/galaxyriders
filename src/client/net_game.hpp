@@ -8,13 +8,13 @@
 
 class NetGame : public NoCopy
 {
-    UDPSocket socket;
-    SocketAddress receive_address;
-    SocketAddress send_address;
+    UDPSocket m_socket;
+    SocketAddress m_receive_address;
+    SocketAddress m_send_address;
 
     uint8_t buffer[Config::MAX_PACKET_SIZE];
 
 public:
-    void connect(const std::string& remote_host, uint16_t port);
+    int32_t connect(const std::string& remote_host, uint16_t port);
     bool update(const PlayerInput& input, World& received_world);
 };

@@ -34,10 +34,9 @@ struct ClientState
     };
 
     bool debug_wireframe_mode = false;
-
     EditModeState edit_mode;
     glm::vec3 camera_pos = { 0.0f, 0.0f, 10.0f };
-
+    int32_t player_id;
     InputState last_input;
     std::unordered_map<int32_t, PlayerAnimation> player_anims;
     World world;

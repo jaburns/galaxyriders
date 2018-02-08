@@ -2,6 +2,7 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include <unordered_map>
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
 
@@ -52,22 +53,22 @@ void ClientState::PlayerAnimation::step(const World::Player& old_player, const W
 
 static void step_camera(ClientState& state)
 {
-    const auto target_dist = 10.0f + 20.0f * glm::length(state.world.players[0].velocity);
-    state.camera_pos.x = state.world.players[0].position.x;
-    state.camera_pos.y = state.world.players[0].position.y;
+    const auto target_dist = 10.0f + 20.0f * glm::length(state.world.players.at(state.player_id).velocity);
+    state.camera_pos.x = state.world.players.at(state.player_id).position.x;
+    state.camera_pos.y = state.world.players.at(state.player_id).position.y;
     state.camera_pos.z += (target_dist - state.camera_pos.z) / 10.0f;
 }
 
 static void step_game_mode(ClientState& state, const InputState& input, bool single_step)
 {
-    const auto old_player = state.world.players[0];
+    const auto old_player = state.world.players.at(state.player_id);
     state.world.step(state.last_input.player, input.player);
 
     if (!single_step) {
         step_camera(state);
     }
 
-    state.player_anims[0].step(old_player, state.world.players[0], input.player.left, input.player.right);
+    state.player_anims[state.player_id].step(old_player, state.world.players.at(state.player_id), input.player.left, input.player.right);
 }
 
 static void step_edit_mode(ClientState& state, const InputState& input)
@@ -104,10 +105,6 @@ static void step_edit_mode(ClientState& state, const InputState& input)
 
 void ClientState::step(const InputState& input)
 {
-    for (const auto& p : world.players) {
-        player_anims[p.first];
-    }
-
     if (input.editmode_toggle && !last_input.editmode_toggle) {
         edit_mode.enabled = !edit_mode.enabled;
     }
@@ -128,7 +125,8 @@ void ClientState::step(const InputState& input)
 void ClientState::step_with_world(const World& new_world, const PlayerInput& input)
 {
     for (auto& p : new_world.players) {
-        player_anims[p.first].step(p.second, new_world.players.at(p.first), input.left, input.right);
+        const auto old_player = world.players.count(p.first) > 0 ? world.players.at(p.first) : p.second;
+        player_anims[p.first].step(old_player, p.second, input.left, input.right);
     }
 
     world = new_world;

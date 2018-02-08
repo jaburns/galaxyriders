@@ -14,15 +14,16 @@
 void main_net()
 {
     GameRenderer renderer;
-    ClientState last_state, new_state;
+    ClientState new_state;
     NetGame net_game;
     World received_world;
 
-    net_game.connect("localhost", Config::DEFAULT_PORT);
+    new_state.player_id = net_game.connect("localhost", Config::DEFAULT_PORT);
 
     auto receive_world = std::chrono::high_resolution_clock::now();
     auto last_receive_world = std::chrono::high_resolution_clock::now();
     auto millis_per_tick = 100.0f;
+    auto last_state = new_state;
 
     do {
         const auto input = Core::read_input_state().player;
@@ -51,8 +52,11 @@ void main_local()
     auto current_time = std::chrono::high_resolution_clock::now();
     auto accumulator = 0.0f;
 
+    // TODO Properly handle adding players and animation states to world in local play mode
     ClientState new_state;
-    new_state.world.players[1337];
+    new_state.player_id = 0;
+    new_state.world.players[0];
+    new_state.player_anims[0];
     auto last_state = new_state;
 
     do {

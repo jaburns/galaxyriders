@@ -61,19 +61,12 @@ World::World(const uint8_t *serialized, int serialized_length)
     }
 }
 
-static World::Player lerp_player(const World::Player& first, const World::Player& next, float t)
-{
-    World::Player result = next;
-    result.position = glm::mix(first.position, next.position, t);
-    return result;
-}
-
 World World::lerp_to(const World& next, float t) const
 {
     auto world = next;
 
     for (auto& p : world.players) {
-        if (players.find(p.first) == players.end()) continue;
+        if (players.count(p.first) < 1) continue;
 
         p.second.position = glm::mix(players.at(p.first).position, p.second.position, t);
     }
