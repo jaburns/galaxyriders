@@ -2,6 +2,8 @@
 
 #include "../shared/serialization.hpp"
 #include <iostream>
+#include <chrono>
+#include <thread>
 
 static const uint8_t JOIN_REQUEST = 0xFF;
 static const uint8_t SEND_INPUT = 0x01;
@@ -16,7 +18,9 @@ int32_t NetGame::connect(const std::string& remote_host, uint16_t port)
     m_socket.send(m_send_address, buffer, 1);
 
     int32_t message_len = 0;
-    while (!m_socket.receive(m_receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {}
+    while (!m_socket.receive(m_receive_address, buffer, Config::MAX_PACKET_SIZE, message_len)) {
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
 
     DeserializationBuffer db(buffer, message_len);
     const auto player_id = db.read_val32<int32_t>();
