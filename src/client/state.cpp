@@ -62,7 +62,16 @@ static void step_camera(ClientState& state)
 static void step_game_mode(ClientState& state, const InputState& input, bool single_step)
 {
     const auto old_player = state.world.players.at(state.player_id);
-    state.world.step(state.last_input.player, input.player);
+
+    World::Input inp;
+    inp.player_id = state.player_id;
+    inp.old_input = state.last_input.player;
+    inp.new_input = input.player;
+
+    std::vector<World::Input> inps;
+    inps.push_back(inp);
+
+    state.world.step(inps);
 
     if (!single_step) {
         step_camera(state);

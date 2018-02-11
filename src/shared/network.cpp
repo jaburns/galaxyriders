@@ -5,6 +5,16 @@
 #include <cstdio>
 #include "sockets.hpp"
 
+bool SocketAddress::operator==(const SocketAddress& rhs) const
+{
+    return address == rhs.address && port == rhs.port;
+}
+
+bool SocketAddress::operator!=(const SocketAddress& rhs) const
+{
+    return !(*this == rhs);
+}
+
 UDPSocket::UDPSocket(uint16_t port)
 {
     #ifdef _WIN32

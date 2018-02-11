@@ -7,6 +7,9 @@ struct SocketAddress
 {
     uint16_t port;
     uint32_t address;
+
+    bool operator== (const SocketAddress& rhs) const;
+    bool operator!= (const SocketAddress& rhs) const;
 };
 
 class UDPSocket

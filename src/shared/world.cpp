@@ -1,7 +1,5 @@
 #include "world.hpp"
 
-                #include "debug.hpp"
-
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/random.hpp>
 #include <cmath>
@@ -126,11 +124,16 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
     }
 }
 
-void World::step(const PlayerInput& old_input, const PlayerInput& new_input)
+void World::step(const std::vector<Input>& inputs)
 {
     frame_counter++;
 
     for (auto& p : players) {
-        update_player(p.second, old_input, new_input);
+        for (const auto& input : inputs) {
+            if (input.player_id == p.first) {
+                update_player(p.second, input.old_input, input.new_input);
+                break;
+            }
+        }
     }
 }

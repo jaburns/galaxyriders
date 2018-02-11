@@ -11,6 +11,13 @@
 
 struct World
 {
+    struct Input
+    {
+        int32_t player_id;
+        PlayerInput old_input;
+        PlayerInput new_input;
+    };
+
     struct Player 
     {
         glm::vec2 position = { -0.0f, -12.0f };
@@ -28,5 +35,5 @@ struct World
     std::vector<uint8_t> serialize() const;
     World lerp_to(const World& next, float t) const;
 
-    void step(const PlayerInput& old_input, const PlayerInput& new_input);
+    void step(const std::vector<Input>& inputs);
 };
