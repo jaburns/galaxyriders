@@ -15,50 +15,6 @@ bool SocketAddress::operator!=(const SocketAddress& rhs) const
     return !(*this == rhs);
 }
 
-UDPSocket::UDPSocket(uint16_t port)
-{
-    #ifdef _WIN32
-        WSADATA wsa;
-        if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
-            std::cout << "Failed to init winsock, error code: " << WSAGetLastError() << std::endl;
-            exit(1);
-        }
-    #endif
-
-    if ((m_socket = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-        std::cout << "Failed to create socket." << std::endl;
-        exit(1);
-    }
-
-    #ifdef _WIN32
-        u_long sock_mode_nonblocking = 1;
-        ioctlsocket(m_socket, FIONBIO, &sock_mode_nonblocking);
-    #else
-        fcntl(m_socket, F_SETFL, O_NONBLOCK);
-    #endif
-
-    sockaddr_in myaddr;
-    std::memset((char*)&myaddr, 0, sizeof(myaddr));
-    myaddr.sin_family = AF_INET;
-    myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
-    myaddr.sin_port = htons(port);
-
-    if (bind(m_socket, (sockaddr*)&myaddr, sizeof(myaddr)) < 0) {
-        std::cout << "Failed to bind socket to port " << port << std::endl;
-        exit(1);
-    }
-}
-
-UDPSocket::~UDPSocket()
-{
-    #ifdef _WIN32
-        closesocket(m_socket);
-        WSACleanup();
-    #else
-        close(m_socket);
-    #endif
-}
-
 static sockaddr_in to_sockaddr(const SocketAddress& socket_address)
 {
     sockaddr_in addr;
@@ -76,7 +32,7 @@ static SocketAddress from_sockaddr(const sockaddr_in& addr)
     return result;
 }
 
-SocketAddress UDPSocket::get_host_address(const std::string& remote_host, uint16_t remote_port)
+SocketAddress SocketAddress::get_host_address(const std::string& remote_host, uint16_t remote_port)
 {
     sockaddr_in remaddr;
     std::memset((char*)&remaddr, 0, sizeof(remaddr));
@@ -91,6 +47,63 @@ SocketAddress UDPSocket::get_host_address(const std::string& remote_host, uint16
     std::memcpy((void*)&remaddr.sin_addr, hp->h_addr_list[0], hp->h_length);
 
     return from_sockaddr(remaddr);
+}
+
+static int build_socket(uint16_t port, int type)
+{
+    int result;
+
+    #ifdef _WIN32
+        WSADATA wsa;
+        if (WSAStartup(MAKEWORD(2,2), &wsa) != 0) {
+            std::cout << "Failed to init winsock, error code: " << WSAGetLastError() << std::endl;
+            exit(1);
+        }
+    #endif
+
+    if ((result = socket(AF_INET, type, 0)) < 0) {
+        std::cout << "Failed to create socket." << std::endl;
+        exit(1);
+    }
+
+    #ifdef _WIN32
+        u_long sock_mode_nonblocking = 1;
+        ioctlsocket(result, FIONBIO, &sock_mode_nonblocking);
+    #else
+        fcntl(m_socket, F_SETFL, O_NONBLOCK);
+    #endif
+
+    sockaddr_in myaddr;
+    std::memset((char*)&myaddr, 0, sizeof(myaddr));
+    myaddr.sin_family = AF_INET;
+    myaddr.sin_addr.s_addr = htonl(INADDR_ANY);
+    myaddr.sin_port = htons(port);
+
+    if (bind(result, (sockaddr*)&myaddr, sizeof(myaddr)) < 0) {
+        std::cout << "Failed to bind socket to port " << port << std::endl;
+        exit(1);
+    }
+
+    return result;
+}
+
+static void close_socket(int socket)
+{
+    #ifdef _WIN32
+        closesocket(socket);
+        WSACleanup();
+    #else
+        close(socket);
+    #endif
+}
+
+UDPSocket::UDPSocket(uint16_t port)
+    : m_socket(build_socket(port, SOCK_DGRAM))
+{ }
+
+UDPSocket::~UDPSocket()
+{
+    close_socket(m_socket);
 }
 
 void UDPSocket::send(const SocketAddress& remote_address, const uint8_t *buffer, int buffer_len) const
@@ -116,4 +129,33 @@ bool UDPSocket::receive(SocketAddress& out_remote_address, uint8_t *buffer, int 
     out_remote_address.port = remaddr.sin_port;
 
     return true;
+}
+
+TCPServer::TCPServer(uint16_t port)
+    : m_socket(build_socket(port, SOCK_STREAM))
+{
+    ::listen(m_socket, 0);
+}
+
+TCPServer::~TCPServer()
+{
+    close_socket(m_socket);
+}
+
+void TCPServer::listen(std::string(*callback)(const std::string&)) const
+{
+    sockaddr_in remaddr;
+    socklen_t slen = sizeof(remaddr);
+    char buffer[1024];
+
+    int client = accept(m_socket, (sockaddr*)&remaddr, &slen);
+    if (client == INVALID_SOCKET) return;
+
+    memset(buffer, 0, sizeof(buffer));
+    recv(client, buffer, sizeof(buffer) - 1, 0);
+
+    std::string response = callback(buffer);
+
+    send(client, response.c_str(), response.length(), 0);
+    closesocket(client);
 }

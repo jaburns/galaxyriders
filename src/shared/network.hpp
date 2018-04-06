@@ -10,6 +10,8 @@ struct SocketAddress
 
     bool operator== (const SocketAddress& rhs) const;
     bool operator!= (const SocketAddress& rhs) const;
+
+    static SocketAddress get_host_address(const std::string& remote_host, uint16_t remote_port);
 };
 
 class UDPSocket
@@ -25,6 +27,18 @@ public:
 
     void send(const SocketAddress& remote_address, const uint8_t *buffer, int buffer_len) const;
     bool receive(SocketAddress& out_remote_address, uint8_t *buffer, int buffer_len, int& message_len) const;
+};
 
-    static SocketAddress get_host_address(const std::string& remote_host, uint16_t remote_port);
+class TCPServer
+{
+    int m_socket;
+
+    TCPServer(const TCPServer&) = delete;
+    TCPServer& operator=(const TCPServer&) = delete;
+
+public:
+    TCPServer(uint16_t port = 0);
+    ~TCPServer();
+
+    void listen(std::string(*callback)(const std::string&)) const;
 };

@@ -1,6 +1,5 @@
-#define _CRT_SECURE_NO_WARNINGS // For sprintf for now
-
 #include <iostream>
+#include <thread> // Needed only for TCPServer test
 #include <chrono>
 #include <cstring>
 #include <cstdint>
@@ -76,12 +75,32 @@ void main_local()
     while (Core::flip_frame_and_poll_events());
 }
 
+static std::string tcp_server_request_handler(const std::string& message)
+{
+    std::cout << message << std::endl;
+    return "HTTP/1.1 204 No Content\n\n";
+//  return "HTTP/1.1 200 OK\nContent-Length: 5\n\nHello";
+}
+
+static void tcp_server_test()
+{
+    TCPServer server(3000);
+    std::cout << "Listening on 3000..." << std::endl;
+
+    while (true) {
+        server.listen(tcp_server_request_handler);
+        std::this_thread::sleep_for(std::chrono::milliseconds(50));
+    }
+}
+
 int common_main(std::vector<std::string> args)
 {
+    tcp_server_test();
+    return 0;
+
     Core::init();
 
-    //if (args.size() > 0 && args[0] == "net") {
-    if (true) {
+    if (args.size() > 0 && args[0] == "net") {
         main_net();
     } else {
         main_local();
@@ -91,7 +110,6 @@ int common_main(std::vector<std::string> args)
 
     return 0;
 }
-
 
 #if _WIN32 && !_DEBUG
 
