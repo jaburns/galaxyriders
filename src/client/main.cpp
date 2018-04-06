@@ -114,6 +114,7 @@ int common_main(std::vector<std::string> args)
 #if _WIN32 && !_DEBUG
 
 #pragma comment(linker, "/SUBSYSTEM:windows")
+#define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)
