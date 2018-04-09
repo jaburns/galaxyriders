@@ -9,7 +9,7 @@ Push-Location external
 New-Item "..\src\client\gen" -ItemType Directory -ErrorAction Ignore
 
 Write-Output "Downloading GLEW 2.1.0..."
-(New-Object System.Net.WebClient).DownloadFile("https://downloads.sourceforge.net/project/glew/glew/2.1.0/glew-2.1.0-win32.zip", "glew.zip")
+(New-Object System.Net.WebClient).DownloadFile("https://cfhcable.dl.sourceforge.net/project/glew/glew/2.1.0/glew-2.1.0-win32.zip", "glew.zip")
 Write-Output "Extracting GLEW 2.1.0..."
 Remove-Item ".\glew-2.1.0" -Recurse -ErrorAction Ignore
 [System.IO.Compression.ZipFile]::ExtractToDirectory("glew.zip", ".")
