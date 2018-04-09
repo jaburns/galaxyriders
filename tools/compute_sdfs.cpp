@@ -109,7 +109,7 @@ static uint8_t distance_to_shade(int8_t d)
 
 int compute_sdfs_main()
 {
-    Image input("../res/sprites/guy.png");
+    Image input("res/sprites/guy.png");
     Image edges(input.width(), input.height());
     Image output(input.width() / DOWNSCALE, input.height() / DOWNSCALE);
 
@@ -128,6 +128,6 @@ int compute_sdfs_main()
         }
     }
 
-    output.save_to_file("../res/sprites/guy.sdf.png");
+    output.save_to_file("res/sprites/guy.sdf.png");
     return 0;
 }
