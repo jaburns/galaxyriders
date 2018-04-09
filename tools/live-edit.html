@@ -21,14 +21,12 @@
                     .map(s => document.getElementById(s).value / 100)
                     .join(',');
 
-                // TODO With fetch POST no-cors, response status is 0 and body is null
                 fetch('http://localhost:1337', {
-                    mode: 'no-cors',
                     method: 'post',
                     body: values
                 })
+                .then(response => response.text())
                 .then(body => {
-                    window.horse = body;
                     console.log(body);
                 });
             };
