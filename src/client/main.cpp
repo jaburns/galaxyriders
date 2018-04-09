@@ -9,6 +9,7 @@
 #include "renderer/game.hpp"
 #include "../shared/config.hpp"
 #include "../shared/world.hpp"
+#include "../shared/live_edit.hpp"
 
 void main_net()
 {
@@ -47,6 +48,7 @@ void main_net()
 void main_local()
 {
     GameRenderer renderer;
+    LiveEdit live_edit;
 
     auto current_time = std::chrono::high_resolution_clock::now();
     auto accumulator = 0.0f;
@@ -64,6 +66,8 @@ void main_local()
         current_time = new_time;
         accumulator += diff.count() * 1000.0f;
 
+        live_edit.update();
+
         while (accumulator >= Config::MILLIS_PER_TICK) {
             last_state = new_state;
             new_state.step(Core::read_input_state());
@@ -75,29 +79,8 @@ void main_local()
     while (Core::flip_frame_and_poll_events());
 }
 
-static std::string tcp_server_request_handler(const std::string& message)
-{
-    std::cout << message << std::endl;
-    return "HTTP/1.1 204 No Content\n\n";
-//  return "HTTP/1.1 200 OK\nContent-Length: 5\n\nHello";
-}
-
-static void tcp_server_test()
-{
-    TCPServer server(3000);
-    std::cout << "Listening on 3000..." << std::endl;
-
-    while (true) {
-        server.listen(tcp_server_request_handler);
-        std::this_thread::sleep_for(std::chrono::milliseconds(50));
-    }
-}
-
 int common_main(std::vector<std::string> args)
 {
-    tcp_server_test();
-    return 0;
-
     Core::init();
 
     if (args.size() > 0 && args[0] == "net") {
