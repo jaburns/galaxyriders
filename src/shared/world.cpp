@@ -91,7 +91,7 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
 
     // ----- Vertical motion -----
 
-    player.velocity.y -= GRAVITY * LiveEdit::get_values().gravity;
+	player.velocity.y -= GRAVITY * LiveEdit::get_value("gravity", 0.0f, 2.0f);
 
     if (!old_input.down && new_input.down) {
         if (player.velocity.y > 0.0f) player.velocity.y = 0.0f;
@@ -105,7 +105,7 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
 
     if (!old_input.up && new_input.up && player.grounded > 0) {
         player.grounded = 0;
-        player.velocity.y += JUMP_SPEED * LiveEdit::get_values().ollie;
+		player.velocity.y += JUMP_SPEED * LiveEdit::get_value("ollie", 0.0f, 2.0f);
     }
 
     // ----- Collision detection and resolution -----

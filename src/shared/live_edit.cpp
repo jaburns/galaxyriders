@@ -2,10 +2,9 @@
 #include <string>
 #include <vector>
 #include <sstream>
-
 #include <iostream>
 
-static LiveEdit::Values s_values;
+static LiveEdit *s_instance;
 
 static std::string build_response(const std::string& body)
 {
@@ -16,7 +15,37 @@ static std::string build_response(const std::string& body)
         + body;
 }
 
-static std::string request_handler(const std::string& message)
+static std::string serialize(const LiveEdit::ValueMap& value_map)
+{
+    std::stringstream stream;
+
+    for (const auto& iter : value_map) {
+        stream << iter.first << "="
+            << iter.second.value << ":"
+            << iter.second.min << ":"
+            << iter.second.max << ";";
+    }
+
+    return stream.str();
+}
+
+static void parse_and_maybe_insert(LiveEdit::ValueMap& value_map, const std::string& kvp)
+{
+    const auto equals_index = kvp.find('=');
+    if (equals_index == std::string::npos) return;
+
+    const auto key = kvp.substr(0, equals_index);
+    const auto value = kvp.substr(equals_index + 1, kvp.size() - equals_index - 1);
+
+    try {
+        float parsed_value = std::stof(value);
+        value_map[key].value = parsed_value;
+    }
+    catch (std::invalid_argument&)
+    { }
+}
+
+static std::string handle_request(LiveEdit::ValueMap& value_map, const std::string& message)
 {
     std::stringstream message_stream(message);
     std::string line;
@@ -25,41 +54,40 @@ static std::string request_handler(const std::string& message)
     { }
 
     std::stringstream line_stream(line);
-    std::string value;
-    std::vector<float> values;
+    std::string kvp;
 
-    while (std::getline(line_stream, value, ','))
-    {
-        float new_value = 0.0f;
-
-        try {
-            new_value = std::stof(value);
-        }
-        catch (std::invalid_argument&)
-        { }
-
-        values.push_back(new_value);
+    while (std::getline(line_stream, kvp, ';')) {
+        // parse_and_maybe_insert(value_map, kvp);
     }
 
-    if (values.size() >= 2)
-    {
-        s_values.gravity = values[0];
-        s_values.ollie = values[1];
-    }
-
-    return build_response("Hello world");
+    return build_response(serialize(value_map));
 }
 
 LiveEdit::LiveEdit()
     : m_server(LiveEdit::PORT)
-{ }
+{ 
+    if (s_instance != nullptr) {
+        throw std::exception("Cannot create more than one instance of LiveEdit.");
+    }
+
+    s_instance = this;
+}
+
+LiveEdit::~LiveEdit()
+{
+    s_instance = nullptr;
+}
 
 void LiveEdit::update()
 {
-    m_server.listen(request_handler);
+    m_server.listen([this](const std::string& request_body) {
+        return handle_request(this->m_values, request_body);
+    });
 }
 
-LiveEdit::Values LiveEdit::get_values()
+float LiveEdit::get_value(const std::string& label, float min, float max)
 {
-    return s_values;
+    s_instance->m_values[label].min = min;
+    s_instance->m_values[label].max = max;
+    return s_instance->m_values[label].value;
 }

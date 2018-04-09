@@ -19,7 +19,7 @@
             const updateLoop = () => {
                 const values = ['gravity', 'ollie']
                     .map(s => document.getElementById(s).value / 100)
-                    .join(',');
+                    .join(';');
 
                 fetch('http://localhost:1337', {
                     method: 'post',
