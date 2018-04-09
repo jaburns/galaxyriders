@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <functional>
 #include <cstdint>
 
 struct SocketAddress
@@ -40,5 +41,7 @@ public:
     TCPServer(uint16_t port = 0);
     ~TCPServer();
 
-    void listen(std::string(*callback)(const std::string&)) const;
+	using RequestHandler = std::function<std::string(const std::string&)>;
+
+    void listen(RequestHandler callback) const;
 };

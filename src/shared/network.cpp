@@ -142,7 +142,7 @@ TCPServer::~TCPServer()
     close_socket(m_socket);
 }
 
-void TCPServer::listen(std::string(*callback)(const std::string&)) const
+void TCPServer::listen(TCPServer::RequestHandler callback) const
 {
     sockaddr_in remaddr;
     socklen_t slen = sizeof(remaddr);
