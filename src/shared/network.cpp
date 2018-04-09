@@ -70,7 +70,7 @@ static int build_socket(uint16_t port, int type)
         u_long sock_mode_nonblocking = 1;
         ioctlsocket(result, FIONBIO, &sock_mode_nonblocking);
     #else
-        fcntl(m_socket, F_SETFL, O_NONBLOCK);
+        fcntl(result, F_SETFL, O_NONBLOCK);
     #endif
 
     sockaddr_in myaddr;
@@ -149,7 +149,7 @@ void TCPServer::listen(std::string(*callback)(const std::string&)) const
     char buffer[1024];
 
     int client = accept(m_socket, (sockaddr*)&remaddr, &slen);
-    if (client == INVALID_SOCKET) return;
+    if (client < 0) return;
 
     memset(buffer, 0, sizeof(buffer));
     recv(client, buffer, sizeof(buffer) - 1, 0);
@@ -157,5 +157,10 @@ void TCPServer::listen(std::string(*callback)(const std::string&)) const
     std::string response = callback(buffer);
 
     send(client, response.c_str(), response.length(), 0);
-    closesocket(client);
+
+    #ifdef _WIN32
+        closesocket(client);
+    #else
+        close(client);
+    #endif
 }
