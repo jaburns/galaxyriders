@@ -35,7 +35,7 @@ static std::string request_handler(const std::string& message)
         try {
             new_value = std::stof(value);
         }
-        catch (std::invalid_argument& e)
+        catch (std::invalid_argument&)
         { }
 
         values.push_back(new_value);
