@@ -5,7 +5,6 @@
 #include <cmath>
 #include "config.hpp"
 #include "serialization.hpp"
-#include "live_edit.hpp"
 
 static constexpr float DT = Config::MILLIS_PER_TICK / 1000.0f;
 static constexpr float GRAVITY = 30.0f * DT * DT;
@@ -91,7 +90,7 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
 
     // ----- Vertical motion -----
 
-	player.velocity.y -= GRAVITY * LiveEdit::get_value("gravity", 0.0f, 2.0f);
+    player.velocity.y -= GRAVITY;
 
     if (!old_input.down && new_input.down) {
         if (player.velocity.y > 0.0f) player.velocity.y = 0.0f;
@@ -105,7 +104,7 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
 
     if (!old_input.up && new_input.up && player.grounded > 0) {
         player.grounded = 0;
-		player.velocity.y += JUMP_SPEED * LiveEdit::get_value("ollie", 0.0f, 2.0f);
+		player.velocity.y += JUMP_SPEED;
     }
 
     // ----- Collision detection and resolution -----

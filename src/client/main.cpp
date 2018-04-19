@@ -9,7 +9,6 @@
 #include "renderer/game.hpp"
 #include "../shared/config.hpp"
 #include "../shared/world.hpp"
-#include "../shared/live_edit.hpp"
 
 void main_net()
 {
@@ -48,7 +47,6 @@ void main_net()
 void main_local()
 {
     GameRenderer renderer;
-    LiveEdit live_edit;
 
     auto current_time = std::chrono::high_resolution_clock::now();
     auto accumulator = 0.0f;
@@ -65,8 +63,6 @@ void main_local()
         const std::chrono::duration<float> diff = new_time - current_time;
         current_time = new_time;
         accumulator += diff.count() * 1000.0f;
-
-        live_edit.update();
 
         while (accumulator >= Config::MILLIS_PER_TICK) {
             last_state = new_state;
