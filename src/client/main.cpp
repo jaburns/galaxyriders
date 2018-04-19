@@ -3,6 +3,7 @@
 #include <chrono>
 #include <cstring>
 #include <cstdint>
+#include <imgui.h>
 #include "core.hpp"
 #include "state.hpp"
 #include "net_game.hpp"
@@ -44,6 +45,13 @@ void main_net()
     while (Core::flip_frame_and_poll_events());
 }
 
+static void draw_debug_panel()
+{
+    ImGui::Begin("Debug Panel");
+    ImGui::Text("Hello world!");
+    ImGui::End();
+}
+
 void main_local()
 {
     GameRenderer renderer;
@@ -71,6 +79,8 @@ void main_local()
         }
 
         renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK));
+
+        draw_debug_panel();
     } 
     while (Core::flip_frame_and_poll_events());
 }

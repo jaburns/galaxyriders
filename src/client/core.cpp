@@ -4,6 +4,8 @@
 #include <cstdlib>
 #include <cstdio>
 #include <glm/gtc/matrix_transform.hpp>
+#include <imgui.h>
+#include <imgui_impl_sdl_gl3.h>
 #include "gl.hpp"
 #include "palette.hpp"
 
@@ -49,6 +51,12 @@ void Core::init()
 //  SDL_SetWindowResizable(s_window, SDL_TRUE);
 //  SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;  // Enable Keyboard Controls
+    ImGui_ImplSdlGL3_Init(s_window);
+    ImGui::StyleColorsDark();
+
     s_context = SDL_GL_CreateContext(s_window);
 
 #ifndef __APPLE__
@@ -67,6 +75,8 @@ void Core::init()
     glCullFace(GL_BACK);
     glClearColor(Palette::COLOR_SPACE.r, Palette::COLOR_SPACE.g, Palette::COLOR_SPACE.b, 1.0f);
     glLineWidth(1.0f);
+
+    ImGui_ImplSdlGL3_NewFrame(s_window);
 }
 
 static void handle_key_event(SDL_Keycode keycode, bool press)
@@ -99,10 +109,19 @@ static void handle_mouse_motion(SDL_MouseMotionEvent event)
 bool Core::flip_frame_and_poll_events()
 {
     bool still_running = true;
+
+    ImGui::Render();
+    ImGui_ImplSdlGL3_RenderDrawData(ImGui::GetDrawData());
+
     SDL_GL_SwapWindow(s_window);
 
+    ImGui_ImplSdlGL3_NewFrame(s_window);
+
     SDL_Event event;
-    while (SDL_PollEvent(&event)) {
+    while (SDL_PollEvent(&event)) 
+    {
+        ImGui_ImplSdlGL3_ProcessEvent(&event);
+
         switch (event.type) {
             case SDL_QUIT:
                 still_running = false;
