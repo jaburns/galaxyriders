@@ -3,13 +3,16 @@
 #include <chrono>
 #include <cstring>
 #include <cstdint>
-#include <imgui.h>
 #include "core.hpp"
 #include "state.hpp"
 #include "net_game.hpp"
 #include "renderer/game.hpp"
 #include "../shared/config.hpp"
 #include "../shared/world.hpp"
+
+#if _DEBUG
+    #include <imgui.h>
+#endif
 
 void main_net()
 {
@@ -47,9 +50,11 @@ void main_net()
 
 static void draw_debug_panel()
 {
+#ifdef _DEBUG
     ImGui::Begin("Debug Panel");
-    ImGui::Text("Hello world!");
+    ImGui::SliderFloat("Gravity", &Physics::GRAVITY, 0.0f, 0.1f);
     ImGui::End();
+#endif
 }
 
 void main_local()
@@ -105,6 +110,7 @@ int common_main(std::vector<std::string> args)
 #pragma comment(linker, "/SUBSYSTEM:windows")
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
+#include <shellapi.h>
 
 int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR lpCmdLine, int nCmdShow)
 {

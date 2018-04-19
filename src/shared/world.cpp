@@ -6,15 +6,26 @@
 #include "config.hpp"
 #include "serialization.hpp"
 
-static constexpr float DT = Config::MILLIS_PER_TICK / 1000.0f;
-static constexpr float GRAVITY = 30.0f * DT * DT;
-static constexpr float RADIUS = 0.5f;
-static constexpr float WALK_ACCEL = 30.0f * DT * DT;
-static constexpr float PUMP_ACCEL = 80.0f * DT * DT;
-static constexpr float MAX_RUN_SPEED = 35.0f * DT;
-static constexpr float TURN_AROUND_MULTIPLIER = 3.0f;
-static constexpr float JUMP_SPEED = 10.0f * DT;
-static constexpr int LATE_JUMP_FRAMES = 5;
+
+#ifdef _DEBUG
+    #define CONST_DECL
+#else
+    #define CONST_DECL constexpr
+#endif
+
+namespace Physics
+{
+    CONST_DECL float DT = Config::MILLIS_PER_TICK / 1000.0f;
+    CONST_DECL float GRAVITY = 30.0f * DT * DT;
+    CONST_DECL float RADIUS = 0.5f;
+    CONST_DECL float WALK_ACCEL = 30.0f * DT * DT;
+    CONST_DECL float PUMP_ACCEL = 80.0f * DT * DT;
+    CONST_DECL float MAX_RUN_SPEED = 35.0f * DT;
+    CONST_DECL float TURN_AROUND_MULTIPLIER = 3.0f;
+    CONST_DECL float JUMP_SPEED = 10.0f * DT;
+    CONST_DECL int LATE_JUMP_FRAMES = 5;
+}
+
 
 std::vector<uint8_t> World::serialize() const
 {
@@ -77,12 +88,12 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
     // ----- Horizontal motion -----
 
     auto walk_accel =
-        new_input.left ? -WALK_ACCEL :
-        new_input.right ? WALK_ACCEL : 0.0f;
+        new_input.left ? -Physics::WALK_ACCEL :
+        new_input.right ? Physics::WALK_ACCEL : 0.0f;
 
     if (walk_accel * player.velocity.x < -1e-9f) {
-        walk_accel *= TURN_AROUND_MULTIPLIER;
-    } else if (fabs(player.velocity.x) > MAX_RUN_SPEED) {
+        walk_accel *= Physics::TURN_AROUND_MULTIPLIER;
+    } else if (fabs(player.velocity.x) > Physics::MAX_RUN_SPEED) {
         walk_accel = 0.0f;
     }
 
@@ -90,7 +101,7 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
 
     // ----- Vertical motion -----
 
-    player.velocity.y -= GRAVITY;
+    player.velocity.y -= Physics::GRAVITY;
 
     if (!old_input.down && new_input.down) {
         if (player.velocity.y > 0.0f) player.velocity.y = 0.0f;
@@ -99,24 +110,24 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
 
     if (new_input.down) {
         player.air_stomping = true;
-        player.velocity.y -= PUMP_ACCEL;
+        player.velocity.y -= Physics::PUMP_ACCEL;
     }
 
     if (!old_input.up && new_input.up && player.grounded > 0) {
         player.grounded = 0;
-		player.velocity.y += JUMP_SPEED;
+		player.velocity.y += Physics::JUMP_SPEED;
     }
 
     // ----- Collision detection and resolution -----
 
-    const auto collision = LoadedLevel::get_baked().move_and_collide_circle(player.position, player.velocity , RADIUS, 0.0f);
+    const auto collision = LoadedLevel::get_baked().move_and_collide_circle(player.position, player.velocity , Physics::RADIUS, 0.0f);
     player.position = collision.position;
     player.velocity = collision.velocity;
 
     if (collision.collided) {
         player.ground_normal = collision.normal;
         if (collision.normal.y > 0.5f) {
-            player.grounded = LATE_JUMP_FRAMES;
+            player.grounded = Physics::LATE_JUMP_FRAMES;
         }
         player.air_stomping = false;
     } else if (player.grounded > 0) {

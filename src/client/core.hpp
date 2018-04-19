@@ -4,7 +4,7 @@
 #include <glm/mat4x4.hpp>
 #include "../shared/input.hpp"
 
-// Get Debug:: everywhere
+// Include Debug namespace implicitly everywhere core is included.
 #include "../shared/debug.hpp"
 
 struct InputState

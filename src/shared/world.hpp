@@ -37,3 +37,21 @@ struct World
 
     void step(const std::vector<Input>& inputs);
 };
+
+
+#ifdef _DEBUG
+
+namespace Physics
+{
+    extern float DT;
+    extern float GRAVITY;
+    extern float RADIUS;
+    extern float WALK_ACCEL;
+    extern float PUMP_ACCEL;
+    extern float MAX_RUN_SPEED;
+    extern float TURN_AROUND_MULTIPLIER;
+    extern float JUMP_SPEED;
+    extern int LATE_JUMP_FRAMES;
+}
+
+#endif

@@ -52,10 +52,18 @@
   <ItemGroup>
     <ClCompile Include="external\lodepng\lodepng.cpp" />
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
-    <ClCompile Include="external\imgui\imgui.cpp" />
-    <ClCompile Include="external\imgui\imgui_demo.cpp" />
-    <ClCompile Include="external\imgui\imgui_draw.cpp" />
-    <ClCompile Include="external\imgui\examples\sdl_opengl3_example\imgui_impl_sdl_gl3.cpp" />
+    <ClCompile Include="external\imgui\imgui.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_demo.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="external\imgui\imgui_draw.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="external\imgui\examples\sdl_opengl3_example\imgui_impl_sdl_gl3.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\client\gen\wire_meshes.cpp" />
     <ClCompile Include="src\client\core.cpp" />
     <ClCompile Include="src\client\net_game.cpp" />
@@ -63,7 +71,7 @@
     <ClCompile Include="src\client\main.cpp" />
     <ClCompile Include="src\client\renderer\game.cpp" />
     <ClCompile Include="src\client\renderer\level.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\client\renderer\player.cpp" />
@@ -75,7 +83,7 @@
     <ClCompile Include="src\shared\geometry.cpp" />
     <ClCompile Include="src\shared\input.cpp" />
     <ClCompile Include="src\shared\level.cpp">
-      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(IntDir)</ObjectFileName>
+      <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\shared\network.cpp" />
@@ -219,7 +227,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
