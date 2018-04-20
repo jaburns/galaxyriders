@@ -61,7 +61,7 @@
     <ClCompile Include="external\imgui\imgui_draw.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="external\imgui\examples\sdl_opengl3_example\imgui_impl_sdl_gl3.cpp">
+    <ClCompile Include="external\imgui_support\imgui_impl_sdl_gl3.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\client\gen\wire_meshes.cpp" />
@@ -90,7 +90,6 @@
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="external\imgui_support\GL\gl3w.h" />
     <None Include="res\shaders\level.frag" />
     <None Include="res\shaders\level.vert" />
     <None Include="res\shaders\wire.frag" />
@@ -174,7 +173,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\imgui_support;$(SolutionDir)\external\imgui\examples\sdl_opengl3_example;$(SolutionDir)\external\imgui;$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\win_glfw3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\imgui_support;$(SolutionDir)\external\imgui;$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\win_glfw3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
@@ -190,7 +189,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\imgui_support;$(SolutionDir)\external\imgui\examples\sdl_opengl3_example;$(SolutionDir)\external\imgui;$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\imgui_support;$(SolutionDir)\external\imgui;$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
