@@ -3,9 +3,7 @@ set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 CC='cc'
-CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2'
-BIN_FILE='game'
-SERVER_BIN_FILE='server_bin'
+CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2 -Iexternal/imgui -Iexternal/imgui_support'
 
 if [[ "$OSTYPE" == "darwin"* ]]; then
     LDFLAGS='-lstdc++ -lSDL2 -framework OpenGL'
@@ -14,61 +12,65 @@ else
 fi
 
 cpp_to_obj() {
-    printf 'build/'
-    echo "$1" | sed 's/cpp$/o/;s:/:_:g'
+    printf "$1/"
+    echo "$2" | sed 's/cpp$/o/;s:/:_:g'
+}
+
+debug_file_list() {
+    echo 'external/imgui/imgui.cpp'
+    echo 'external/imgui/imgui_demo.cpp'
+    echo 'external/imgui/imgui_draw.cpp'
+    echo 'external/imgui_support/imgui_impl_sdl_gl3.cpp'
 }
 
 client_file_list() {
-    find src/client src/shared -iname '*.cpp'
-    echo external/lodepng/lodepng.cpp
-    echo external/tinyxml2/tinyxml2.cpp
+    find 'src/client' 'src/shared' -iname '*.cpp'
+    echo 'external/lodepng/lodepng.cpp'
+    echo 'external/tinyxml2/tinyxml2.cpp'
 }
 
 server_file_list() {
-    find src/server src/shared -iname '*.cpp'
+    find 'src/server' 'src/shared' -iname '*.cpp'
 }
 
 all_file_list() {
-    ( client_file_list; server_file_list ) | sort | uniq
+    ( client_file_list; server_file_list; debug_file_list ) | sort | uniq
 }
 
-rule_binary() {
+print_flags_for_target() {
+    [[ "$1" == 'Debug' ]] && echo '-D_DEBUG'
+}
+
+with_source_files_print_rule_for_binary() {
     local all_objs=''
-    for f in $(client_file_list); do
-        all_objs="$all_objs $(cpp_to_obj $f)"
+    while read line; do
+        all_objs="$all_objs $(cpp_to_obj "$1" "$line")"
     done
-    echo "$BIN_FILE: $all_objs"
-    echo -e "\t$CC -o $BIN_FILE $all_objs $LDFLAGS"
+    echo "$2: $all_objs"
+    echo -e "\t$CC -o $2 $all_objs $LDFLAGS"
 }
 
-rule_server_binary() {
-    # TODO Don't link SDL + OpenGL in the server binary
-    local all_objs=''
-    for f in $(server_file_list); do
-        all_objs="$all_objs $(cpp_to_obj $f)"
-    done
-    echo "$SERVER_BIN_FILE: $all_objs"
-    echo -e "\t$CC -o $SERVER_BIN_FILE $all_objs $LDFLAGS"
-}
-
-rule_all_objects() {
+print_rules_for_all_object_files() {
     for f in $(all_file_list); do
-        local obj_file="$(cpp_to_obj "$f")"
-        $CC $CFLAGS -MM -MT "$obj_file" -c "$f"
-        echo -e "\t$CC $CFLAGS -o $obj_file -c $f"
+        local obj_file="$(cpp_to_obj "$1" "$f")"
+        $CC $2 $CFLAGS -MM -MT "$obj_file" -c "$f"
+        echo -e "\t$CC $2 $CFLAGS -o $obj_file -c $f"
     done
 }
 
 print_makefile() {
-    rule_binary
-    rule_server_binary
-    rule_all_objects
+    print_rules_for_all_object_files 'Debug' "$(print_flags_for_target 'Debug')"
+    print_rules_for_all_object_files 'Release' "$(print_flags_for_target 'Release')"
+
+    client_file_list | with_source_files_print_rule_for_binary 'Release' 'game'
+    server_file_list | with_source_files_print_rule_for_binary 'Release' 'server'
+    (client_file_list; debug_file_list) | with_source_files_print_rule_for_binary 'Debug' 'debug_game'
 
     echo '.PHONY: clean run'
-    echo -e "clean:\n\t find . -iname '*.o' | xargs rm && rm -f ./game"
-    echo -e "run: $BIN_FILE \n\t ./$BIN_FILE"
-    echo -e "server: $SERVER_BIN_FILE"
+    echo -e "clean:\n\t rm -rf ./game ./server ./debug_game ./Debug ./Release && mkdir -p Debug && mkdir -p Release"
+    echo -e "run: debug_game \n\t ./debug_game"
 }
 
-mkdir -p build
+mkdir -p Debug
+mkdir -p Release
 print_makefile > Makefile

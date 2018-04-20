@@ -1,5 +1,6 @@
 game
 server_bin
+debug_game
 Debug
 Release
 *.vcxproj.user
@@ -7,7 +8,6 @@ src/client/gen
 tools/tools
 tools/build
 *.sdf.png
-build
 Makefile
 SDL2.dll
 glew32.dll
