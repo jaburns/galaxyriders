@@ -52,7 +52,7 @@ void Core::init()
     );
 
 //  SDL_SetWindowResizable(s_window, SDL_TRUE);
-//  SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
+    SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     s_context = SDL_GL_CreateContext(s_window);
 

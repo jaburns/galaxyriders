@@ -10,7 +10,7 @@
 #include "../shared/config.hpp"
 #include "../shared/world.hpp"
 
-#if _DEBUG
+#ifdef _DEBUG
     #include <imgui.h>
 #endif
 

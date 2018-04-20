@@ -42,13 +42,14 @@
 #include "imgui.h"
 #include "imgui_impl_sdl_gl3.h"
 
-/*
 // SDL,GL3W
-#include <SDL.h>
-#include <SDL_syswm.h>
-#include <GL/gl3w.h>    // This example is using gl3w to access OpenGL functions (because it is small). You may use glew/glad/glLoadGen/etc. whatever already works for you.
-*/
+//#include <SDL.h>
+//#include <SDL_syswm.h>
+//#include <GL/gl3w.h>    // This example is using gl3w to access OpenGL functions (because it is small). You may use glew/glad/glLoadGen/etc. whatever already works for you.
 #include "../../src/client/gl.hpp"
+#ifdef _WIN32
+    #include <SDL_syswm.h>
+#endif
 
 // SDL data
 static Uint64       g_Time = 0;
