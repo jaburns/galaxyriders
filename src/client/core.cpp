@@ -12,6 +12,12 @@
     #include <imgui_impl_sdl_gl3.h>
 #endif
 
+#ifdef __APPLE__
+    extern "C" {
+        extern void force_osx_window_on_top(void *nsWindow);
+    }
+#endif
+
 static SDL_Window* s_window;
 static SDL_GLContext s_context;
 static int s_window_width;
@@ -25,6 +31,10 @@ static void recompute_perspective()
 {
     s_perspective_matrix = glm::perspective(3.14159f / 3.0f, s_window_width / (float)s_window_height, 0.1f, 1024.0f);
 }
+
+#include "../shared/debug.hpp"
+
+#include <SDL2/SDL_syswm.h>
 
 void Core::init()
 {
@@ -47,8 +57,9 @@ void Core::init()
         SDL_DisplayMode displayMode;
         SDL_GetCurrentDisplayMode(0, &displayMode);
 
-        s_window_width = displayMode.w;
-        s_window_height = displayMode.h;
+        s_window_width = displayMode.w+2;
+        s_window_height = displayMode.h+2;
+        recompute_perspective();
 
         s_window = SDL_CreateWindow(
             "Galaxy Riders",
@@ -56,6 +67,10 @@ void Core::init()
             s_window_width, s_window_height,
             SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS
         );
+
+        SDL_SysWMinfo win_info;
+        SDL_GetWindowWMInfo(s_window, &win_info);
+        force_osx_window_on_top(win_info.info.cocoa.window);
     #else
         s_window = SDL_CreateWindow(
             "Galaxy Riders",
@@ -66,7 +81,7 @@ void Core::init()
     #endif
 
     SDL_SetWindowResizable(s_window, SDL_TRUE);
-    SDL_GL_SetSwapInterval(1); // 1: vsync, 0: fast
+    SDL_GL_SetSwapInterval(1);
 
     s_context = SDL_GL_CreateContext(s_window);
 

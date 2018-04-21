@@ -5,8 +5,8 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 CC='cc'
 CFLAGS='-std=c++14 -Iexternal/lodepng -Iexternal/glm -Iexternal/tinyxml2 -Iexternal/imgui -Iexternal/imgui_support'
 
-if [[ "$OSTYPE" == "darwin"* ]]; then
-    LDFLAGS='-lstdc++ -lSDL2 -framework OpenGL'
+if [[ "$OSTYPE" == 'darwin'* ]]; then
+    LDFLAGS='-lc++ -lSDL2 -framework OpenGL -framework Foundation'
 else
     LDFLAGS='-lstdc++ -lGL -lGLEW -lSDL2 -lSDL2main -lm'
 fi
@@ -46,6 +46,9 @@ with_source_files_print_rule_for_binary() {
     while read line; do
         all_objs="$all_objs $(cpp_to_obj "$1" "$line")"
     done
+
+    [[ "$OSTYPE" == 'darwin'* ]] && all_objs="$all_objs Release/force_osx_window_on_top.o"
+
     echo "$2: $all_objs"
     echo -e "\t$CC -o $2 $all_objs $LDFLAGS"
 }
@@ -58,9 +61,18 @@ print_rules_for_all_object_files() {
     done
 }
 
+print_rule_for_osx_fullscreen_object_file() {
+    echo 'Release/force_osx_window_on_top.o:'
+    echo -e "\techo '#import <Cocoa/Cocoa.h>' > /tmp/force_osx_window_on_top.m"
+    echo -e "\techo 'void force_osx_window_on_top(NSWindow* win) { win.level = NSPopUpMenuWindowLevel; }' >> /tmp/force_osx_window_on_top.m"
+    echo -e "\tclang /tmp/force_osx_window_on_top.m -c -o Release/force_osx_window_on_top.o"
+}
+
 print_makefile() {
     print_rules_for_all_object_files 'Debug' "$(print_flags_for_target 'Debug')"
     print_rules_for_all_object_files 'Release' "$(print_flags_for_target 'Release')"
+
+    [[ "$OSTYPE" == 'darwin'* ]] && print_rule_for_osx_fullscreen_object_file
 
     client_file_list | with_source_files_print_rule_for_binary 'Release' 'game'
     server_file_list | with_source_files_print_rule_for_binary 'Release' 'server'
@@ -73,4 +85,5 @@ print_makefile() {
 
 mkdir -p Debug
 mkdir -p Release
+
 print_makefile > Makefile
