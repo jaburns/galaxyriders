@@ -42,17 +42,31 @@ void Core::init()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+    #ifdef __APPLE__
+        SDL_DisplayMode displayMode;
+        SDL_GetCurrentDisplayMode(0, &displayMode);
+
+        s_window_width = displayMode.w;
+        s_window_height = displayMode.h;
+
+        s_window = SDL_CreateWindow(
+            "Galaxy Riders",
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            s_window_width, s_window_height,
+            SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS
+        );
+    #else
+        s_window = SDL_CreateWindow(
+            "Galaxy Riders",
+            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            s_window_width, s_window_height,
+            SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP
+        );
+    #endif
+
+    SDL_SetWindowResizable(s_window, SDL_TRUE);
     SDL_GL_SetSwapInterval(1); // 1: vsync, 0: fast
-
-    s_window = SDL_CreateWindow(
-        "Galaxy Riders",
-        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        s_window_width, s_window_height,
-        SDL_WINDOW_OPENGL
-    );
-
-//  SDL_SetWindowResizable(s_window, SDL_TRUE);
-    SDL_SetWindowFullscreen(s_window, SDL_WINDOW_FULLSCREEN_DESKTOP);
 
     s_context = SDL_GL_CreateContext(s_window);
 
@@ -126,7 +140,7 @@ bool Core::flip_frame_and_poll_events()
     #endif
 
     SDL_Event event;
-    while (SDL_PollEvent(&event)) 
+    while (SDL_PollEvent(&event))
     {
         #if _DEBUG
             ImGui_ImplSdlGL3_ProcessEvent(&event);

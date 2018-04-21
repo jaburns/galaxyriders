@@ -44,7 +44,7 @@ void main_net()
         const auto millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
         renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick));
-    } 
+    }
     while (Core::flip_frame_and_poll_events());
 }
 
@@ -86,7 +86,7 @@ void main_local()
         renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK));
 
         draw_debug_panel();
-    } 
+    }
     while (Core::flip_frame_and_poll_events());
 }
 
