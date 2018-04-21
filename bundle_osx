@@ -13,14 +13,17 @@ rm -rf "$BUNDLE_FILENAME"
 mkdir -p "$BUNDLE_FILENAME/Contents/MacOS"
 mkdir -p "$BUNDLE_FILENAME/Contents/Resources"
 
-[[ ! -e "$BINARY_FILENAME" ]] && make
+make "$BINARY_FILENAME"
+
+echo "Creating app bundle $BUNDLE_FILENAME..."
+
 cp "$BINARY_FILENAME" "$BUNDLE_FILENAME/Contents/MacOS"
 cp asset_src/osx_icons.icns "$BUNDLE_FILENAME/Contents/Resources"
 cp -r res "$BUNDLE_FILENAME/Contents/MacOS"
 
 pushd "$BUNDLE_FILENAME/Contents/MacOS/res" >/dev/null
     cat '../../../../resources_ignore' | while read file; do
-        rm "$file"
+        rm  -f "$file"
     done
 popd >/dev/null
 
@@ -76,3 +79,5 @@ cd "\${0%/*}"
 ./$BINARY_FILENAME
 EOF
 chmod +x "$BUNDLE_FILENAME/Contents/MacOS/launcher"
+
+echo 'Done!'
