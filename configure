@@ -47,7 +47,7 @@ with_source_files_print_rule_for_binary() {
         all_objs="$all_objs $(cpp_to_obj "$1" "$line")"
     done
 
-    [[ "$OSTYPE" == 'darwin'* ]] && all_objs="$all_objs Release/force_osx_window_on_top.o"
+    [[ "$OSTYPE" == 'darwin'* ]] && all_objs="$all_objs Release/put_window_over_menu_bar.o"
 
     echo "$2: $all_objs"
     echo -e "\t$CC -o $2 $all_objs $LDFLAGS"
@@ -61,18 +61,16 @@ print_rules_for_all_object_files() {
     done
 }
 
-print_rule_for_osx_fullscreen_object_file() {
-    echo 'Release/force_osx_window_on_top.o:'
-    echo -e "\techo '#import <Cocoa/Cocoa.h>' > /tmp/force_osx_window_on_top.m"
-    echo -e "\techo 'void force_osx_window_on_top(NSWindow* win) { win.level = NSPopUpMenuWindowLevel; }' >> /tmp/force_osx_window_on_top.m"
-    echo -e "\tclang /tmp/force_osx_window_on_top.m -c -o Release/force_osx_window_on_top.o"
+print_rule_for_osx_window_over_menu_bar() {
+    echo 'Release/put_window_over_menu_bar.o:'
+    echo -e "\t$CC src/client/osx/put_window_over_menu_bar.m -c -o Release/put_window_over_menu_bar.o"
 }
 
 print_makefile() {
     print_rules_for_all_object_files 'Debug' "$(print_flags_for_target 'Debug')"
     print_rules_for_all_object_files 'Release' "$(print_flags_for_target 'Release')"
 
-    [[ "$OSTYPE" == 'darwin'* ]] && print_rule_for_osx_fullscreen_object_file
+    [[ "$OSTYPE" == 'darwin'* ]] && print_rule_for_osx_window_over_menu_bar
 
     client_file_list | with_source_files_print_rule_for_binary 'Release' 'game'
     server_file_list | with_source_files_print_rule_for_binary 'Release' 'server'

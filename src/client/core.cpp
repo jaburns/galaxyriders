@@ -13,9 +13,8 @@
 #endif
 
 #ifdef __APPLE__
-    extern "C" {
-        extern void force_osx_window_on_top(void *nsWindow);
-    }
+    #include <SDL2/SDL_syswm.h>
+    #include "osx/put_window_over_menu_bar.h"
 #endif
 
 static SDL_Window* s_window;
@@ -31,10 +30,6 @@ static void recompute_perspective()
 {
     s_perspective_matrix = glm::perspective(3.14159f / 3.0f, s_window_width / (float)s_window_height, 0.1f, 1024.0f);
 }
-
-#include "../shared/debug.hpp"
-
-#include <SDL2/SDL_syswm.h>
 
 void Core::init()
 {
@@ -52,6 +47,9 @@ void Core::init()
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    SDL_GL_SetSwapInterval(1);
+
+    Uint32 window_flags = SDL_WINDOW_OPENGL;
 
     #ifdef __APPLE__
         SDL_DisplayMode displayMode;
@@ -61,31 +59,26 @@ void Core::init()
         s_window_height = displayMode.h+2;
         recompute_perspective();
 
-        s_window = SDL_CreateWindow(
-            "Galaxy Riders",
-            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            s_window_width, s_window_height,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_BORDERLESS
-        );
-
-        SDL_SysWMinfo win_info;
-        SDL_GetWindowWMInfo(s_window, &win_info);
-        force_osx_window_on_top(win_info.info.cocoa.window);
+        window_flags |= SDL_WINDOW_BORDERLESS;
     #else
-        s_window = SDL_CreateWindow(
-            "Galaxy Riders",
-            SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-            s_window_width, s_window_height,
-            SDL_WINDOW_OPENGL | SDL_WINDOW_FULLSCREEN_DESKTOP
-        );
+        window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     #endif
 
-    SDL_SetWindowResizable(s_window, SDL_TRUE);
-    SDL_GL_SetSwapInterval(1);
+    s_window = SDL_CreateWindow(
+        "Galaxy Riders",
+        SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+        s_window_width, s_window_height,
+        window_flags
+    );
 
+    SDL_SetWindowResizable(s_window, SDL_TRUE);
     s_context = SDL_GL_CreateContext(s_window);
 
-    #ifndef __APPLE__
+    #ifdef __APPLE__
+        SDL_SysWMinfo win_info;
+        SDL_GetWindowWMInfo(s_window, &win_info);
+        put_window_over_menu_bar(win_info.info.cocoa.window);
+    #else
         glewExperimental = GL_TRUE;
         const auto glewInitResult = glewInit();
         if (glewInitResult != GLEW_OK) {
