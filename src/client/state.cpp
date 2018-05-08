@@ -118,10 +118,6 @@ void ClientState::step(const InputState& input, const CoreView& core_view)
         edit_mode.enabled = !edit_mode.enabled;
     }
 
-    if (input.debug_toggle_wireframe && !last_input.debug_toggle_wireframe) {
-        debug_wireframe_mode = !debug_wireframe_mode;
-    }
-
     if (!edit_mode.enabled || (input.editmode_step && !last_input.editmode_step)) {
         step_game_mode(*this, input, edit_mode.enabled);
     } else {

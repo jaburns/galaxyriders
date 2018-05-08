@@ -2,5 +2,7 @@
 
 struct EditorState
 {
-    static EditorState no_editor();
+    bool wireframe = false;
+
+    static const EditorState NO_EDITOR;
 };

@@ -44,7 +44,7 @@ void main_net()
         const auto this_frame = std::chrono::high_resolution_clock::now();
         const auto millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
-        renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick), core.get_core_view(), EditorState::no_editor());
+        renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick), core.get_core_view(), EditorState::NO_EDITOR);
     }
     while (core.flip_frame_and_poll_events());
 }
@@ -57,7 +57,7 @@ void main_local()
     #ifdef _DEBUG
         Editor editor;
     #else 
-        EditorState editor_state = EditorState::no_editor();
+        const auto& editor_state = EditorState::NO_EDITOR;
     #endif
 
     auto current_time = std::chrono::high_resolution_clock::now();

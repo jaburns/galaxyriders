@@ -85,7 +85,7 @@ Core::Core()
 
         window_flags |= SDL_WINDOW_BORDERLESS;
     #else
-        window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+    //  window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     #endif
 
     m_window = SDL_CreateWindow(

@@ -1,6 +1,3 @@
 #include "editor_state.hpp"
 
-EditorState EditorState::no_editor()
-{
-    return {};
-}
+const EditorState EditorState::NO_EDITOR;

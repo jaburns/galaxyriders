@@ -4,6 +4,8 @@
 
 class Editor
 {
+    EditorState m_state;
+
 public:
     EditorState update();
 };
