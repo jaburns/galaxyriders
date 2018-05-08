@@ -11,14 +11,14 @@ GameRenderer::GameRenderer()
     m_player_renderer()
 { }
 
-void GameRenderer::render(const ClientState& state)
+void GameRenderer::render(const ClientState& state, const CoreView& core_view)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    const auto p = Core::get_perspective_matrix();
-    const auto v = Core::get_view_matrix(state.camera_pos);
+    const auto p = core_view.get_perspective_matrix();
+    const auto v = core_view.get_view_matrix(state.camera_pos);
 
-    const auto mouse_pos = Core::get_mouse_world_pos(state.camera_pos, state.last_input.mouse_pos);
+    const auto mouse_pos = core_view.get_mouse_world_pos(state.camera_pos);
 
     m_level_renderer.draw_once(state.edit_mode.enabled, state.debug_wireframe_mode, mouse_pos, v, p, {0.0f, 0.0f, -0.01f});
 

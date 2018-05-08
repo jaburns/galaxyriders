@@ -14,5 +14,5 @@ class GameRenderer : public NoCopy
 public:
     GameRenderer();
 
-    void render(const ClientState& state);
+    void render(const ClientState& state, const CoreView& core_view);
 };

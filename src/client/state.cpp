@@ -80,7 +80,7 @@ static void step_game_mode(ClientState& state, const InputState& input, bool sin
     state.player_anims[state.player_id].step(old_player, state.world.players.at(state.player_id), input.player.left, input.player.right);
 }
 
-static void step_edit_mode(ClientState& state, const InputState& input)
+static void step_edit_mode(ClientState& state, const InputState& input, const CoreView& core_view)
 {
     if (input.player.right)   state.camera_pos.x += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
     if (input.player.left)    state.camera_pos.x -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
@@ -90,7 +90,7 @@ static void step_edit_mode(ClientState& state, const InputState& input)
     if (input.editmode_zoom_in)  state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
 
     if (input.mouse_click) {
-        const auto& mouse_pos = Core::get_mouse_world_pos(state.camera_pos, input.mouse_pos);
+        const auto& mouse_pos = core_view.get_mouse_world_pos(state.camera_pos);
 
         state.edit_mode.selected_handle = 0;
         state.edit_mode.selected_poly = 0;
@@ -112,7 +112,7 @@ static void step_edit_mode(ClientState& state, const InputState& input)
     }
 }
 
-void ClientState::step(const InputState& input)
+void ClientState::step(const InputState& input, const CoreView& core_view)
 {
     if (input.editmode_toggle && !last_input.editmode_toggle) {
         edit_mode.enabled = !edit_mode.enabled;
@@ -125,7 +125,7 @@ void ClientState::step(const InputState& input)
     if (!edit_mode.enabled || (input.editmode_step && !last_input.editmode_step)) {
         step_game_mode(*this, input, edit_mode.enabled);
     } else {
-        step_edit_mode(*this, input);
+        step_edit_mode(*this, input, core_view);
     }
 
     last_input = input;

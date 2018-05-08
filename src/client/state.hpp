@@ -1,8 +1,8 @@
 #pragma once
 
-#include <glm/vec3.hpp>
 #include <cstdint>
 #include <unordered_map>
+#include <glm/vec3.hpp>
 #include "../shared/world.hpp"
 #include "core.hpp"
 
@@ -41,7 +41,7 @@ struct ClientState
     std::unordered_map<int32_t, PlayerAnimation> player_anims;
     World world;
 
-    void step(const InputState& input);
+    void step(const InputState& input, const CoreView& core_view);
     void step_with_world(const World& new_world, const PlayerInput& input);
 
     ClientState lerp_to(const ClientState& next, float t) const;

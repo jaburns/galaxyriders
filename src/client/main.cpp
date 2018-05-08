@@ -16,6 +16,7 @@
 
 void main_net()
 {
+    Core core;
     GameRenderer renderer;
     ClientState new_state;
     NetGame net_game;
@@ -29,7 +30,7 @@ void main_net()
     auto last_state = new_state;
 
     do {
-        const auto input = Core::read_input_state().player;
+        const auto input = core.read_input_state().player;
 
         if (net_game.update(input, received_world)) {
             last_state = new_state;
@@ -43,14 +44,16 @@ void main_net()
         const auto this_frame = std::chrono::high_resolution_clock::now();
         const auto millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
-        renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick));
+        renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick), core.get_core_view());
     }
-    while (Core::flip_frame_and_poll_events());
+    while (core.flip_frame_and_poll_events());
 }
 
 static void draw_debug_panel()
 {
 #ifdef _DEBUG
+    ImGui::ShowDemoWindow();
+
     ImGui::Begin("Debug Panel");
     ImGui::SliderFloat("Gravity", &Physics::GRAVITY, 0.0f, 0.1f);
     ImGui::End();
@@ -59,6 +62,7 @@ static void draw_debug_panel()
 
 void main_local()
 {
+    Core core;
     GameRenderer renderer;
 
     auto current_time = std::chrono::high_resolution_clock::now();
@@ -77,30 +81,28 @@ void main_local()
         current_time = new_time;
         accumulator += diff.count() * 1000.0f;
 
+        const auto core_view = core.get_core_view();
+
         while (accumulator >= Config::MILLIS_PER_TICK) {
             last_state = new_state;
-            new_state.step(Core::read_input_state());
+            new_state.step(core.read_input_state(), core_view);
             accumulator -= Config::MILLIS_PER_TICK;
         }
 
-        renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK));
+        renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK), core_view);
 
         draw_debug_panel();
     }
-    while (Core::flip_frame_and_poll_events());
+    while (core.flip_frame_and_poll_events());
 }
 
 int common_main(std::vector<std::string> args)
 {
-    Core::init();
-
     if (args.size() > 0 && args[0] == "net") {
         main_net();
     } else {
         main_local();
     }
-
-    Core::deinit();
 
     return 0;
 }

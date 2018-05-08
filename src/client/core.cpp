@@ -1,6 +1,5 @@
 #include "core.hpp"
 
-#include <unordered_set>
 #include <cstdlib>
 #include <cstdio>
 #include <glm/gtc/matrix_transform.hpp>
@@ -17,29 +16,54 @@
     #include "osx/put_window_over_menu_bar.h"
 #endif
 
-static SDL_Window* s_window;
-static SDL_GLContext s_context;
-static int s_window_width;
-static int s_window_height;
-static glm::mat4x4 s_perspective_matrix;
-
-static std::unordered_set<SDL_Keycode> keys_down;
-static InputState state;
-
-static void recompute_perspective()
+static glm::vec3 get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
 {
-    s_perspective_matrix = glm::perspective(3.14159f / 3.0f, s_window_width / (float)s_window_height, 0.1f, 1024.0f);
+    glm::vec4 ray_clip = glm::vec4(mouse_pos, -1.0f, 1.0f);
+
+    glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
+    ray_eye.z = -1.0f;
+    ray_eye.w =  0.0f;
+
+    glm::vec4 ray_world = glm::inverse(view) * ray_eye;
+    ray_world.w = 0.0f;
+    ray_world = glm::normalize(ray_world);
+
+    return ray_world;
 }
 
-void Core::init()
+CoreView::CoreView(glm::vec2 mouse_pos, int window_width, int window_height)
+{
+    m_mouse_pos = mouse_pos;
+    m_perspective = glm::perspective(3.14159f / 3.0f, window_width / (float)window_height, 0.1f, 1024.0f);
+}
+
+glm::vec2 CoreView::get_mouse_world_pos(const glm::vec3& camera_pos) const
+{
+    const auto mouse_ray = get_mouse_ray(m_mouse_pos, m_perspective, get_view_matrix(camera_pos));
+    const auto plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
+    const auto plane_coord = glm::vec3(0.0f);
+    const auto t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, camera_pos)) / glm::dot(plane_normal, mouse_ray);
+    return camera_pos + t * mouse_ray;
+}
+
+glm::mat4x4 CoreView::get_view_matrix(const glm::vec3& camera_pos) const
+{
+    return glm::translate(glm::lookAt(glm::vec3(0.0f), {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}), -camera_pos);
+}
+
+glm::mat4x4 CoreView::get_perspective_matrix() const
+{
+    return m_perspective;
+}
+
+Core::Core() 
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         exit(EXIT_FAILURE);
     }
 
-    s_window_width = 1280;
-    s_window_height = 720;
-    recompute_perspective();
+    m_window_width = 1280;
+    m_window_height = 720;
 
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1); // MSAA
     SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
@@ -64,15 +88,15 @@ void Core::init()
         window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     #endif
 
-    s_window = SDL_CreateWindow(
+    m_window = SDL_CreateWindow(
         "Galaxy Riders",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-        s_window_width, s_window_height,
+        m_window_width, m_window_height,
         window_flags
     );
 
-    SDL_SetWindowResizable(s_window, SDL_TRUE);
-    s_context = SDL_GL_CreateContext(s_window);
+    SDL_SetWindowResizable(m_window, SDL_TRUE);
+    m_context = SDL_GL_CreateContext(m_window);
 
     #ifdef __APPLE__
         SDL_SysWMinfo win_info;
@@ -99,36 +123,36 @@ void Core::init()
         ImGui::CreateContext();
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-        ImGui_ImplSdlGL3_Init(s_window);
+        ImGui_ImplSdlGL3_Init(m_window);
         ImGui::StyleColorsDark();
-        ImGui_ImplSdlGL3_NewFrame(s_window);
+        ImGui_ImplSdlGL3_NewFrame(m_window);
     #endif
 }
 
-static void handle_key_event(SDL_Keycode keycode, bool press)
+void Core::handle_key_event(SDL_Keycode keycode, bool press)
 {
     if (press) {
-        keys_down.insert(keycode);
+        m_keys_down.insert(keycode);
     } else {
-        keys_down.erase(keycode);
+        m_keys_down.erase(keycode);
     }
 
-    state.player.left    = keys_down.count(SDLK_LEFT);
-    state.player.right   = keys_down.count(SDLK_RIGHT);
-    state.player.up      = keys_down.count(SDLK_UP);
-    state.player.down    = keys_down.count(SDLK_DOWN);
-    state.editmode_toggle   = keys_down.count(SDLK_p);
-    state.editmode_step     = keys_down.count(SDLK_PERIOD);
-    state.editmode_zoom_in  = keys_down.count(SDLK_a);
-    state.editmode_zoom_out = keys_down.count(SDLK_z);
-    state.debug_toggle_wireframe = keys_down.count(SDLK_w);
+    m_input_state.player.left    = m_keys_down.count(SDLK_LEFT);
+    m_input_state.player.right   = m_keys_down.count(SDLK_RIGHT);
+    m_input_state.player.up      = m_keys_down.count(SDLK_UP);
+    m_input_state.player.down    = m_keys_down.count(SDLK_DOWN);
+    m_input_state.editmode_toggle   = m_keys_down.count(SDLK_p);
+    m_input_state.editmode_step     = m_keys_down.count(SDLK_PERIOD);
+    m_input_state.editmode_zoom_in  = m_keys_down.count(SDLK_a);
+    m_input_state.editmode_zoom_out = m_keys_down.count(SDLK_z);
+    m_input_state.debug_toggle_wireframe = m_keys_down.count(SDLK_w);
 }
 
-static void handle_mouse_motion(SDL_MouseMotionEvent event)
+void Core::handle_mouse_motion(SDL_MouseMotionEvent event)
 {
-    state.mouse_pos = glm::vec2(
-        2.0f * event.x / static_cast<float>(s_window_width) - 1.0f,
-        1.0f - 2.0f * event.y /static_cast<float>(s_window_height)
+    m_input_state.mouse_pos = glm::vec2(
+        2.0f * event.x / static_cast<float>(m_window_width) - 1.0f,
+        1.0f - 2.0f * event.y /static_cast<float>(m_window_height)
     );
 }
 
@@ -141,10 +165,10 @@ bool Core::flip_frame_and_poll_events()
         ImGui_ImplSdlGL3_RenderDrawData(ImGui::GetDrawData());
     #endif
 
-    SDL_GL_SwapWindow(s_window);
+    SDL_GL_SwapWindow(m_window);
 
     #if _DEBUG
-        ImGui_ImplSdlGL3_NewFrame(s_window);
+        ImGui_ImplSdlGL3_NewFrame(m_window);
     #endif
 
     SDL_Event event;
@@ -161,10 +185,9 @@ bool Core::flip_frame_and_poll_events()
 
             case SDL_WINDOWEVENT:
                 if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
-                    s_window_width = event.window.data1;
-                    s_window_height = event.window.data2;
-                    recompute_perspective();
-                    glViewport(0, 0, s_window_width, s_window_height);
+                    m_window_width = event.window.data1;
+                    m_window_height = event.window.data2;
+                    glViewport(0, 0, m_window_width, m_window_height);
                 }
                 break;
 
@@ -184,11 +207,11 @@ bool Core::flip_frame_and_poll_events()
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                state.mouse_click = true;
+                m_input_state.mouse_click = true;
                 break;
 
             case SDL_MOUSEBUTTONUP:
-                state.mouse_click = false;
+                m_input_state.mouse_click = false;
                 break;
         }
     }
@@ -196,48 +219,19 @@ bool Core::flip_frame_and_poll_events()
     return still_running;
 }
 
-InputState Core::read_input_state()
+InputState Core::read_input_state() const
 {
-    return state;
+    return m_input_state;
 }
 
-static glm::vec3 get_mouse_ray(const glm::vec2& mouse_pos, const glm::mat4x4& projection, const glm::mat4x4& view)
+CoreView Core::get_core_view() const
 {
-    glm::vec4 ray_clip = glm::vec4(mouse_pos, -1.0f, 1.0f);
-
-    glm::vec4 ray_eye = glm::inverse(projection) * ray_clip;
-    ray_eye.z = -1.0f;
-    ray_eye.w =  0.0f;
-
-    glm::vec4 ray_world = glm::inverse(view) * ray_eye;
-    ray_world.w = 0.0f;
-    ray_world = glm::normalize(ray_world);
-
-    return ray_world;
+    return CoreView(m_input_state.mouse_pos, m_window_width, m_window_height);
 }
 
-const glm::mat4x4& Core::get_perspective_matrix()
+Core::~Core()
 {
-    return s_perspective_matrix;
-}
-
-glm::mat4x4 Core::get_view_matrix(const glm::vec3& camera_pos)
-{
-    return glm::translate(glm::lookAt(glm::vec3(0.0f), {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f, 0.0f}), -camera_pos);
-}
-
-glm::vec2 Core::get_mouse_world_pos(const glm::vec3& camera_pos, const glm::vec2& mouse_pos)
-{
-    const auto mouse_ray = get_mouse_ray(Core::read_input_state().mouse_pos, Core::get_perspective_matrix(), Core::get_view_matrix(camera_pos));
-    const auto plane_normal = glm::vec3(0.0f, 0.0f, -1.0f);
-    const auto plane_coord = glm::vec3(0.0f);
-    const auto t = (glm::dot(plane_normal, plane_coord) - glm::dot(plane_normal, camera_pos)) / glm::dot(plane_normal, mouse_ray);
-    return camera_pos + t * mouse_ray;
-}
-
-void Core::deinit()
-{
-    SDL_GL_DeleteContext(s_context);
-    SDL_DestroyWindow(s_window);
+    SDL_GL_DeleteContext(m_context);
+    SDL_DestroyWindow(m_window);
     SDL_Quit();
 }
