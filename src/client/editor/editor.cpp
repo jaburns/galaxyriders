@@ -2,13 +2,14 @@
 
 #include <imgui.h>
 #include "../../shared/world.hpp"
-#include "../../shared/debug.hpp"
+
+Editor::Editor()
+    : m_state() 
+{}
 
 EditorState Editor::update()
 {
     ImGui::ShowDemoWindow();
-
-    Debug::log("Wireframe? ", m_state.wireframe);
 
     ImGui::Begin("Debug Panel");
     ImGui::SliderFloat("Gravity", &Physics::GRAVITY, 0.0f, 0.1f);

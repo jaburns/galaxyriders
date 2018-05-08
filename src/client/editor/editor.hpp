@@ -7,5 +7,6 @@ class Editor
     EditorState m_state;
 
 public:
+    Editor();
     EditorState update();
 };
