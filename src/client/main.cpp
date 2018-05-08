@@ -11,7 +11,7 @@
 #include "../shared/world.hpp"
 
 #ifdef _DEBUG
-    #include <imgui.h>
+    #include "editor/editor.hpp"
 #endif
 
 void main_net()
@@ -44,26 +44,21 @@ void main_net()
         const auto this_frame = std::chrono::high_resolution_clock::now();
         const auto millis_since_update = static_cast<float>(std::chrono::duration_cast<std::chrono::milliseconds>(this_frame - receive_world).count());
 
-        renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick), core.get_core_view());
+        renderer.render(last_state.lerp_to(new_state, millis_since_update / millis_per_tick), core.get_core_view(), EditorState::no_editor());
     }
     while (core.flip_frame_and_poll_events());
-}
-
-static void draw_debug_panel()
-{
-#ifdef _DEBUG
-    ImGui::ShowDemoWindow();
-
-    ImGui::Begin("Debug Panel");
-    ImGui::SliderFloat("Gravity", &Physics::GRAVITY, 0.0f, 0.1f);
-    ImGui::End();
-#endif
 }
 
 void main_local()
 {
     Core core;
     GameRenderer renderer;
+
+    #ifdef _DEBUG
+        Editor editor;
+    #else 
+        EditorState editor_state = EditorState::no_editor();
+    #endif
 
     auto current_time = std::chrono::high_resolution_clock::now();
     auto accumulator = 0.0f;
@@ -89,9 +84,11 @@ void main_local()
             accumulator -= Config::MILLIS_PER_TICK;
         }
 
-        renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK), core_view);
+        #ifdef _DEBUG
+            const auto editor_state = editor.update();
+        #endif
 
-        draw_debug_panel();
+        renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK), core_view, editor_state);
     }
     while (core.flip_frame_and_poll_events());
 }

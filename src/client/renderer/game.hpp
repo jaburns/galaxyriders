@@ -2,6 +2,7 @@
 
 #include "../../shared/lang_utils.hpp"
 #include "../state.hpp"
+#include "../editor/editor_state.hpp"
 #include "player.hpp"
 #include "level.hpp"
 #include "wire.hpp"
@@ -14,5 +15,5 @@ class GameRenderer : public NoCopy
 public:
     GameRenderer();
 
-    void render(const ClientState& state, const CoreView& core_view);
+    void render(const ClientState& state, const CoreView& core_view, const EditorState& editor_state);
 };

@@ -11,7 +11,7 @@ GameRenderer::GameRenderer()
     m_player_renderer()
 { }
 
-void GameRenderer::render(const ClientState& state, const CoreView& core_view)
+void GameRenderer::render(const ClientState& state, const CoreView& core_view, const EditorState& editor_state)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

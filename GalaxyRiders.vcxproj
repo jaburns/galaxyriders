@@ -25,6 +25,10 @@
     <Library Include="external\SDL2-2.0.5\lib\x64\SDL2main.lib" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\client\editor\editor.hpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
+    <ClInclude Include="src\client\editor\editor_state.hpp" />
     <ClInclude Include="src\client\gen\wire_meshes.hpp" />
     <ClInclude Include="src\client\core.hpp" />
     <ClInclude Include="src\client\gl.hpp" />
@@ -64,6 +68,9 @@
     <ClCompile Include="external\imgui_support\imgui_impl_sdl_gl3.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\client\editor\editor.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="src\client\gen\wire_meshes.cpp" />
     <ClCompile Include="src\client\core.cpp" />
     <ClCompile Include="src\client\net_game.cpp" />
@@ -100,6 +107,7 @@
     <None Include="res\shaders\skybox.vert" />
     <None Include="res\shaders\sprite.frag" />
     <None Include="res\shaders\sprite.vert" />
+    <ClCompile Include="src\client\editor\editor_state.cpp" />
     <None Include="src\client\net_game.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
