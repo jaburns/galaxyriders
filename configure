@@ -21,16 +21,19 @@ debug_file_list() {
     echo 'external/imgui/imgui_demo.cpp'
     echo 'external/imgui/imgui_draw.cpp'
     echo 'external/imgui_support/imgui_impl_sdl_gl3.cpp'
+    echo 'src/client/editor/editor.cpp'
 }
 
 client_file_list() {
-    find 'src/client' 'src/shared' -iname '*.cpp'
+    find 'src/client' 'src/shared' -iname '*.cpp' \
+        | grep -v 'src/client/editor/editor.cpp'
     echo 'external/lodepng/lodepng.cpp'
     echo 'external/tinyxml2/tinyxml2.cpp'
 }
 
 server_file_list() {
-    find 'src/server' 'src/shared' -iname '*.cpp'
+    find 'src/server' 'src/shared' -iname '*.cpp' \
+        | grep -v 'src/client/editor/editor.cpp'
 }
 
 all_file_list() {
@@ -38,7 +41,11 @@ all_file_list() {
 }
 
 print_flags_for_target() {
-    [[ "$1" == 'Debug' ]] && echo '-D_DEBUG'
+    if [[ "$1" == 'Debug' ]]; then
+        echo '-D_DEBUG'
+    else
+        echo '-DNDEBUG'
+    fi
 }
 
 with_source_files_print_rule_for_binary() {
