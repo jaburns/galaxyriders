@@ -48,6 +48,7 @@
     <ClInclude Include="src\shared\input.hpp" />
     <ClInclude Include="src\shared\lang_utils.hpp" />
     <ClInclude Include="src\shared\level.hpp" />
+    <ClInclude Include="src\shared\logger.hpp" />
     <ClInclude Include="src\shared\network.hpp" />
     <ClInclude Include="src\shared\serialization.hpp" />
     <ClInclude Include="src\shared\sockets.hpp" />
@@ -93,6 +94,7 @@
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)</ObjectFileName>
     </ClCompile>
+    <ClCompile Include="src\shared\logger.cpp" />
     <ClCompile Include="src\shared\network.cpp" />
     <ClCompile Include="src\shared\world.cpp" />
   </ItemGroup>
