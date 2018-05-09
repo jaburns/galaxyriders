@@ -1,20 +1,11 @@
 #pragma once
 
-#include <imgui.h>
 #include "editor_state.hpp"
-
-struct ImguiLogState
-{
-    bool open = false;
-    ImGuiTextBuffer buffer;
-    ImGuiTextFilter filter;
-    ImVector<int> lineOffsets;
-    int scrollToBottom;
-};
+#include "log_window.hpp"
 
 class Editor
 {
-    ImguiLogState m_log_state;
+    LogWindow m_log_window;
     EditorState m_state;
 
     void draw_corner_overlay();
