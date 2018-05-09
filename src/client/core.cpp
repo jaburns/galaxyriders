@@ -56,7 +56,7 @@ glm::mat4x4 CoreView::get_perspective_matrix() const
     return m_perspective;
 }
 
-Core::Core() 
+Core::Core()
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         exit(EXIT_FAILURE);
@@ -79,9 +79,8 @@ Core::Core()
         SDL_DisplayMode displayMode;
         SDL_GetCurrentDisplayMode(0, &displayMode);
 
-        s_window_width = displayMode.w+2;
-        s_window_height = displayMode.h+2;
-        recompute_perspective();
+        m_window_width = displayMode.w+2;
+        m_window_height = displayMode.h+2;
 
         window_flags |= SDL_WINDOW_BORDERLESS;
     #else
@@ -95,12 +94,12 @@ Core::Core()
         window_flags
     );
 
-    SDL_SetWindowResizable(m_window, SDL_TRUE);
+//  SDL_SetWindowResizable(m_window, SDL_TRUE);
     m_context = SDL_GL_CreateContext(m_window);
 
     #ifdef __APPLE__
         SDL_SysWMinfo win_info;
-        SDL_GetWindowWMInfo(s_window, &win_info);
+        SDL_GetWindowWMInfo(m_window, &win_info);
         put_window_over_menu_bar(win_info.info.cocoa.window);
     #else
         glewExperimental = GL_TRUE;

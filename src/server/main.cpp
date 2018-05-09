@@ -8,7 +8,6 @@
 #include "../shared/serialization.hpp"
 #include "../shared/world.hpp"
 #include "../shared/config.hpp"
-#include "../shared/debug.hpp"
 
 struct ConnectedPlayer
 {
