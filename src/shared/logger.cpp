@@ -4,24 +4,21 @@ Logger::Logger()
     : m_log_stream()
 { }
 
-std::shared_ptr<Logger> Logger::instance()
+Logger& Logger::instance()
 {
-    if (s_instance == nullptr) {
-        s_instance = std::make_shared<Logger>();
-    }
-
-    return s_instance;
+    static Logger instance;
+    return instance;
 }
 
-bool Logger::has_new() const
+bool Logger::empty()
 {
-    return m_has_new;
+    return m_log_stream.rdbuf()->in_avail() <= 0;
 }
 
 std::string Logger::flush()
 {
     const auto result = m_log_stream.str();
+    m_log_stream.str("");
     m_log_stream.clear();
-    m_has_new = false;
     return result;
 }

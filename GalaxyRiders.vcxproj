@@ -43,7 +43,6 @@
     <ClInclude Include="src\client\state.hpp" />
     <ClInclude Include="src\client\triangulator.hpp" />
     <ClInclude Include="src\shared\config.hpp" />
-    <ClInclude Include="src\shared\debug.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
     <ClInclude Include="src\shared\input.hpp" />
     <ClInclude Include="src\shared\lang_utils.hpp" />

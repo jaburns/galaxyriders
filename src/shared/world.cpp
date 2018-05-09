@@ -6,6 +6,8 @@
 #include "config.hpp"
 #include "serialization.hpp"
 
+#include "logger.hpp"
+
 
 #ifdef _DEBUG
     #define CONST_DECL
@@ -111,6 +113,8 @@ static void update_player(World::Player& player, const PlayerInput& old_input, c
     if (new_input.down) {
         player.air_stomping = true;
         player.velocity.y -= Physics::PUMP_ACCEL;
+
+        LOG("Player vel", player.velocity.y);
     }
 
     if (!old_input.up && new_input.up && player.grounded > 0) {
