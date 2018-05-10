@@ -18,6 +18,27 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\server\main.cpp" />
+    <ClCompile Include="src\shared\geometry.cpp" />
+    <ClCompile Include="src\shared\level.cpp" />
+    <ClCompile Include="src\shared\logger.cpp" />
+    <ClCompile Include="src\shared\network.cpp" />
+    <ClCompile Include="src\shared\player_input.cpp" />
+    <ClCompile Include="src\shared\world_state.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\shared\config.hpp" />
+    <ClInclude Include="src\shared\geometry.hpp" />
+    <ClInclude Include="src\shared\lang_utils.hpp" />
+    <ClInclude Include="src\shared\level.hpp" />
+    <ClInclude Include="src\shared\logger.hpp" />
+    <ClInclude Include="src\shared\network.hpp" />
+    <ClInclude Include="src\shared\player_input.hpp" />
+    <ClInclude Include="src\shared\serialization.hpp" />
+    <ClInclude Include="src\shared\sockets.hpp" />
+    <ClInclude Include="src\shared\world_state.hpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{17858035-58EA-483F-B1C9-A115DA484D6C}</ProjectGuid>
@@ -72,8 +93,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)_server\</OutDir>
-    <IntDir>$(Platform)\$(Configuration)_server\</IntDir>
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\$(ProjectName)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
@@ -92,7 +113,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
@@ -107,7 +128,7 @@
       </PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -122,6 +143,7 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
@@ -138,34 +160,16 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>ws2_32.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="src\shared\config.hpp" />
-    <ClInclude Include="src\shared\debug.hpp" />
-    <ClInclude Include="src\shared\geometry.hpp" />
-    <ClInclude Include="src\shared\input.hpp" />
-    <ClInclude Include="src\shared\lang_utils.hpp" />
-    <ClInclude Include="src\shared\level.hpp" />
-    <ClInclude Include="src\shared\network.hpp" />
-    <ClInclude Include="src\shared\serialization.hpp" />
-    <ClInclude Include="src\shared\sockets.hpp" />
-    <ClInclude Include="src\shared\world.hpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="src\shared\geometry.cpp" />
-    <ClCompile Include="src\shared\input.cpp" />
-    <ClCompile Include="src\shared\level.cpp" />
-    <ClCompile Include="src\shared\network.cpp" />
-    <ClCompile Include="src\shared\world.cpp" />
-    <ClCompile Include="src\server\main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
