@@ -25,33 +25,34 @@
     <Library Include="external\SDL2-2.0.5\lib\x64\SDL2main.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\client\editor\editor.hpp">
+    <ClInclude Include="src\editor\editor.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
-    <ClInclude Include="src\client\editor\editor_state.hpp" />
+    <ClInclude Include="src\editor\editor_state.hpp" />
+    <ClInclude Include="src\editor\log_window.hpp" />
     <ClInclude Include="src\client\gen\wire_meshes.hpp" />
     <ClInclude Include="src\client\core.hpp" />
     <ClInclude Include="src\client\gl.hpp" />
-    <ClInclude Include="src\client\renderer\level_mesh.hpp" />
+    <ClInclude Include="src\client\renderer\level_mesh_renderer.hpp" />
     <ClInclude Include="src\client\palette.hpp" />
-    <ClInclude Include="src\client\renderer\game.hpp" />
-    <ClInclude Include="src\client\renderer\level.hpp" />
-    <ClInclude Include="src\client\renderer\player.hpp" />
-    <ClInclude Include="src\client\renderer\wire.hpp" />
-    <ClInclude Include="src\client\renderer\sprite.hpp" />
+    <ClInclude Include="src\client\renderer\game_renderer.hpp" />
+    <ClInclude Include="src\client\renderer\loaded_level_renderer.hpp" />
+    <ClInclude Include="src\client\renderer\player_renderer.hpp" />
+    <ClInclude Include="src\client\renderer\wire_renderer.hpp" />
+    <ClInclude Include="src\client\renderer\sprite_renderer.hpp" />
     <ClInclude Include="src\client\resources.hpp" />
-    <ClInclude Include="src\client\state.hpp" />
+    <ClInclude Include="src\client\client_state.hpp" />
     <ClInclude Include="src\client\triangulator.hpp" />
     <ClInclude Include="src\shared\config.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
-    <ClInclude Include="src\shared\input.hpp" />
+    <ClInclude Include="src\shared\player_input.hpp" />
     <ClInclude Include="src\shared\lang_utils.hpp" />
     <ClInclude Include="src\shared\level.hpp" />
     <ClInclude Include="src\shared\logger.hpp" />
     <ClInclude Include="src\shared\network.hpp" />
     <ClInclude Include="src\shared\serialization.hpp" />
     <ClInclude Include="src\shared\sockets.hpp" />
-    <ClInclude Include="src\shared\world.hpp" />
+    <ClInclude Include="src\shared\world_state.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="external\lodepng\lodepng.cpp" />
@@ -68,34 +69,35 @@
     <ClCompile Include="external\imgui_support\imgui_impl_sdl_gl3.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\client\editor\editor.cpp">
+    <ClCompile Include="src\editor\editor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\editor\log_window.cpp" />
     <ClCompile Include="src\client\gen\wire_meshes.cpp" />
     <ClCompile Include="src\client\core.cpp" />
     <ClCompile Include="src\client\net_game.cpp" />
-    <ClCompile Include="src\client\renderer\level_mesh.cpp" />
+    <ClCompile Include="src\client\renderer\level_mesh_renderer.cpp" />
     <ClCompile Include="src\client\main.cpp" />
-    <ClCompile Include="src\client\renderer\game.cpp" />
-    <ClCompile Include="src\client\renderer\level.cpp">
+    <ClCompile Include="src\client\renderer\game_renderer.cpp" />
+    <ClCompile Include="src\client\renderer\loaded_level_renderer.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)\%(RelativeDir)\%(Filename).obj</ObjectFileName>
     </ClCompile>
-    <ClCompile Include="src\client\renderer\player.cpp" />
-    <ClCompile Include="src\client\renderer\wire.cpp" />
-    <ClCompile Include="src\client\renderer\sprite.cpp" />
+    <ClCompile Include="src\client\renderer\player_renderer.cpp" />
+    <ClCompile Include="src\client\renderer\wire_renderer.cpp" />
+    <ClCompile Include="src\client\renderer\sprite_renderer.cpp" />
     <ClCompile Include="src\client\resources.cpp" />
-    <ClCompile Include="src\client\state.cpp" />
+    <ClCompile Include="src\client\client_state.cpp" />
     <ClCompile Include="src\client\triangulator.cpp" />
     <ClCompile Include="src\shared\geometry.cpp" />
-    <ClCompile Include="src\shared\input.cpp" />
+    <ClCompile Include="src\shared\player_input.cpp" />
     <ClCompile Include="src\shared\level.cpp">
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(IntDir)</ObjectFileName>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)</ObjectFileName>
     </ClCompile>
     <ClCompile Include="src\shared\logger.cpp" />
     <ClCompile Include="src\shared\network.cpp" />
-    <ClCompile Include="src\shared\world.cpp" />
+    <ClCompile Include="src\shared\world_state.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\level.frag" />
@@ -108,7 +110,7 @@
     <None Include="res\shaders\skybox.vert" />
     <None Include="res\shaders\sprite.frag" />
     <None Include="res\shaders\sprite.vert" />
-    <ClCompile Include="src\client\editor\editor_state.cpp" />
+    <ClCompile Include="src\editor\editor_state.cpp" />
     <None Include="src\client\net_game.hpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

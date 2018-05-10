@@ -3,8 +3,8 @@
 #include <cstdint>
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
-#include "level_mesh.hpp"
-#include "wire.hpp"
+#include "level_mesh_renderer.hpp"
+#include "wire_renderer.hpp"
 #include "../resources.hpp"
 #include "../../shared/lang_utils.hpp"
 

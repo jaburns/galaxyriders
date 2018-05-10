@@ -3,15 +3,16 @@
 #include <chrono>
 #include <cstring>
 #include <cstdint>
+
 #include "core.hpp"
-#include "state.hpp"
+#include "client_state.hpp"
 #include "net_game.hpp"
-#include "renderer/game.hpp"
+#include "renderer/game_renderer.hpp"
 #include "../shared/config.hpp"
-#include "../shared/world.hpp"
+#include "../shared/world_state.hpp"
 
 #ifdef _DEBUG
-    #include "editor/editor.hpp"
+    #include "../editor/editor.hpp"
 #endif
 
 void main_net()
@@ -20,7 +21,7 @@ void main_net()
     GameRenderer renderer;
     ClientState new_state;
     NetGame net_game;
-    World received_world;
+    WorldState received_world;
 
     new_state.player_id = net_game.connect("localhost", Config::DEFAULT_PORT);
 

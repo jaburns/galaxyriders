@@ -1,4 +1,5 @@
-#include "input.hpp"
+#include "player_input.hpp"
+
 #include "serialization.hpp"
 
 std::vector<uint8_t> PlayerInput::serialize() const

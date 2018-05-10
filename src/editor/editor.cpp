@@ -1,6 +1,6 @@
 #include "editor.hpp"
 
-#include "../../shared/world.hpp"
+#include "../shared/world_state.hpp"
 
 Editor::Editor()
     : m_state(), m_log_window()

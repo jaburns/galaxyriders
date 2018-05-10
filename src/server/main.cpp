@@ -6,7 +6,7 @@
 #include <cstdint>
 #include "../shared/network.hpp"
 #include "../shared/serialization.hpp"
-#include "../shared/world.hpp"
+#include "../shared/world_state.hpp"
 #include "../shared/config.hpp"
 
 struct ConnectedPlayer
@@ -18,7 +18,7 @@ struct ConnectedPlayer
 };
 
 static int32_t player_id_counter = 0;
-static World world;
+static WorldState world;
 static uint8_t buffer[Config::MAX_PACKET_SIZE];
 static std::vector<ConnectedPlayer> connections;
 
@@ -29,7 +29,7 @@ static void send_join_response(const UDPSocket& socket, const ConnectedPlayer& p
     socket.send(player.address, sb.buffer.data(), sb.buffer.size());
 }
 
-static void handle_incoming_packets(const UDPSocket& socket, World& world)
+static void handle_incoming_packets(const UDPSocket& socket, WorldState& world)
 {
     SocketAddress client_address;
     int32_t message_len = 0;
@@ -70,12 +70,12 @@ static void handle_incoming_packets(const UDPSocket& socket, World& world)
     }
 }
 
-static std::vector<World::Input> get_inputs()
+static std::vector<WorldState::Input> get_inputs()
 {
-    std::vector<World::Input> result;
+    std::vector<WorldState::Input> result;
 
     for (const auto& connection : connections) {
-        World::Input input;
+        WorldState::Input input;
         input.player_id = connection.player_id;
         input.old_input = connection.last_input;
         input.new_input = connection.current_input;

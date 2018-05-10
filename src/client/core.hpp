@@ -4,7 +4,8 @@
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include "gl.hpp"
-#include "../shared/input.hpp"
+#include "../shared/lang_utils.hpp"
+#include "../shared/player_input.hpp"
 
 struct InputState
 {
@@ -34,7 +35,7 @@ public:
     glm::vec2 get_mouse_world_pos(const glm::vec3& camera_pos) const;
 };
 
-class Core
+class Core : public NoCopy
 {
     SDL_Window *m_window;
     SDL_GLContext m_context;

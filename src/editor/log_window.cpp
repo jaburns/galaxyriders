@@ -1,6 +1,6 @@
 #include "log_window.hpp"
 
-#include "../../shared/logger.hpp"
+#include "../shared/logger.hpp"
 
 static bool prepare_window(WindowState& state)
 {

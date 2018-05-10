@@ -1,4 +1,4 @@
-﻿#include "sprite.hpp"
+﻿#include "sprite_renderer.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 

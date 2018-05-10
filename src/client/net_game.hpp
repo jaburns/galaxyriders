@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "../shared/world.hpp"
+#include "../shared/world_state.hpp"
 #include "../shared/network.hpp"
 #include "../shared/lang_utils.hpp"
 #include "../shared/config.hpp"
@@ -16,5 +16,5 @@ class NetGame : public NoCopy
 
 public:
     int32_t connect(const std::string& remote_host, uint16_t port);
-    bool update(const PlayerInput& input, World& received_world);
+    bool update(const PlayerInput& input, WorldState& received_world);
 };

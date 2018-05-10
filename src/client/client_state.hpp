@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <unordered_map>
 #include <glm/vec3.hpp>
-#include "../shared/world.hpp"
+#include "../shared/world_state.hpp"
 #include "core.hpp"
 
 struct ClientState
@@ -23,7 +23,7 @@ struct ClientState
         bool face_left = false;
         Mode mode = STANDING;
 
-        void step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right);
+        void step(const WorldState::Player& old_player, const WorldState::Player& new_player, bool move_left, bool move_right);
     };
 
     struct EditModeState 
@@ -38,10 +38,10 @@ struct ClientState
     int32_t player_id;
     InputState last_input;
     std::unordered_map<int32_t, PlayerAnimation> player_anims;
-    World world;
+    WorldState world;
 
     void step(const InputState& input, const CoreView& core_view);
-    void step_with_world(const World& new_world, const PlayerInput& input);
+    void step_with_world(const WorldState& new_world, const PlayerInput& input);
 
     ClientState lerp_to(const ClientState& next, float t) const;
 };

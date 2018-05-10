@@ -31,7 +31,7 @@ int32_t NetGame::connect(const std::string& remote_host, uint16_t port)
     return player_id;
 }
 
-bool NetGame::update(const PlayerInput& input, World& received_world)
+bool NetGame::update(const PlayerInput& input, WorldState& received_world)
 {
     int32_t message_len = 0;
 
@@ -39,7 +39,7 @@ bool NetGame::update(const PlayerInput& input, World& received_world)
         return false;
     }
 
-    received_world = World(m_buffer, message_len);
+    received_world = WorldState(m_buffer, message_len);
 
     const auto input_buf = input.serialize();
     std::memset(&m_buffer, 0, sizeof(m_buffer));

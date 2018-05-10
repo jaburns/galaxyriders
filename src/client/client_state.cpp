@@ -1,4 +1,4 @@
-#include "state.hpp"
+#include "client_state.hpp"
 
 #define GLM_ENABLE_EXPERIMENTAL
 
@@ -9,7 +9,7 @@
 static constexpr float EDITMODE_CAMERA_SLIDE = 0.05f;
 static constexpr float EDITMODE_CAMERA_ZOOM  = 1.05f;
 
-void ClientState::PlayerAnimation::step(const World::Player& old_player, const World::Player& new_player, bool move_left, bool move_right)
+void ClientState::PlayerAnimation::step(const WorldState::Player& old_player, const WorldState::Player& new_player, bool move_left, bool move_right)
 {
     if (new_player.grounded > 0) {
         radians = atan2f(new_player.ground_normal.y, new_player.ground_normal.x) - 3.141592654f/2.0f;
@@ -63,12 +63,12 @@ static void step_game_mode(ClientState& state, const InputState& input, bool sin
 {
     const auto old_player = state.world.players.at(state.player_id);
 
-    World::Input inp;
+    WorldState::Input inp;
     inp.player_id = state.player_id;
     inp.old_input = state.last_input.player;
     inp.new_input = input.player;
 
-    std::vector<World::Input> inps;
+    std::vector<WorldState::Input> inps;
     inps.push_back(inp);
 
     state.world.step(inps);
@@ -127,7 +127,7 @@ void ClientState::step(const InputState& input, const CoreView& core_view)
     last_input = input;
 }
 
-void ClientState::step_with_world(const World& new_world, const PlayerInput& input)
+void ClientState::step_with_world(const WorldState& new_world, const PlayerInput& input)
 {
     for (auto& p : new_world.players) {
         const auto old_player = world.players.count(p.first) > 0 ? world.players.at(p.first) : p.second;
