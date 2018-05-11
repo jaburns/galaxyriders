@@ -44,7 +44,9 @@
     <ProjectGuid>{17858035-58EA-483F-B1C9-A115DA484D6C}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GalaxyRiders_server</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <LatestTargetPlatformVersion>$([Microsoft.Build.Utilities.ToolLocationHelper]::GetLatestSDKTargetPlatformVersion('Windows', '10.0'))</LatestTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(WindowsTargetPlatformVersion)' == ''">$(LatestTargetPlatformVersion)</WindowsTargetPlatformVersion>
+    <TargetPlatformVersion>$(WindowsTargetPlatformVersion)</TargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
