@@ -21,19 +21,18 @@ debug_file_list() {
     echo 'external/imgui/imgui_demo.cpp'
     echo 'external/imgui/imgui_draw.cpp'
     echo 'external/imgui_support/imgui_impl_sdl_gl3.cpp'
-    echo 'src/client/editor/editor.cpp'
+    find 'src/editor' -iname '*.cpp' | grep -v 'src/editor/editor_state.cpp'
 }
 
 client_file_list() {
-    find 'src/client' 'src/shared' -iname '*.cpp' \
-        | grep -v 'src/client/editor/editor.cpp'
+    find 'src/client' 'src/shared' -iname '*.cpp'
+    echo 'src/editor/editor_state.cpp'
     echo 'external/lodepng/lodepng.cpp'
     echo 'external/tinyxml2/tinyxml2.cpp'
 }
 
 server_file_list() {
-    find 'src/server' 'src/shared' -iname '*.cpp' \
-        | grep -v 'src/client/editor/editor.cpp'
+    find 'src/server' 'src/shared' -iname '*.cpp'
 }
 
 all_file_list() {
