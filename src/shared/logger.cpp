@@ -12,7 +12,12 @@ Logger& Logger::instance()
 
 bool Logger::empty()
 {
-    return m_log_stream.rdbuf()->in_avail() <= 0;
+    int og = m_log_stream.tellg();
+    m_log_stream.seekg(0, std::ios::end);
+    int stream_size = m_log_stream.tellg();
+    m_log_stream.seekg(og, std::ios::beg);
+
+    return stream_size < 1;
 }
 
 std::string Logger::flush()
