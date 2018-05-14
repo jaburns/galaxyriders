@@ -3,6 +3,7 @@
 
 extern int compute_sdfs_main();
 extern int generate_wire_meshes_main();
+static void change_to_root_dir();
 
 static void run_task(std::string message, int (*task)())
 {
@@ -20,7 +21,44 @@ static void run_task(std::string message, int (*task)())
 
 int main(int argc, char **argv)
 {
+    change_to_root_dir();
     run_task("Generating wire meshes", generate_wire_meshes_main);
     run_task("Computing signed distance fields for sprites", compute_sdfs_main);
     return 0;
 }
+
+static std::string match_before(const std::string& source, const std::string& find)
+{
+    const auto index = source.rfind(find, source.length());
+    return source.substr(0, index);
+}
+
+#ifdef _WIN32
+    #define WIN32_LEAN_AND_MEAN
+    #include <Windows.h>
+
+    static void change_to_root_dir()
+    {
+        char path_buffer[MAX_PATH]; 
+        GetModuleFileNameA(NULL, path_buffer, MAX_PATH);
+        std::string exe_path(path_buffer);
+        SetCurrentDirectoryA(match_before(exe_path, "\\x64\\").c_str());
+    }
+#else
+    #include <unistd.h>
+
+    static void change_to_root_dir()
+    {
+        char path_buffer[1024];
+        int path_len = readlink("/proc/self/exe", path_buffer, sizeof(path_buffer) - 1);
+
+        if (path_len == -1) {
+            std::cout << "Error getting executable path." << std::endl;
+            exit(1);
+        }
+
+        path_buffer[path_len] = 0;
+        std::string exe_path(path_buffer);
+        chdir(match_before(exe_path, "/tools/").c_str());
+    }
+#endif
