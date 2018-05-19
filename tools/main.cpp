@@ -39,25 +39,37 @@ static std::string match_before(const std::string& source, const std::string& fi
 
     static void change_to_root_dir()
     {
-        char path_buffer[MAX_PATH]; 
+        char path_buffer[MAX_PATH];
         GetModuleFileNameA(NULL, path_buffer, MAX_PATH);
         std::string exe_path(path_buffer);
         SetCurrentDirectoryA(match_before(exe_path, "\\x64\\").c_str());
     }
 #else
     #include <unistd.h>
+    #include <cstdint>
+    #ifdef __APPLE__
+        #include <mach-o/dyld.h>
+    #endif
 
     static void change_to_root_dir()
     {
         char path_buffer[1024];
-        int path_len = readlink("/proc/self/exe", path_buffer, sizeof(path_buffer) - 1);
 
-        if (path_len == -1) {
+        #ifdef __APPLE__
+            uint32_t path_len = 1024;
+            _NSGetExecutablePath(path_buffer, &path_len);
+        #else
+            int32_t path_len = readlink("/proc/self/exe", path_buffer, sizeof(path_buffer) - 1);
+            if (path_len > 0) {
+                path_buffer[path_len] = 0;
+            }
+        #endif
+
+        if (path_len < 1) {
             std::cout << "Error getting executable path." << std::endl;
             exit(1);
         }
 
-        path_buffer[path_len] = 0;
         std::string exe_path(path_buffer);
         chdir(match_before(exe_path, "/tools/").c_str());
     }

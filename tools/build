@@ -4,11 +4,15 @@ cd "$(dirname "${BASH_SOURCE[0]}")"
 
 mkdir -p ../src/client/gen
 
-g++ -o tools \
-        *.cpp \
-        ../external/lodepng/lodepng.cpp \
-    -O3 \
-    -I../external/lodepng \
-    -std=c++11
+CC='cc'
+CFLAGS='-std=c++14 -I../external/lodepng -O3'
+
+if [[ "$OSTYPE" == 'darwin'* ]]; then
+    LDFLAGS='-lc++'
+else
+    LDFLAGS='-lstdc++'
+fi
+
+$CC -o tools *.cpp ../external/lodepng/lodepng.cpp $CFLAGS $LDFLAGS
 
 [[ "$1" == 'run' ]] && ./tools
