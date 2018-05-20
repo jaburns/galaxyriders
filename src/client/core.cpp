@@ -136,15 +136,10 @@ void Core::handle_key_event(SDL_Keycode keycode, bool press)
         m_keys_down.erase(keycode);
     }
 
-    m_input_state.player.left    = m_keys_down.count(SDLK_LEFT);
-    m_input_state.player.right   = m_keys_down.count(SDLK_RIGHT);
-    m_input_state.player.up      = m_keys_down.count(SDLK_UP);
-    m_input_state.player.down    = m_keys_down.count(SDLK_DOWN);
-    m_input_state.editmode_toggle   = m_keys_down.count(SDLK_p);
-    m_input_state.editmode_step     = m_keys_down.count(SDLK_PERIOD);
-    m_input_state.editmode_zoom_in  = m_keys_down.count(SDLK_a);
-    m_input_state.editmode_zoom_out = m_keys_down.count(SDLK_z);
-    m_input_state.debug_toggle_wireframe = m_keys_down.count(SDLK_w);
+    m_input_state.player.left    = m_keys_down.count(SDLK_a);
+    m_input_state.player.right   = m_keys_down.count(SDLK_d);
+    m_input_state.player.up      = m_keys_down.count(SDLK_w);
+    m_input_state.player.down    = m_keys_down.count(SDLK_s);
 }
 
 void Core::handle_mouse_motion(SDL_MouseMotionEvent event)

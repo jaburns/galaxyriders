@@ -71,6 +71,8 @@ void main_local()
     new_state.player_anims[0];
     auto last_state = new_state;
 
+    bool editor_paused = false;
+
     do {
         const auto new_time = std::chrono::high_resolution_clock::now();
         const std::chrono::duration<float> diff = new_time - current_time;
@@ -78,15 +80,20 @@ void main_local()
         accumulator += diff.count() * 1000.0f;
 
         const auto core_view = core.get_core_view();
+        const auto input_state = core.read_input_state();
 
-        while (accumulator >= Config::MILLIS_PER_TICK) {
+        if (editor_paused) {
+            accumulator = Config::MILLIS_PER_TICK;
+        }
+        else while (accumulator >= Config::MILLIS_PER_TICK) {
             last_state = new_state;
-            new_state.step(core.read_input_state(), core_view);
+            new_state.step(input_state, false);
             accumulator -= Config::MILLIS_PER_TICK;
         }
 
         #ifdef _DEBUG
-            const auto editor_state = editor.update();
+            const auto editor_state = editor.update(new_state, input_state, core_view);
+            editor_paused = editor_state.paused;
         #endif
 
         renderer.render(last_state.lerp_to(new_state, accumulator / Config::MILLIS_PER_TICK), core_view, editor_state);

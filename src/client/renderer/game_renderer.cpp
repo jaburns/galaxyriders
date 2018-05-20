@@ -20,7 +20,7 @@ void GameRenderer::render(const ClientState& state, const CoreView& core_view, c
 
     const auto mouse_pos = core_view.get_mouse_world_pos(state.camera_pos);
 
-    m_level_renderer.draw_once(state.edit_mode.enabled, editor_state.wireframe, mouse_pos, v, p, {0.0f, 0.0f, -0.01f});
+    m_level_renderer.draw_once(editor_state.paused, editor_state.wireframe, mouse_pos, v, p, {0.0f, 0.0f, -0.01f});
 
     for (const auto& pl : state.world.players) {
         m_player_renderer.draw_once(v, p, pl.second, state.player_anims.at(pl.first));

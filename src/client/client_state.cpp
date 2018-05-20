@@ -1,13 +1,7 @@
 #include "client_state.hpp"
 
-#define GLM_ENABLE_EXPERIMENTAL
-
 #include <unordered_map>
 #include <glm/glm.hpp>
-#include <glm/gtx/norm.hpp>
-
-static constexpr float EDITMODE_CAMERA_SLIDE = 0.05f;
-static constexpr float EDITMODE_CAMERA_ZOOM  = 1.05f;
 
 void ClientState::PlayerAnimation::step(const WorldState::Player& old_player, const WorldState::Player& new_player, bool move_left, bool move_right)
 {
@@ -59,70 +53,25 @@ static void step_camera(ClientState& state)
     state.camera_pos.z += (target_dist - state.camera_pos.z) / 10.0f;
 }
 
-static void step_game_mode(ClientState& state, const InputState& input, bool single_step)
+void ClientState::step(const InputState& input, bool single_step)
 {
-    const auto old_player = state.world.players.at(state.player_id);
+    const auto old_player = world.players.at(player_id);
 
     WorldState::Input inp;
-    inp.player_id = state.player_id;
-    inp.old_input = state.last_input.player;
+    inp.player_id = player_id;
+    inp.old_input = last_input.player;
     inp.new_input = input.player;
 
     std::vector<WorldState::Input> inps;
     inps.push_back(inp);
 
-    state.world.step(inps);
+    world.step(inps);
 
     if (!single_step) {
-        step_camera(state);
+        step_camera(*this);
     }
 
-    state.player_anims[state.player_id].step(old_player, state.world.players.at(state.player_id), input.player.left, input.player.right);
-}
-
-static void step_edit_mode(ClientState& state, const InputState& input, const CoreView& core_view)
-{
-    if (input.player.right)   state.camera_pos.x += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.player.left)    state.camera_pos.x -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.player.up)      state.camera_pos.y += EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.player.down)    state.camera_pos.y -= EDITMODE_CAMERA_SLIDE * state.camera_pos.z;
-    if (input.editmode_zoom_out) state.camera_pos.z *= EDITMODE_CAMERA_ZOOM;
-    if (input.editmode_zoom_in)  state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
-
-    if (input.mouse_click) {
-        const auto& mouse_pos = core_view.get_mouse_world_pos(state.camera_pos);
-
-        state.edit_mode.selected_handle = 0;
-        state.edit_mode.selected_poly = 0;
-        float min_dist2 = 1e20f;
-        for (int32_t i = 0; i < LoadedLevel::get().polys.size(); ++i) {
-            for (int32_t j = 0; j < LoadedLevel::get().polys[i].handles.size(); ++j) {
-                const auto& h = LoadedLevel::get().polys[i].handles[j];
-                const auto new_d2 = glm::distance2(mouse_pos, h.point);
-                if (new_d2 < min_dist2) {
-                    state.edit_mode.selected_handle = i;
-                    state.edit_mode.selected_poly = j;
-                    min_dist2 = new_d2;
-                }
-            }
-        }
-
-        LoadedLevel::get().polys[state.edit_mode.selected_handle].handles[state.edit_mode.selected_poly].point = mouse_pos;
-        LoadedLevel::bake();
-    }
-}
-
-void ClientState::step(const InputState& input, const CoreView& core_view)
-{
-    if (input.editmode_toggle && !last_input.editmode_toggle) {
-        edit_mode.enabled = !edit_mode.enabled;
-    }
-
-    if (!edit_mode.enabled || (input.editmode_step && !last_input.editmode_step)) {
-        step_game_mode(*this, input, edit_mode.enabled);
-    } else {
-        step_edit_mode(*this, input, core_view);
-    }
+    player_anims[player_id].step(old_player, world.players.at(player_id), input.player.left, input.player.right);
 
     last_input = input;
 }

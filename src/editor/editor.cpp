@@ -6,6 +6,17 @@ Editor::Editor()
     : m_state(), m_log_window()
 {}
 
+static void window_buttons(const std::string& name, WindowState& window_state)
+{
+    if (ImGui::Button(("Show " + name).c_str())) {
+        window_state.open = true;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button(("Reset " + name).c_str())) {
+        window_state.should_reset = true;
+    }
+}
+
 void Editor::draw_corner_overlay()
 {
     const float DISTANCE = 10.0f;
@@ -22,32 +33,27 @@ void Editor::draw_corner_overlay()
         | ImGuiWindowFlags_NoNav;
 
     ImGui::Begin("Corner Overlay", nullptr, flags);
-        if (ImGui::Button("Show Log")) {
-            m_log_window.window_state.open = true;
-        }
-        if (ImGui::Button("Reset Log")) {
-            m_log_window.window_state.should_reset = true;
-        }
+        window_buttons("Log", m_log_window.window_state);
+        window_buttons("Level Editor", m_level_editor_window.window_state);
+
         ImGui::Separator();
         if (ImGui::IsMousePosValid()) {
             ImGui::Text("Mouse Position: (%.1f,%.1f)", ImGui::GetIO().MousePos.x, ImGui::GetIO().MousePos.y);
         } else {
             ImGui::Text("Mouse Position: <invalid>");
         }
+
     ImGui::End();
 }
-EditorState Editor::update()
+
+EditorState Editor::update(ClientState& client_state, const InputState& input_state, const CoreView& core_view)
 {
 //  ImGui::ShowDemoWindow();
 
     draw_corner_overlay();
 
     m_log_window.update();
-
-    ImGui::Begin("Debug Panel");
-    ImGui::SliderFloat("Gravity", &Physics::GRAVITY, 0.0f, 0.1f);
-    ImGui::Checkbox("Wireframe", &m_state.wireframe);
-    ImGui::End();
+    m_level_editor_window.update(m_state, client_state, input_state, core_view);
 
     return m_state;
 }

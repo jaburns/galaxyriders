@@ -1,19 +1,14 @@
 #pragma once
 
 #include <imgui.h>
-
-struct WindowState
-{
-    bool open;
-    bool should_reset;
-};
+#include "window_state.hpp"
 
 class LogWindow
 {
-    ImGuiTextBuffer buffer;
-    ImGuiTextFilter filter;
-    ImVector<int> lineOffsets;
-    int scrollToBottom;
+    ImGuiTextBuffer m_buffer;
+    ImGuiTextFilter m_filter;
+    ImVector<int> m_line_offsets;
+    int m_scroll_to_bottom;
 
 public:
     WindowState window_state;

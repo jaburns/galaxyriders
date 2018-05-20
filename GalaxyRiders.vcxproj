@@ -29,6 +29,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="src\editor\editor_state.hpp" />
+    <ClInclude Include="src\editor\level_editor_window.hpp" />
     <ClInclude Include="src\editor\log_window.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -45,6 +46,7 @@
     <ClInclude Include="src\client\resources.hpp" />
     <ClInclude Include="src\client\client_state.hpp" />
     <ClInclude Include="src\client\triangulator.hpp" />
+    <ClInclude Include="src\editor\window_state.hpp" />
     <ClInclude Include="src\shared\config.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
     <ClInclude Include="src\shared\player_input.hpp" />
@@ -74,6 +76,7 @@
     <ClCompile Include="src\editor\editor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\editor\level_editor_window.cpp" />
     <ClCompile Include="src\editor\log_window.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -93,6 +96,7 @@
     <ClCompile Include="src\client\resources.cpp" />
     <ClCompile Include="src\client\client_state.cpp" />
     <ClCompile Include="src\client\triangulator.cpp" />
+    <ClCompile Include="src\editor\window_state.cpp" />
     <ClCompile Include="src\shared\geometry.cpp" />
     <ClCompile Include="src\shared\player_input.cpp" />
     <ClCompile Include="src\shared\level.cpp">
