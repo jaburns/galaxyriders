@@ -11,7 +11,8 @@
 #### OSX and Linux setup
 
 ```
-brew install sdl2 #or sudo apt install libsdl2-dev libglew-dev #or w/e
+brew install sdl2 sdl2_mixer
+# (or Ubuntu i.e.) sudo apt install libsdl2-dev libsdl2-mixer-dev libglew-dev
 git clone git@github.com:jaburns/galaxyriders
 cd galaxyriders
 git submodule update --init --recursive
