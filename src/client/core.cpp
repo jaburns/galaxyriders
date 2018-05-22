@@ -136,10 +136,10 @@ void Core::handle_key_event(SDL_Keycode keycode, bool press)
         m_keys_down.erase(keycode);
     }
 
-    m_input_state.player.left    = m_keys_down.count(SDLK_a);
-    m_input_state.player.right   = m_keys_down.count(SDLK_d);
-    m_input_state.player.up      = m_keys_down.count(SDLK_w);
-    m_input_state.player.down    = m_keys_down.count(SDLK_s);
+    m_input_state.player.left  = m_keys_down.count(SDLK_a);
+    m_input_state.player.right = m_keys_down.count(SDLK_d);
+    m_input_state.player.up    = m_keys_down.count(SDLK_w);
+    m_input_state.player.down  = m_keys_down.count(SDLK_s);
 }
 
 void Core::handle_mouse_motion(SDL_MouseMotionEvent event)
@@ -206,6 +206,11 @@ bool Core::flip_frame_and_poll_events()
 
             case SDL_MOUSEBUTTONUP:
                 m_input_state.mouse_click = false;
+                break;
+
+            case SDL_MOUSEWHEEL:
+                m_input_state.mouse_scroll.x += event.wheel.x; 
+                m_input_state.mouse_scroll.y += event.wheel.y; 
                 break;
         }
     }

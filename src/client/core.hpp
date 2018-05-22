@@ -10,6 +10,7 @@
 struct InputState
 {
     glm::vec2 mouse_pos = { 0.0f, 0.0f };
+    glm::ivec2 mouse_scroll = { 0, 0, };
     bool mouse_click = false;
     PlayerInput player;
 };
