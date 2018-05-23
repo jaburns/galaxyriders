@@ -12,6 +12,7 @@ Makefile
 SDL2.dll
 glew32.dll
 external/SDL2-2.0.5
+external/SDL2_mixer-2.0.2
 external/glew-2.1.0
 Game.app
 x64/Debug_server/
