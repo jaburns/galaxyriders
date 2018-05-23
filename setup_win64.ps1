@@ -6,8 +6,6 @@ Push-Location $dir
 Push-Location external
 [Environment]::CurrentDirectory = $PWD
 
-New-Item "..\src\client\gen" -ItemType Directory -ErrorAction Ignore
-
 Write-Output "Downloading GLEW 2.1.0..."
 (New-Object System.Net.WebClient).DownloadFile("https://cfhcable.dl.sourceforge.net/project/glew/glew/2.1.0/glew-2.1.0-win32.zip", "glew.zip")
 Write-Output "Extracting GLEW 2.1.0..."

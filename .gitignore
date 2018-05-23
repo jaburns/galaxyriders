@@ -4,7 +4,7 @@ debug_game
 Debug
 Release
 *.vcxproj.user
-src/client/gen
+src/client/gen/*.?pp
 tools/tools
 tools/build
 *.sdf.png

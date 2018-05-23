@@ -2,8 +2,6 @@
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-mkdir -p ../src/client/gen
-
 CC='cc'
 CFLAGS='-std=c++14 -I../external/lodepng -O3'
 
