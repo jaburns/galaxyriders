@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include "gl.hpp"
 #include "palette.hpp"
+#include "audio_player.hpp"
 
 #ifdef _DEBUG
     #include <imgui.h>

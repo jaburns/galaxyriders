@@ -10,9 +10,9 @@ Write-Output "Extracting GLEW 2.1.0..."
 Remove-Item ".\glew-2.1.0" -Recurse -ErrorAction Ignore
 [System.IO.Compression.ZipFile]::ExtractToDirectory("glew-2.1.0-win32.zip", ".")
 
-Write-Output "Extracting SDL 2.0.5..."
-Remove-Item ".\SDL2-2.0.5" -Recurse -ErrorAction Ignore
-[System.IO.Compression.ZipFile]::ExtractToDirectory("SDL2-devel-2.0.5-VC.zip", ".")
+Write-Output "Extracting SDL 2.0.8..."
+Remove-Item ".\SDL2-2.0.8" -Recurse -ErrorAction Ignore
+[System.IO.Compression.ZipFile]::ExtractToDirectory("SDL2-devel-2.0.8-VC.zip", ".")
 
 Write-Output "Extracting SDL Mixer 2.0.2..."
 Remove-Item ".\SDL2_mixer-2.0.2" -Recurse -ErrorAction Ignore
@@ -20,7 +20,7 @@ Remove-Item ".\SDL2_mixer-2.0.2" -Recurse -ErrorAction Ignore
 
 Write-Output "Copying DLLs to project root..."
 Copy-Item "glew-2.1.0/bin/Release/x64/glew32.dll" ".."
-Copy-Item "SDL2-2.0.5/lib/x64/SDL2.dll" ".."
+Copy-Item "SDL2-2.0.8/lib/x64/SDL2.dll" ".."
 Copy-Item "SDL2_mixer-2.0.2/lib/x64/SDL2_mixer.dll" ".."
 
 Write-Output "Done!"

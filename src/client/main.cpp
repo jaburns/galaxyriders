@@ -1,10 +1,10 @@
 #include <iostream>
-#include <thread> // Needed only for TCPServer test
 #include <chrono>
 #include <cstring>
 #include <cstdint>
 
 #include "core.hpp"
+#include "audio_player.hpp"
 #include "client_state.hpp"
 #include "net_game.hpp"
 #include "renderer/game_renderer.hpp"
@@ -53,6 +53,7 @@ void main_net()
 void main_local()
 {
     Core core;
+    AudioPlayer audio_player;
     GameRenderer renderer;
 
     #ifdef _DEBUG
@@ -93,6 +94,9 @@ void main_local()
 
         #ifdef _DEBUG
             const auto editor_state = editor.update(new_state, input_state, core_view);
+            if (!editor_paused && editor_state.paused) {
+                audio_player.play();
+            }
             editor_paused = editor_state.paused;
         #endif
 

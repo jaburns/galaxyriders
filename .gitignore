@@ -10,8 +10,9 @@ tools/build
 *.sdf.png
 Makefile
 SDL2.dll
+SDL2_mixer.dll
 glew32.dll
-external/SDL2-2.0.5
+external/SDL2-2.0.8
 external/SDL2_mixer-2.0.2
 external/glew-2.1.0
 Game.app

@@ -21,10 +21,12 @@
   <ItemGroup>
     <Library Include="external\glew-2.1.0\lib\Release\x64\glew32.lib" />
     <Library Include="external\glew-2.1.0\lib\Release\x64\glew32s.lib" />
-    <Library Include="external\SDL2-2.0.5\lib\x64\SDL2.lib" />
-    <Library Include="external\SDL2-2.0.5\lib\x64\SDL2main.lib" />
+    <Library Include="external\SDL2-2.0.8\lib\x64\SDL2.lib" />
+    <Library Include="external\SDL2-2.0.8\lib\x64\SDL2main.lib" />
+    <Library Include="external\SDL2_mixer-2.0.2\lib\x64\SDL2_mixer.lib" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\client\audio_player.hpp" />
     <ClInclude Include="src\editor\editor.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -73,6 +75,7 @@
     <ClCompile Include="external\imgui_support\imgui_impl_sdl_gl3.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="src\client\audio_player.cpp" />
     <ClCompile Include="src\editor\editor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
@@ -214,7 +217,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\imgui_support;$(SolutionDir)\external\imgui;$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\imgui_support;$(SolutionDir)\external\imgui;$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.8\include;$(SolutionDir)\external\SDL2_mixer-2.0.2\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp14</LanguageStandard>
     </ClCompile>
     <Link>
@@ -251,7 +254,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.5\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)\external\glm;$(SolutionDir)\external\lodepng;$(SolutionDir)\external\tinyxml2;$(SolutionDir)\external\SDL2-2.0.8\include;$(SolutionDir)\external\SDL2_mixer-2.0.2\include;$(SolutionDir)\external\glew-2.1.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
