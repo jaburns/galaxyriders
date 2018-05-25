@@ -21,18 +21,18 @@ SampleBuffer::SampleBuffer(const std::string& path)
 	}
 
     SDL_AudioCVT cvt;
-    SDL_BuildAudioCVT(&cvt, wav_spec.format, wav_spec.channels, wav_spec.freq, AUDIO_F32SYS, 2, 44100);
-    cvt.len = wav_length;
-    cvt.buf = (uint8_t*)malloc(wav_length * cvt.len_mult);
-    memcpy(cvt.buf, wav_buffer, wav_length);
+    std::vector<uint8_t> convert_buffer(wav_buffer, wav_buffer + wav_length);
 
+    SDL_BuildAudioCVT(&cvt, wav_spec.format, wav_spec.channels, wav_spec.freq, AUDIO_F32SYS, 2, 44100);
+    convert_buffer.resize(wav_length * cvt.len_mult);
+    cvt.len = wav_length;
+    cvt.buf = convert_buffer.data();
     SDL_ConvertAudio(&cvt);
 
     size_t samples = cvt.len * cvt.len_ratio / sizeof(StereoSample);
     auto sample_buf = reinterpret_cast<StereoSample*>(cvt.buf);
     m_buffer = std::vector<StereoSample>(sample_buf, sample_buf + samples);
 
-    free(cvt.buf);
     SDL_FreeWAV(wav_buffer);
 }
 
@@ -105,7 +105,7 @@ void AudioPlayer::audio_callback_dispatch(void *instance, uint8_t *stream, int l
 
 void AudioPlayer::audio_callback(StereoSample *stream, int samples)
 {
-    for (auto reader : m_readers) {
+    for (auto& reader : m_readers) {
         reader.mix_into_buffer(stream, samples);
     }
 
