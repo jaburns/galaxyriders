@@ -4,7 +4,7 @@
 #include <cstdint>
 
 #include "core.hpp"
-#include "audio_player.hpp"
+#include "audio/audio_player.hpp"
 #include "client_state.hpp"
 #include "net_game.hpp"
 #include "renderer/game_renderer.hpp"

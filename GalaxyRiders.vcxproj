@@ -26,7 +26,7 @@
     <Library Include="external\SDL2_mixer-2.0.2\lib\x64\SDL2_mixer.lib" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\client\audio_player.hpp" />
+    <ClInclude Include="src\client\audio\audio_player.hpp" />
     <ClInclude Include="src\editor\editor.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClInclude>
@@ -75,7 +75,7 @@
     <ClCompile Include="external\imgui_support\imgui_impl_sdl_gl3.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="src\client\audio_player.cpp" />
+    <ClCompile Include="src\client\audio\audio_player.cpp" />
     <ClCompile Include="src\editor\editor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
