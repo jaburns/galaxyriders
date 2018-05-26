@@ -15,8 +15,8 @@ SampleBuffer::SampleBuffer(const std::string& path)
     uint8_t *wav_buffer;
 	uint32_t wav_length;
 
-	if (SDL_LoadWAV("res/kick.wav", &wav_spec, &wav_buffer, &wav_length) == NULL) {
-        std::cout << "Failed to load .wav file." << std::endl;
+	if (SDL_LoadWAV(path.c_str(), &wav_spec, &wav_buffer, &wav_length) == NULL) {
+        std::cout << "Failed to load .wav file: " << path << std::endl;
         exit(1);
 	}
 
