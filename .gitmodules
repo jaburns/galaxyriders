@@ -11,3 +11,6 @@
 [submodule "external/imgui"]
 	path = external/imgui
 	url = git@github.com:ocornut/imgui
+[submodule "external/rtmidi"]
+	path = external/rtmidi
+	url = git@github.com:thestk/rtmidi
