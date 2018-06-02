@@ -1,5 +1,7 @@
 #include "editor.hpp"
 
+#include <string>
+
 #include "../shared/world_state.hpp"
 
 Editor::Editor()
@@ -20,7 +22,7 @@ static void window_buttons(const std::string& name, WindowState& window_state)
 void Editor::draw_corner_overlay()
 {
     const float DISTANCE = 10.0f;
-    ImVec2 window_pos = ImVec2(DISTANCE, DISTANCE); 
+    ImVec2 window_pos = ImVec2(DISTANCE, DISTANCE);
     ImVec2 window_pos_pivot = ImVec2(0.0f, 0.0f);
     ImGui::SetNextWindowBgAlpha(0.3f); // Transparent background
 
