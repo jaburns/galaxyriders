@@ -6,6 +6,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <mutex>
 
 struct StereoSample
 {
@@ -40,6 +41,7 @@ class AudioPlayer
 {
     std::shared_ptr<SampleBuffer> m_buffer;
     std::list<OneShotBufferReader> m_readers;
+    std::mutex m_mutex;
 
     static void audio_callback_dispatch(void *instance, uint8_t *stream, int len);
     void audio_callback(StereoSample *stream, int samples); // L R L R L R ...

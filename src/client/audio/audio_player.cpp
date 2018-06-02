@@ -85,7 +85,7 @@ AudioPlayer::AudioPlayer()
     spec.channels = 2;
     spec.freq = 44100;
     spec.format = AUDIO_F32SYS;
-    spec.samples = 4096;
+    spec.samples = 256;
 
     if (SDL_OpenAudio(&spec, NULL) < 0) {
         std::cout << "Couldn't open audio: " << SDL_GetError() << std::endl;
@@ -109,6 +109,8 @@ void AudioPlayer::audio_callback_dispatch(void *instance, uint8_t *stream, int l
 
 void AudioPlayer::audio_callback(StereoSample *stream, int samples)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     for (auto& reader : m_readers) {
         reader.mix_into_buffer(stream, samples);
     }
@@ -118,6 +120,8 @@ void AudioPlayer::audio_callback(StereoSample *stream, int samples)
 
 void AudioPlayer::play()
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     m_readers.push_back(OneShotBufferReader(m_buffer));
 }
 

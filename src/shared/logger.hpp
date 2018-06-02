@@ -27,9 +27,9 @@ public:
     void log(T t, Ts... ts) 
     {
         #ifdef COPY_TO_STDOUT
-            std::cout << t << "; ";
+            std::cout << t << " ";
         #endif
-        m_log_stream << t << "; ";
+        m_log_stream << t << " ";
 
         log(ts...);
     }
