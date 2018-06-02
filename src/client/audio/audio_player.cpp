@@ -3,7 +3,6 @@
 #include <iostream>
 #include "../../shared/logger.hpp"
 
-
 SampleBuffer::SampleBuffer()
     : m_buffer()
 { }
@@ -11,14 +10,14 @@ SampleBuffer::SampleBuffer()
 SampleBuffer::SampleBuffer(const std::string& path)
     : m_buffer()
 {
-	SDL_AudioSpec wav_spec;
+    SDL_AudioSpec wav_spec;
     uint8_t *wav_buffer;
-	uint32_t wav_length;
+    uint32_t wav_length;
 
-	if (SDL_LoadWAV(path.c_str(), &wav_spec, &wav_buffer, &wav_length) == NULL) {
+    if (SDL_LoadWAV(path.c_str(), &wav_spec, &wav_buffer, &wav_length) == NULL) {
         std::cout << "Failed to load .wav file: " << path << std::endl;
         exit(1);
-	}
+    }
 
     SDL_AudioCVT cvt;
     std::vector<uint8_t> convert_buffer(wav_buffer, wav_buffer + wav_length);
@@ -58,9 +57,14 @@ OneShotBufferReader::OneShotBufferReader(std::shared_ptr<const SampleBuffer> buf
 
 void OneShotBufferReader::mix_into_buffer(StereoSample *target, int sample_count)
 {
-    // TODO handle reading outside buffer range
-    m_buffer->mix_into_buffer(target, m_read_head, sample_count);
-    m_read_head += sample_count;
+    const auto end_sample = m_read_head + sample_count;
+    const auto fixed_end_sample = end_sample > m_buffer->size()
+        ? m_buffer->size()
+        : end_sample;
+    const auto fixed_sample_count = fixed_end_sample - m_read_head;
+
+    m_buffer->mix_into_buffer(target, m_read_head, fixed_sample_count);
+    m_read_head += fixed_sample_count;
 }
 
 bool OneShotBufferReader::is_done() const
@@ -82,11 +86,11 @@ AudioPlayer::AudioPlayer()
     spec.freq = 44100;
     spec.format = AUDIO_F32SYS;
     spec.samples = 4096;
-	
-	if (SDL_OpenAudio(&spec, NULL) < 0) {
+
+    if (SDL_OpenAudio(&spec, NULL) < 0) {
         std::cout << "Couldn't open audio: " << SDL_GetError() << std::endl;
         exit(1);
-	}
+    }
 
     m_buffer = std::make_shared<SampleBuffer>("res/kick.wav");
 
@@ -98,7 +102,7 @@ void AudioPlayer::audio_callback_dispatch(void *instance, uint8_t *stream, int l
     memset(stream, 0, len);
 
     static_cast<AudioPlayer*>(instance)->audio_callback(
-        reinterpret_cast<StereoSample*>(stream), 
+        reinterpret_cast<StereoSample*>(stream),
         len / sizeof(StereoSample)
     );
 }
@@ -119,6 +123,6 @@ void AudioPlayer::play()
 
 AudioPlayer::~AudioPlayer()
 {
-	SDL_CloseAudio();
+    SDL_CloseAudio();
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
