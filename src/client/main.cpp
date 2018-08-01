@@ -4,10 +4,10 @@
 #include <cstdint>
 
 #include "core.hpp"
-#include "audio/audio_player.hpp"
 #include "client_state.hpp"
 #include "net_game.hpp"
 #include "renderer/game_renderer.hpp"
+#include "audio/audio_event_detector.hpp"
 #include "../shared/config.hpp"
 #include "../shared/world_state.hpp"
 
@@ -53,7 +53,7 @@ void main_net()
 void main_local()
 {
     Core core;
-    AudioPlayer audio_player;
+    AudioEventDetector audio;
     GameRenderer renderer;
 
     #ifdef _DEBUG
@@ -90,13 +90,12 @@ void main_local()
             last_state = new_state;
             new_state.step(input_state, false);
             accumulator -= Config::MILLIS_PER_TICK;
+
+            audio.detect_and_play_sounds(last_state, new_state);
         }
 
         #ifdef _DEBUG
             const auto editor_state = editor.update(new_state, input_state, core_view);
-            if (!editor_paused && editor_state.paused) {
-                audio_player.play();
-            }
             editor_paused = editor_state.paused;
         #endif
 

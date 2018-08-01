@@ -25,6 +25,7 @@
     <Library Include="external\SDL2-2.0.8\lib\x64\SDL2main.lib" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\client\audio\audio_event_detector.hpp" />
     <ClInclude Include="src\client\audio\audio_player.hpp" />
     <ClInclude Include="src\editor\editor.hpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -79,6 +80,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="src\client\audio\audio_player.cpp" />
+    <ClCompile Include="src\client\audio\audio_event_detector.cpp" />
     <ClCompile Include="src\editor\editor.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>

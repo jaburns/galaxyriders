@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../gl.hpp"
+#include "../../shared/lang_utils.hpp"
 #include <cstdint>
 #include <memory>
 #include <list>
@@ -37,18 +38,21 @@ public:
     bool is_done() const;
 };
 
-class AudioPlayer
+class AudioPlayer : public NoCopy
 {
-    std::shared_ptr<SampleBuffer> m_buffer;
+    std::shared_ptr<SampleBuffer> m_sound_ollie;
+    std::shared_ptr<SampleBuffer> m_sound_land;
+
     std::list<OneShotBufferReader> m_readers;
     std::mutex m_mutex;
 
     static void audio_callback_dispatch(void *instance, uint8_t *stream, int len);
-    void audio_callback(StereoSample *stream, int samples); // L R L R L R ...
+    void audio_callback(StereoSample *stream, int samples);
 
 public:
     AudioPlayer();
     ~AudioPlayer();
 
-    void play();
+    void play_ollie();
+    void play_land();
 };

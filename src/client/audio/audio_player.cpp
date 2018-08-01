@@ -92,7 +92,8 @@ AudioPlayer::AudioPlayer()
         exit(1);
     }
 
-    m_buffer = std::make_shared<SampleBuffer>("res/kick.wav");
+    m_sound_ollie = std::make_shared<SampleBuffer>("res/ollie.wav");
+    m_sound_land  = std::make_shared<SampleBuffer>("res/land.wav");
 
     SDL_PauseAudio(0);
 }
@@ -118,11 +119,16 @@ void AudioPlayer::audio_callback(StereoSample *stream, int samples)
     m_readers.remove_if([](auto& r) { return r.is_done(); });
 }
 
-void AudioPlayer::play()
+void AudioPlayer::play_ollie()
 {
     std::lock_guard<std::mutex> lock(m_mutex);
+    m_readers.push_back(OneShotBufferReader(m_sound_ollie));
+}
 
-    m_readers.push_back(OneShotBufferReader(m_buffer));
+void AudioPlayer::play_land()
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    m_readers.push_back(OneShotBufferReader(m_sound_land));
 }
 
 AudioPlayer::~AudioPlayer()
