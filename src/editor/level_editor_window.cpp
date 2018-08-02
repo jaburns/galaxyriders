@@ -17,8 +17,6 @@ void LevelEditorWindow::step_edit_mode(ClientState& client_state, const InputSta
     if (input.player.left)    client_state.camera_pos.x -= EDITMODE_CAMERA_SLIDE * client_state.camera_pos.z;
     if (input.player.up)      client_state.camera_pos.y += EDITMODE_CAMERA_SLIDE * client_state.camera_pos.z;
     if (input.player.down)    client_state.camera_pos.y -= EDITMODE_CAMERA_SLIDE * client_state.camera_pos.z;
-//  if (input.editmode_zoom_out) state.camera_pos.z *= EDITMODE_CAMERA_ZOOM;
-//  if (input.editmode_zoom_in)  state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
 
     if (input.mouse_click) {
         const auto& mouse_pos = core_view.get_mouse_world_pos(client_state.camera_pos);
@@ -52,6 +50,11 @@ void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_st
         ImGui::Checkbox("Edit Mode", &editor_state.paused);
         ImGui::SameLine();
         ImGui::Checkbox("Wireframe", &editor_state.wireframe);
+
+        if (ImGui::Button("Step Frame")) {
+            editor_state.single_frame_step = true;
+        }
+
     ImGui::End();
 
     if (editor_state.paused && !ImGui::GetIO().WantCaptureMouse) {
