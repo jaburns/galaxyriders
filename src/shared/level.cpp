@@ -73,60 +73,73 @@ BakedLevel::BakedLevel(const Level& level)
 struct CircleTestResult 
 {
     bool collided;
-    glm::vec2 normal;
+    std::vector<glm::vec2> normals;
     glm::vec2 position;
 };
 
 static CircleTestResult test_circle(const BakedLevel& level, const glm::vec2 pos, float r)
 {
     const auto r2 = r * r;
-    bool lined = false;
-    glm::vec2 normal, test_pos;
+    std::vector<glm::vec2> normals;
+    glm::vec2 test_pos = pos;
 
     // TODO at least do a rectangle bounds check before all the Real Math.
 
     for (const auto& poly : level.polys) {
-        test_pos = pos;
-
         for (auto i = 0; i < poly.points.size(); ++i) {
             const auto a = poly.points[i].pos;
-            const auto b = poly.points[(i+1) % poly.points.size()].pos;
+            const auto b = poly.points[(i + 1) % poly.points.size()].pos;
 
             if (Geometry::point_in_line_perp_space(a, b, test_pos)) {
-                const auto m  = (b.y-a.y)/(b.x-a.x);
+                const auto m = (b.y - a.y) / (b.x - a.x);
                 const auto l = test_pos - a;
                 const auto point_on_line = Geometry::project_point_on_line(m, l);
                 const auto projection = l - point_on_line;
                 const auto p2 = projection.x*projection.x + projection.y*projection.y;
 
                 if (p2 < r2) {
-                    normal = glm::normalize(projection);
+                    auto normal = glm::normalize(projection);
                     if (Geometry::vec2_cross(projection, b - a) > 0.0f) {
                         normal = -normal;
                     }
-
                     test_pos = a + point_on_line + normal * r;
-                    lined = true;
+                    normals.push_back(normal);
                 }
             }
         }
 
-        if (lined) {
-            return { true, normal, test_pos };
+        if (normals.size() > 0) {
+            return { true, normals, test_pos };
         }
 
         for (auto i = 0; i < poly.points.size(); ++i) {
             const auto ds = pos - poly.points[i].pos;
             const auto d2 = ds.x*ds.x + ds.y*ds.y;
             if (d2 < r2) {
-                normal = glm::normalize(ds);
+                const auto normal = glm::normalize(ds);
                 test_pos = poly.points[i].pos + normal * r;
-                return { true, normal, test_pos };
+                normals.push_back(normal);
+                return { true, normals, test_pos };
             }
         }
     }
 
     return { false };
+}
+
+static glm::vec2 upmost(const std::vector<glm::vec2>& vecs)
+{
+    float most_y = -1e9f;
+    glm::vec2 result;
+
+    for (const auto& v : vecs) {
+        if (v.y > most_y) {
+            result = v;
+            most_y = v.y;
+        }
+    }
+
+    return result;
 }
 
 BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 position, glm::vec2 velocity, float radius, float bounce) const
@@ -145,20 +158,27 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
         if (test.collided) {
             collided = true;
             position = test.position;
-            velocity = Geometry::vec2_reflect(velocity, test.normal, bounce, 1.0f);
-            normal = test.normal;
+
+            for (const auto& normal : test.normals) {
+                velocity = Geometry::vec2_reflect(velocity, normal, bounce, 1.0f);
+            }
+
+            normal = upmost(test.normals);
         }
     }
 
     position += glm::normalize(velocity) * distance_remaining;
 
     const auto test = test_circle(*this, position, radius);
-
     if (test.collided) {
         collided = true;
         position = test.position;
-        velocity = Geometry::vec2_reflect(velocity, test.normal, bounce, 1.0f);
-        normal = test.normal;
+
+        for (const auto& normal : test.normals) {
+            velocity = Geometry::vec2_reflect(velocity, normal, bounce, 1.0f);
+        }
+
+        normal = upmost(test.normals);
     }
 
     return { collided, position, velocity, normal };
