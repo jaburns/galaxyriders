@@ -7,6 +7,7 @@
 #include "wire_renderer.hpp"
 #include "../resources.hpp"
 #include "../../shared/lang_utils.hpp"
+#include "../../editor/editor_state.hpp"
 
 class LoadedLevelRenderer : public NoCopy
 {
@@ -15,11 +16,10 @@ class LoadedLevelRenderer : public NoCopy
 
     uint32_t m_level_checksum;
 
-    void draw_handle(const glm::vec2& mouse_pos, const Level::Handle& handle) const;
+    void draw_handle(const glm::vec2& mouse_pos, const Level::Handle& handle, EditorState::SelectedHandleState selected) const;
 
 public:
     LoadedLevelRenderer();
-    ~LoadedLevelRenderer();
 
-    void draw_once(bool edit_mode, bool wireframe, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position);
+    void draw_once(const EditorState& editor, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position);
 };
