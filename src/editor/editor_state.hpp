@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/vec2.hpp>
+
 struct EditorState
 {
     bool wireframe = false;
@@ -18,6 +20,9 @@ struct EditorState
 
     HandleIndex selected_level_handle = { };
     SelectedHandleState selected_level_handle_state = Not;
+    bool dragging_camera;
+    glm::vec2 drag_camera_origin;
+    glm::vec2 drag_mouse_origin;
 
     static const EditorState NO_EDITOR;
 };

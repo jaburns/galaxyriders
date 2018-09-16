@@ -12,6 +12,7 @@ class Editor
     EditorState m_state;
     LogWindow m_log_window;
     LevelEditorWindow m_level_editor_window;
+    InputState m_last_input;
 
     void draw_corner_overlay();
 

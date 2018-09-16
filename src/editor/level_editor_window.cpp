@@ -8,53 +8,84 @@
 #include "../client/core.hpp"
 #include "../shared/world_state.hpp"
 
-static constexpr float EDITMODE_CAMERA_SLIDE = 0.05f;
-static constexpr float EDITMODE_CAMERA_ZOOM  = 1.05f;
+#include "../shared/logger.hpp"
 
-void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& client_state, const InputState& input, const CoreView& core_view)
+static constexpr float EDITMODE_CAMERA_SLIDE = 0.02f;
+static constexpr float EDITMODE_CAMERA_ZOOM  = 1.10f;
+
+void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& client_state, const InputState& input, const InputState& last_input, const CoreView& core_view)
 {
-    if (input.player.right) client_state.camera_pos.x += EDITMODE_CAMERA_SLIDE * client_state.camera_pos.z;
-    if (input.player.left)  client_state.camera_pos.x -= EDITMODE_CAMERA_SLIDE * client_state.camera_pos.z;
-    if (input.player.up)    client_state.camera_pos.y += EDITMODE_CAMERA_SLIDE * client_state.camera_pos.z;
-    if (input.player.down)  client_state.camera_pos.y -= EDITMODE_CAMERA_SLIDE * client_state.camera_pos.z;
-
-    auto& polys = LoadedLevel::get().polys;
-
-    const auto mouse_pos = core_view.get_mouse_world_pos(client_state.camera_pos);
-
-    editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Not;
-    editor_state.selected_level_handle.poly = -1;
-
-    const float min_dist2 = 1e0f;
-
-    for (int i = 0; i < polys.size(); ++i)
-    for (int j = 0; j < polys[i].handles.size(); ++j) 
+    // Update the currently selected level poly handle state.
     {
-        const float new_d2 = glm::distance2(mouse_pos, polys[i].handles[j].point);
+        auto& polys = LoadedLevel::get().polys;
 
-        if (new_d2 < min_dist2) {
-            editor_state.selected_level_handle.poly = i;
-            editor_state.selected_level_handle.handle = j;
+        const auto mouse_pos = core_view.get_mouse_world_pos(client_state.camera_pos);
+
+        if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Selected)
+        {
+            if (!input.mouse_click)
+                editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Hovered;
+
+            polys[editor_state.selected_level_handle.poly]
+                .handles[editor_state.selected_level_handle.handle]
+                .point = mouse_pos;
+
+            LoadedLevel::bake();
+        }
+        else
+        {
+            editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Not;
+            editor_state.selected_level_handle.poly = -1;
+
+            const float min_dist2 = 1e0f;
+
+            for (int i = 0; i < polys.size(); ++i)
+            for (int j = 0; j < polys[i].handles.size(); ++j) 
+            {
+                const float new_d2 = glm::distance2(mouse_pos, polys[i].handles[j].point);
+
+                if (new_d2 < min_dist2) {
+                    editor_state.selected_level_handle.poly = i;
+                    editor_state.selected_level_handle.handle = j;
+                }
+            }
+
+            editor_state.selected_level_handle_state = editor_state.selected_level_handle.poly < 0
+                ? EditorState::SelectedHandleState::Not
+                : input.mouse_click
+                    ? EditorState::SelectedHandleState::Selected
+                    : EditorState::SelectedHandleState::Hovered;
         }
     }
 
-    editor_state.selected_level_handle_state = editor_state.selected_level_handle.poly < 0
-        ? EditorState::SelectedHandleState::Not
-        : input.mouse_click
-        ? EditorState::SelectedHandleState::Selected
-        : EditorState::SelectedHandleState::Hovered;
-
-    if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Selected)
+    // Update the camera
     {
-        polys[editor_state.selected_level_handle.poly]
-            .handles[editor_state.selected_level_handle.handle]
-            .point = mouse_pos;
+        if (!editor_state.dragging_camera)
+        {
+            if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Not && input.mouse_click)
+            {
+                editor_state.dragging_camera = true;
+                editor_state.drag_mouse_origin = input.mouse_pos;
+                editor_state.drag_camera_origin = client_state.camera_pos;
+            }
+        }
+        else if (!input.mouse_click)
+            editor_state.dragging_camera = false;
 
-        LoadedLevel::bake();
+        if (editor_state.dragging_camera)
+            // TODO the multiply by z isn't actually accurate
+            client_state.camera_pos = glm::vec3(editor_state.drag_camera_origin + (editor_state.drag_mouse_origin - input.mouse_pos) * client_state.camera_pos.z, client_state.camera_pos.z);
+
+        float scroll_delta = input.mouse_scroll.y - last_input.mouse_scroll.y;
+
+        if (scroll_delta > 0)
+            client_state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
+        else if (scroll_delta < 0)
+            client_state.camera_pos.z *= EDITMODE_CAMERA_ZOOM;
     }
 }
 
-void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_state, const InputState& input_state, const CoreView& core_view)
+void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_state, const InputState& input_state, const InputState& last_input, const CoreView& core_view)
 {
     if (!window_state.prepare_window()) return;
 
@@ -70,6 +101,6 @@ void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_st
     ImGui::End();
 
     if (editor_state.paused && !ImGui::GetIO().WantCaptureMouse) {
-        step_edit_mode(editor_state, client_state, input_state, core_view);
+        step_edit_mode(editor_state, client_state, input_state, last_input, core_view);
     }
 }

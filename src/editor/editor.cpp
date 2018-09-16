@@ -60,11 +60,13 @@ EditorState Editor::update(ClientState& client_state, const InputState& input_st
     draw_corner_overlay();
 
     m_log_window.update();
-    m_level_editor_window.update(m_state, client_state, input_state, core_view);
+    m_level_editor_window.update(m_state, client_state, input_state, m_last_input, core_view);
 
     if (m_state.single_frame_step) {
         m_state.paused = false;
     }
+
+    m_last_input = input_state;
 
     return m_state;
 }
