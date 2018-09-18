@@ -20,9 +20,11 @@ struct EditorState
 
     HandleIndex selected_level_handle = { };
     SelectedHandleState selected_level_handle_state = Not;
-    bool dragging_camera;
-    glm::vec2 drag_camera_origin;
-    glm::vec2 drag_mouse_origin;
+    bool dragging_camera = false;
+    glm::vec2 drag_camera_origin = { 0, 0 };
+    glm::vec2 drag_mouse_origin = { 0, 0 };
+
+    EditorState() { };
 
     static const EditorState NO_EDITOR;
 };
