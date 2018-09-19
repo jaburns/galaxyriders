@@ -2,18 +2,22 @@
 #include "geometry.hpp"
 #include <glm/geometric.hpp>
 
+#define MAX(x,y) ((x) > (y) ? (x) : (y))
+
 Level::Level(const std::vector<float>& data)
 {
     size_t read = 0;
-
     const auto total_polys = data[read++];
-    for (int i = 0; i < total_polys; ++i) {
-        Level::Poly this_poly;
 
+    for (int i = 0; i < total_polys; ++i) 
+    {
+        Level::Poly this_poly;
         int total_handles = data[read++];
-        for (int j = 0; j < total_handles; ++j) {
+
+        for (int j = 0; j < total_handles; ++j) 
+        {
             Level::Handle this_handle;
-            this_handle.quality = (uint32_t)data[read++];
+            this_handle.is_curve = (uint32_t)data[read++] > 0;
             this_handle.point.x = data[read++];
             this_handle.point.y = data[read++];
             this_poly.handles.push_back(this_handle);
@@ -21,53 +25,75 @@ Level::Level(const std::vector<float>& data)
 
         polys.push_back(this_poly);
     }
+
+    curve_quality = 0.5f;
 }
 
 uint32_t Level::checksum()
 {
     uint32_t sum = 0;
-    for (const auto& p : polys) {
-        for (const auto& h : p.handles) {
-            sum += *reinterpret_cast<const uint32_t*>(&h.point.x);
-            sum += *reinterpret_cast<const uint32_t*>(&h.point.y);
-            sum *= 1 + h.quality;
-        }
+
+    for (const auto& p : polys)
+    for (const auto& h : p.handles) 
+    {
+        sum += *reinterpret_cast<const uint32_t*>(&h.point.x);
+        sum += *reinterpret_cast<const uint32_t*>(&h.point.y);
+        sum *= h.is_curve ? 1 : 2;
     }
+
     return sum;
+}
+
+static float get_dynamic_curve_quality(float quality, const glm::vec2& a, const glm::vec2& b, const glm::vec2& c, const glm::vec2& d)
+{
+    const float ESTIMATION_STEP = 0.1f;
+
+    float length_estimate = 0.0f;
+    glm::vec2 last_pt = a;
+
+    for (float t = ESTIMATION_STEP; t < 1.0f; t += ESTIMATION_STEP)
+    {
+        glm::vec2 next_pt = Geometry::evaluate_spline(a, b, c, d, t);
+        length_estimate += glm::length(next_pt - last_pt);
+        last_pt = next_pt;
+    }
+
+    return quality * length_estimate;
 }
 
 BakedLevel::BakedLevel(const Level& level)
 {
-#   define MAX(x,y) ((x) > (y) ? (x) : (y))
-
-    for (auto& poly : level.polys) {
+    for (auto& poly : level.polys) 
+    {
         BakedLevel::Poly this_poly;
 
-        for (auto i = 0; i < poly.handles.size(); ++i) {
+        for (auto i = 0; i < poly.handles.size(); ++i) 
+        {
             this_poly.points.push_back({ poly.handles[i].point, false });
 
-            if (i <= poly.handles.size() - 4 && poly.handles[i+1].quality > 0 && poly.handles[i+2].quality > 0) {
-                const auto iter = 1.0f / MAX(poly.handles[i+1].quality, poly.handles[i+2].quality);
-                for(auto t = iter; t < 1.0f; t += iter) {
+            if (i <= poly.handles.size() - 4 && poly.handles[i+1].is_curve && poly.handles[i+2].is_curve) 
+            {
+                const auto a = poly.handles[i+0].point;
+                const auto b = poly.handles[i+1].point;
+                const auto c = poly.handles[i+2].point;
+                const auto d = poly.handles[i+3].point;
+
+                const float iter = 1.0f / get_dynamic_curve_quality(level.curve_quality, a, b, c, d);
+
+                for(auto t = iter; t < 1.0f; t += iter) 
+                {
                     this_poly.points.push_back({
-                        Geometry::evaluate_spline(
-                            poly.handles[i+0].point,
-                            poly.handles[i+1].point,
-                            poly.handles[i+2].point,
-                            poly.handles[i+3].point,
-                            t
-                        ),
+                        Geometry::evaluate_spline(a, b, c, d, t), 
                         true
                     });
                 }
+
                 i += 2;
             }
         }
 
         polys.push_back(this_poly);
     }
-
-#   undef MAX
 }
 
 struct CircleTestResult 

@@ -57,7 +57,7 @@ glm::mat4x4 CoreView::get_perspective_matrix() const
     return m_perspective;
 }
 
-Core::Core()
+Core::Core(bool fullscreen)
 {
     if (SDL_Init(SDL_INIT_VIDEO) < 0) {
         exit(EXIT_FAILURE);
@@ -76,7 +76,8 @@ Core::Core()
 
     Uint32 window_flags = SDL_WINDOW_OPENGL;
 
-    /*
+    if (fullscreen)
+    {
     #ifdef __APPLE__
         SDL_DisplayMode displayMode;
         SDL_GetCurrentDisplayMode(0, &displayMode);
@@ -88,7 +89,7 @@ Core::Core()
     #else
         window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     #endif
-    */
+    }
 
     m_window = SDL_CreateWindow(
         "Galaxy Riders",
@@ -97,7 +98,9 @@ Core::Core()
         window_flags
     );
 
-//  SDL_SetWindowResizable(m_window, SDL_TRUE);
+    if (! fullscreen)
+        SDL_SetWindowResizable(m_window, SDL_TRUE);
+
     m_context = SDL_GL_CreateContext(m_window);
 
     #ifdef __APPLE__
@@ -107,7 +110,9 @@ Core::Core()
     #else
         glewExperimental = GL_TRUE;
         const auto glewInitResult = glewInit();
-        if (glewInitResult != GLEW_OK) {
+
+        if (glewInitResult != GLEW_OK) 
+        {
             printf("ERROR: %s\n", glewGetErrorString(glewInitResult));
             exit(EXIT_FAILURE);
         }

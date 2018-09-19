@@ -17,7 +17,7 @@
 
 void main_net()
 {
-    Core core;
+    Core core(false);
     GameRenderer renderer;
     ClientState new_state;
     NetGame net_game;
@@ -52,7 +52,7 @@ void main_net()
 
 void main_local()
 {
-    Core core;
+    Core core(false);
     AudioEventDetector audio;
     GameRenderer renderer;
 

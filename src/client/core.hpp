@@ -42,7 +42,7 @@ class Core : public NoCopy
     void handle_mouse_motion(SDL_MouseMotionEvent event);
 
 public:
-    Core();
+    Core(bool fullscreen);
     ~Core();
 
     bool flip_frame_and_poll_events();

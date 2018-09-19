@@ -62,16 +62,12 @@ void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& c
         auto& handle = polys[editor_state.selected_level_handle.poly]
             .handles[editor_state.selected_level_handle.handle];
 
-        if (scroll_delta < 0 && handle.quality > 0)
-        {
-            handle.quality--;
-            LoadedLevel::bake();
-        }
-        else if (scroll_delta > 0)
-        {
-            handle.quality++;
-            LoadedLevel::bake();
-        }
+        bool was_curve = handle.is_curve;
+
+        if (scroll_delta < 0) handle.is_curve = false;
+        else if (scroll_delta > 0) handle.is_curve = true;
+
+        if (handle.is_curve != was_curve) LoadedLevel::bake();
     }
 
     // Update the camera

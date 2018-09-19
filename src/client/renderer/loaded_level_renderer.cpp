@@ -22,7 +22,7 @@ void LoadedLevelRenderer::draw_handle(const glm::vec2& mouse_pos, const Level::H
     switch (selected)
     {
         case EditorState::SelectedHandleState::Not: 
-            color = handle.quality > 0
+            color = handle.is_curve
                 ? glm::vec3(1.0f, 0.0f, 1.0f)
                 : glm::vec3(1.0f, 1.0f, 1.0f);
             break;

@@ -9,7 +9,7 @@ struct Level
     struct Handle 
     {
         glm::vec2 point;
-        uint32_t quality;
+        bool is_curve;
     };
 
     struct Poly 
@@ -17,6 +17,7 @@ struct Level
         std::vector<Handle> handles;
     };
 
+    float curve_quality;
     std::vector<Poly> polys;
 
     Level(const std::vector<float>& data);
