@@ -102,18 +102,22 @@ void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_st
 {
     if (!window_state.prepare_window()) return;
 
+    auto& level = LoadedLevel::get();
+
     ImGui::Begin("Level Editor", &window_state.open);
         ImGui::SliderFloat("Gravity", &Physics::GRAVITY, 0.0f, 0.1f);
+
+        if (ImGui::SliderFloat("Level Curve Quality", &level.curve_quality, 0.0f, 1.0f))
+            LoadedLevel::bake();
+
         ImGui::Checkbox("Edit Mode", &editor_state.paused);
         ImGui::SameLine();
         ImGui::Checkbox("Wireframe", &editor_state.wireframe);
 
-        if (ImGui::Button("Step Frame")) {
+        if (ImGui::Button("Step Frame"))
             editor_state.single_frame_step = true;
-        }
     ImGui::End();
 
-    if (editor_state.paused && !ImGui::GetIO().WantCaptureMouse) {
+    if (editor_state.paused && !ImGui::GetIO().WantCaptureMouse)
         step_edit_mode(editor_state, client_state, input_state, last_input, core_view);
-    }
 }

@@ -16,7 +16,7 @@ LoadedLevelRenderer::LoadedLevelRenderer()
 
 void LoadedLevelRenderer::draw_handle(const glm::vec2& mouse_pos, const Level::Handle& handle, EditorState::SelectedHandleState selected) const
 {
-    const auto dist2 = glm::distance2(mouse_pos, handle.point);
+    const float dist2 = glm::distance2(mouse_pos, handle.point);
     glm::vec3 color;
 
     switch (selected)
@@ -41,11 +41,13 @@ void LoadedLevelRenderer::draw_handle(const glm::vec2& mouse_pos, const Level::H
 
 void LoadedLevelRenderer::draw_once(const EditorState& editor, const glm::vec2& mouse_pos, const glm::mat4x4& view, const glm::mat4x4& projection, const glm::vec3& position)
 {
-    if (editor.paused) {
+    if (editor.paused) 
+    {
         const auto new_checksum = LoadedLevel::get().checksum();
-        if (new_checksum != m_level_checksum) {
+
+        if (new_checksum != m_level_checksum)
             m_level_mesh_renderer.rebuild_mesh(LoadedLevel::get_baked());
-        }
+
         m_level_checksum = new_checksum;
     }
 
@@ -60,7 +62,7 @@ void LoadedLevelRenderer::draw_once(const EditorState& editor, const glm::vec2& 
         for (int i = 0; i < polys.size(); ++i) 
         for (int j = 0; j < polys[i].handles.size(); ++j)
         {
-            bool selected = i == editor.selected_level_handle.poly && j == editor.selected_level_handle.handle;
+            const bool selected = i == editor.selected_level_handle.poly && j == editor.selected_level_handle.handle;
 
             draw_handle(mouse_pos, polys[i].handles[j], selected ? editor.selected_level_handle_state : EditorState::SelectedHandleState::Not);
         }

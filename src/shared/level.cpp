@@ -41,6 +41,8 @@ uint32_t Level::checksum()
         sum *= h.is_curve ? 1 : 2;
     }
 
+    sum ^= *reinterpret_cast<const uint32_t*>(&curve_quality);
+
     return sum;
 }
 
