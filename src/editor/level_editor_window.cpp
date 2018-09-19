@@ -15,46 +15,62 @@ static constexpr float EDITMODE_CAMERA_ZOOM  = 1.10f;
 
 void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& client_state, const InputState& input, const InputState& last_input, const CoreView& core_view)
 {
+    auto& polys = LoadedLevel::get().polys;
+
+    const auto mouse_pos = core_view.get_mouse_world_pos(client_state.camera_pos);
+    float scroll_delta = input.mouse_scroll.y - last_input.mouse_scroll.y;
+
     // Update the currently selected level poly handle state.
+    if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Selected)
     {
-        auto& polys = LoadedLevel::get().polys;
+        if (!input.mouse_click)
+            editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Hovered;
 
-        const auto mouse_pos = core_view.get_mouse_world_pos(client_state.camera_pos);
+        polys[editor_state.selected_level_handle.poly]
+            .handles[editor_state.selected_level_handle.handle]
+            .point = mouse_pos;
 
-        if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Selected)
+        LoadedLevel::bake();
+    }
+    else
+    {
+        editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Not;
+        editor_state.selected_level_handle.poly = -1;
+
+        const float min_dist2 = 1e0f;
+
+        for (int i = 0; i < polys.size(); ++i)
+        for (int j = 0; j < polys[i].handles.size(); ++j) 
         {
-            if (!input.mouse_click)
-                editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Hovered;
+            const float new_d2 = glm::distance2(mouse_pos, polys[i].handles[j].point);
 
-            polys[editor_state.selected_level_handle.poly]
-                .handles[editor_state.selected_level_handle.handle]
-                .point = mouse_pos;
+            if (new_d2 < min_dist2) {
+                editor_state.selected_level_handle.poly = i;
+                editor_state.selected_level_handle.handle = j;
+            }
+        }
 
+        editor_state.selected_level_handle_state = editor_state.selected_level_handle.poly < 0
+            ? EditorState::SelectedHandleState::Not
+            : input.mouse_click
+                ? EditorState::SelectedHandleState::Selected
+                : EditorState::SelectedHandleState::Hovered;
+    }
+
+    if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Hovered)
+    {
+        auto& handle = polys[editor_state.selected_level_handle.poly]
+            .handles[editor_state.selected_level_handle.handle];
+
+        if (scroll_delta < 0 && handle.quality > 0)
+        {
+            handle.quality--;
             LoadedLevel::bake();
         }
-        else
+        else if (scroll_delta > 0)
         {
-            editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Not;
-            editor_state.selected_level_handle.poly = -1;
-
-            const float min_dist2 = 1e0f;
-
-            for (int i = 0; i < polys.size(); ++i)
-            for (int j = 0; j < polys[i].handles.size(); ++j) 
-            {
-                const float new_d2 = glm::distance2(mouse_pos, polys[i].handles[j].point);
-
-                if (new_d2 < min_dist2) {
-                    editor_state.selected_level_handle.poly = i;
-                    editor_state.selected_level_handle.handle = j;
-                }
-            }
-
-            editor_state.selected_level_handle_state = editor_state.selected_level_handle.poly < 0
-                ? EditorState::SelectedHandleState::Not
-                : input.mouse_click
-                    ? EditorState::SelectedHandleState::Selected
-                    : EditorState::SelectedHandleState::Hovered;
+            handle.quality++;
+            LoadedLevel::bake();
         }
     }
 
@@ -69,19 +85,20 @@ void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& c
             if (!input.mouse_click)
                 editor_state.dragging_camera = false;
         }
-        else if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Not && input.mouse_click)
+        else if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Not)
         {
-            editor_state.dragging_camera = true;
-            editor_state.drag_mouse_origin = screen_mouse_pos;
-            editor_state.drag_camera_origin = client_state.camera_pos;
+            if (scroll_delta > 0)
+                client_state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
+            else if (scroll_delta < 0)
+                client_state.camera_pos.z *= EDITMODE_CAMERA_ZOOM;
+
+            if (input.mouse_click)
+            {
+                editor_state.dragging_camera = true;
+                editor_state.drag_mouse_origin = screen_mouse_pos;
+                editor_state.drag_camera_origin = client_state.camera_pos;
+            }
         }
-
-        float scroll_delta = input.mouse_scroll.y - last_input.mouse_scroll.y;
-
-        if (scroll_delta > 0)
-            client_state.camera_pos.z /= EDITMODE_CAMERA_ZOOM;
-        else if (scroll_delta < 0)
-            client_state.camera_pos.z *= EDITMODE_CAMERA_ZOOM;
     }
 }
 

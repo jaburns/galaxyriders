@@ -76,6 +76,7 @@ Core::Core()
 
     Uint32 window_flags = SDL_WINDOW_OPENGL;
 
+    /*
     #ifdef __APPLE__
         SDL_DisplayMode displayMode;
         SDL_GetCurrentDisplayMode(0, &displayMode);
@@ -87,6 +88,7 @@ Core::Core()
     #else
         window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     #endif
+    */
 
     m_window = SDL_CreateWindow(
         "Galaxy Riders",
