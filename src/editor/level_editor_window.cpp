@@ -60,21 +60,21 @@ void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& c
 
     // Update the camera
     {
-        if (!editor_state.dragging_camera)
-        {
-            if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Not && input.mouse_click)
-            {
-                editor_state.dragging_camera = true;
-                editor_state.drag_mouse_origin = input.mouse_pos;
-                editor_state.drag_camera_origin = client_state.camera_pos;
-            }
-        }
-        else if (!input.mouse_click)
-            editor_state.dragging_camera = false;
+        const auto screen_mouse_pos = core_view.get_mouse_world_pos(glm::vec3(0, 0, client_state.camera_pos.z));
 
         if (editor_state.dragging_camera)
-            // TODO the multiply by z isn't actually accurate
-            client_state.camera_pos = glm::vec3(editor_state.drag_camera_origin + (editor_state.drag_mouse_origin - input.mouse_pos) * client_state.camera_pos.z, client_state.camera_pos.z);
+        {
+            client_state.camera_pos = glm::vec3(editor_state.drag_camera_origin + (editor_state.drag_mouse_origin - screen_mouse_pos), client_state.camera_pos.z);
+
+            if (!input.mouse_click)
+                editor_state.dragging_camera = false;
+        }
+        else if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Not && input.mouse_click)
+        {
+            editor_state.dragging_camera = true;
+            editor_state.drag_mouse_origin = screen_mouse_pos;
+            editor_state.drag_camera_origin = client_state.camera_pos;
+        }
 
         float scroll_delta = input.mouse_scroll.y - last_input.mouse_scroll.y;
 
