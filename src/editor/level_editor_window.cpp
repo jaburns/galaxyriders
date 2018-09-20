@@ -32,10 +32,9 @@ void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& c
 
         LoadedLevel::bake();
     }
-    else
+    else if (!input.mouse_click)
     {
         editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Not;
-        editor_state.selected_level_handle.poly = -1;
 
         const float min_dist2 = 1e0f;
 
@@ -47,27 +46,38 @@ void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& c
             if (new_d2 < min_dist2) {
                 editor_state.selected_level_handle.poly = i;
                 editor_state.selected_level_handle.handle = j;
+                editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Hovered;
             }
         }
-
-        editor_state.selected_level_handle_state = editor_state.selected_level_handle.poly < 0
-            ? EditorState::SelectedHandleState::Not
-            : input.mouse_click
-                ? EditorState::SelectedHandleState::Selected
-                : EditorState::SelectedHandleState::Hovered;
     }
 
     if (editor_state.selected_level_handle_state == EditorState::SelectedHandleState::Hovered)
     {
-        auto& handle = polys[editor_state.selected_level_handle.poly]
-            .handles[editor_state.selected_level_handle.handle];
+        auto& handles = polys[editor_state.selected_level_handle.poly].handles;
+        auto& handle = handles[editor_state.selected_level_handle.handle];
 
-        bool was_curve = handle.is_curve;
-
+        const bool was_curve = handle.is_curve;
         if (scroll_delta < 0) handle.is_curve = false;
         else if (scroll_delta > 0) handle.is_curve = true;
-
         if (handle.is_curve != was_curve) LoadedLevel::bake();
+
+        if (input.right_click)
+        {
+            editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Not;
+            handles.erase(handles.begin() + editor_state.selected_level_handle.handle);
+            LoadedLevel::bake();
+        }
+
+        if (input.mouse_click)
+        {
+            if (input.pressing_shift)
+            {
+                handles.insert(handles.begin() + editor_state.selected_level_handle.handle, handle);
+                editor_state.selected_level_handle.handle++;
+            }
+
+            editor_state.selected_level_handle_state = EditorState::SelectedHandleState::Selected;
+        }
     }
 
     // Update the camera

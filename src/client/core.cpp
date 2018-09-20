@@ -148,6 +148,7 @@ void Core::handle_key_event(SDL_Keycode keycode, bool press)
     m_input_state.player.right = m_keys_down.count(SDLK_d);
     m_input_state.player.up    = m_keys_down.count(SDLK_w);
     m_input_state.player.down  = m_keys_down.count(SDLK_s);
+    m_input_state.pressing_shift = m_keys_down.count(SDLK_LSHIFT);
 }
 
 void Core::handle_mouse_motion(SDL_MouseMotionEvent event)
@@ -209,11 +210,17 @@ bool Core::flip_frame_and_poll_events()
                 break;
 
             case SDL_MOUSEBUTTONDOWN:
-                m_input_state.mouse_click = true;
+                if (event.button.button == SDL_BUTTON_LEFT)
+                    m_input_state.mouse_click = true;
+                else if (event.button.button == SDL_BUTTON_RIGHT)
+                    m_input_state.right_click = true;
                 break;
 
             case SDL_MOUSEBUTTONUP:
-                m_input_state.mouse_click = false;
+                if (event.button.button == SDL_BUTTON_LEFT)
+                    m_input_state.mouse_click = false;
+                else if (event.button.button == SDL_BUTTON_RIGHT)
+                    m_input_state.right_click = false;
                 break;
 
             case SDL_MOUSEWHEEL:
