@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <cstdint>
+#include <string>
 #include <glm/vec2.hpp>
 
 struct Level
@@ -21,8 +22,10 @@ struct Level
     std::vector<Poly> polys;
 
     Level(const std::vector<float>& data);
+    Level(const std::string& serialized_level);
 
-    uint32_t checksum();
+    uint32_t checksum() const;
+    std::string serialize() const;
 };
 
 struct BakedLevel

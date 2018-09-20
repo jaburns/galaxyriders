@@ -112,8 +112,6 @@ static void update_player(WorldState::Player& player, const PlayerInput& old_inp
     if (new_input.down) {
         player.air_stomping = true;
         player.velocity.y -= Physics::PUMP_ACCEL;
-
-        LOG("Player vel", player.velocity.y);
     }
 
     if (!old_input.up && new_input.up && player.grounded > 0) {

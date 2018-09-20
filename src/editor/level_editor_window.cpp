@@ -114,6 +114,11 @@ void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_st
         ImGui::SameLine();
         ImGui::Checkbox("Wireframe", &editor_state.wireframe);
 
+        ImGui::SameLine();
+        if (ImGui::Button("Write Level"))
+            LOG(level.serialize());
+
+        ImGui::SameLine();
         if (ImGui::Button("Step Frame"))
             editor_state.single_frame_step = true;
     ImGui::End();

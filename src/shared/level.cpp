@@ -1,13 +1,43 @@
 #include "level.hpp"
+
 #include "geometry.hpp"
+#include <iomanip>
+#include <sstream>
 #include <glm/geometric.hpp>
 
 #define MAX(x,y) ((x) > (y) ? (x) : (y))
 
+static std::string floats_to_string(const std::vector<float>& floats)
+{
+    std::stringstream result;
+    result << std::hex << std::setfill('0');
+
+    for (int i = 0; i < floats.size(); ++i)
+        result << std::setw(8) << *reinterpret_cast<const uint32_t*>(&floats[i]);
+
+    return result.str();
+}
+
+static std::vector<float> string_to_floats(const std::string &str)
+{
+    std::vector<float> result;
+
+    for (int i = 0, len = str.size(); i < len; i += 8)
+    {
+        std::istringstream converter(str.substr(i, 8));
+        uint32_t int_value;
+        converter >> std::hex >> int_value;
+        result.push_back(*reinterpret_cast<const float*>(&int_value));
+    }
+    
+    return result;
+}
+
 Level::Level(const std::vector<float>& data)
 {
     size_t read = 0;
-    const auto total_polys = data[read++];
+    curve_quality = data[read++];
+    const float total_polys = data[read++];
 
     for (int i = 0; i < total_polys; ++i) 
     {
@@ -25,11 +55,13 @@ Level::Level(const std::vector<float>& data)
 
         polys.push_back(this_poly);
     }
-
-    curve_quality = 0.5f;
 }
 
-uint32_t Level::checksum()
+Level::Level(const std::string& serialized_level)
+    : Level(string_to_floats(serialized_level))
+{ }
+
+uint32_t Level::checksum() const
 {
     uint32_t sum = 0;
 
@@ -44,6 +76,28 @@ uint32_t Level::checksum()
     sum ^= *reinterpret_cast<const uint32_t*>(&curve_quality);
 
     return sum;
+}
+
+std::string Level::serialize() const
+{
+    std::vector<float> floats;
+
+    floats.push_back(curve_quality);
+    floats.push_back(polys.size());
+
+    for (const auto& p : polys)
+    {
+        floats.push_back(p.handles.size());
+
+        for (const auto& h : p.handles)
+        {
+            floats.push_back(h.is_curve ? 1.0f : 0.0f);
+            floats.push_back(h.point.x);
+            floats.push_back(h.point.y);
+        }
+    }
+
+    return floats_to_string(floats);
 }
 
 static float get_dynamic_curve_quality(float quality, const glm::vec2& a, const glm::vec2& b, const glm::vec2& c, const glm::vec2& d)
@@ -213,8 +267,7 @@ BakedLevel::CollisionResult BakedLevel::move_and_collide_circle(glm::vec2 positi
 }
 
 // TODO refactor staticly loaded baked level in to real code
-
-static Level s_loaded_level({1.0f,39.0f,0.0f,383.5131f,-106.7458f,0.0f,-113.6776f,-105.6847f,0.0f,-113.6746f,60.29282f,0.0f,-96.52872f,32.61086f,0.0f,-50.92356f,45.47921f,0.0f,-18.6964f,45.29268f,50.0f,-25.01754f,-11.05426f,50.0f,-17.72211f,-17.35335f,0.0f,-7.363365f,-17.46777f,0.0f,42.68919f,-17.48897f,0.0f,42.70433f,-35.73095f,0.0f,51.56719f,-35.63853f,0.0f,51.57977f,-17.30403f,0.0f,72.65042f,-17.24803f,50.0f,84.98267f,-17.37347f,50.0f,104.8119f,-23.64916f,0.0f,119.17f,-24.08519f,0.0f,140.9189f,-24.10562f,0.0f,140.8984f,-32.22205f,0.0f,158.9607f,-32.22999f,0.0f,158.9369f,-24.02389f,0.0f,169.9889f,-24.09263f,0.0f,169.8818f,-32.26975f,0.0f,187.3026f,-32.27576f,0.0f,187.3126f,-24.13411f,0.0f,198.1484f,-24.13497f,0.0f,198.1618f,-32.24654f,0.0f,214.8907f,-32.1848f,0.0f,214.8486f,-24.13108f,0.0f,249.9169f,-24.10995f,50.0f,260.3928f,-24.31205f,50.0f,268.3945f,-22.60493f,0.0f,280.6699f,-6.108091f,0.0f,290.0646f,8.905025f,0.0f,306.7936f,9.556507f,50.0f,318.8844f,-10.8901f,50.0f,336.2576f,-6.70936f,0.0f,342.5138f,24.31914f,0.0f,383.6403f,245.7591f});
+static Level s_loaded_level("3f4000003f800000421c00000000000043bfc1adc2d57dd900000000c2e35aeec2d35e9100000000c2e3596542712bd900000000c2c10eb44202718500000000c24bb1ba4235eab600000000c195923a42352bb43f800000c1c823ecc130de403f800000c18dc6e2c18ad3a900000000c0eba0b0c18bbdfe00000000422ac1bbc18be96900000000422ad13cc20eec7e00000000424e44cdc20e8ddb00000000424e51afc18a6ea70000000042914d04c189fbf73f80000042a9f721c18afcde3f80000042d19fb1c1bd317b0000000042ee570ac1c0ae7800000000430ceb3dc1c0d84f00000000430ce5fec200e36100000000431ef5f0c200eb8200000000431eefd9c1c030ed000000004329fd29c1c0bdb5000000004329e1bec201143900000000433b4d77c2011a6100000000433b5007c1c112a800000000434625fec1c1146b000000004346296cc200fc75000000004356e405c200bd3c000000004356d93ec1c10c74000000004379eabac1c0e12d3f80000043823247c1c27f143f8000004386327fc1b4d6e600000000438c55bfc0c3757b0000000043910845410e7afb00000000439965954118e7743f800000439f7134c12e3dd93f80000043a820f9c0d6b3140000000043ab41c441c28d990000000043bfd1f54375c254");
 static BakedLevel s_loaded_level_baked(s_loaded_level);
 
 Level& LoadedLevel::get()
