@@ -7,6 +7,8 @@
 #include "palette.hpp"
 #include "audio/audio_player.hpp"
 
+#include "../shared/logger.hpp"
+
 #ifdef _DEBUG
     #include <imgui.h>
     #include <imgui_impl_sdl_gl3.h>
@@ -59,7 +61,7 @@ glm::mat4x4 CoreView::get_perspective_matrix() const
 
 Core::Core(bool fullscreen)
 {
-    if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
         exit(EXIT_FAILURE);
     }
 
@@ -134,6 +136,16 @@ Core::Core(bool fullscreen)
         ImGui::StyleColorsDark();
         ImGui_ImplSdlGL3_NewFrame(m_window);
     #endif
+
+    LOG(SDL_NumJoysticks(), "joysticks were found.");
+    m_controller = nullptr;
+    for (int i = 0; i < SDL_NumJoysticks(); ++i) 
+    {
+        if (! SDL_IsGameController(i)) continue;
+        m_controller = SDL_GameControllerOpen(i);
+        LOG("Using game controller: ", SDL_GameControllerName(m_controller));
+        if (m_controller) break;
+    }
 }
 
 void Core::handle_key_event(SDL_Keycode keycode, bool press)
@@ -230,6 +242,13 @@ bool Core::flip_frame_and_poll_events()
         }
     }
 
+    if (m_controller)
+    {
+        int16_t axis = SDL_GameControllerGetAxis(m_controller, SDL_CONTROLLER_AXIS_LEFTX);
+        m_input_state.player.left |= axis < -5000;
+        m_input_state.player.right |= axis > 5000;
+    }
+
     return still_running;
 }
 
@@ -245,6 +264,9 @@ CoreView Core::get_core_view() const
 
 Core::~Core()
 {
+    if (m_controller)
+        SDL_GameControllerClose(m_controller);
+
     SDL_GL_DeleteContext(m_context);
     SDL_DestroyWindow(m_window);
     SDL_Quit();

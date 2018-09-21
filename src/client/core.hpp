@@ -34,6 +34,7 @@ class Core : public NoCopy
 {
     SDL_Window *m_window;
     SDL_GLContext m_context;
+    SDL_GameController *m_controller;
     int m_window_width;
     int m_window_height;
 
