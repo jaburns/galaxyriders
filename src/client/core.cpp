@@ -61,9 +61,8 @@ glm::mat4x4 CoreView::get_perspective_matrix() const
 
 Core::Core(bool fullscreen)
 {
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) {
+    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) < 0) 
         exit(EXIT_FAILURE);
-    }
 
     m_window_width = 1280;
     m_window_height = 720;
@@ -91,6 +90,10 @@ Core::Core(bool fullscreen)
     #else
         window_flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
     #endif
+    }
+    else
+    {
+        window_flags |= SDL_WINDOW_MAXIMIZED;
     }
 
     m_window = SDL_CreateWindow(
@@ -137,29 +140,37 @@ Core::Core(bool fullscreen)
         ImGui_ImplSdlGL3_NewFrame(m_window);
     #endif
 
+    m_input_state.player_sources.push_back({});
+
     LOG(SDL_NumJoysticks(), "joysticks were found.");
     m_controller = nullptr;
     for (int i = 0; i < SDL_NumJoysticks(); ++i) 
     {
         if (! SDL_IsGameController(i)) continue;
+
         m_controller = SDL_GameControllerOpen(i);
-        LOG("Using game controller: ", SDL_GameControllerName(m_controller));
-        if (m_controller) break;
+
+        if (m_controller)
+        {
+            LOG("Using game controller: ", SDL_GameControllerName(m_controller));
+            m_input_state.player_sources.push_back({});
+            break;
+        }
     }
 }
 
 void Core::handle_key_event(SDL_Keycode keycode, bool press)
 {
-    if (press) {
+    if (press)
         m_keys_down.insert(keycode);
-    } else {
+    else
         m_keys_down.erase(keycode);
-    }
 
-    m_input_state.player.left  = m_keys_down.count(SDLK_a);
-    m_input_state.player.right = m_keys_down.count(SDLK_d);
-    m_input_state.player.up    = m_keys_down.count(SDLK_w);
-    m_input_state.player.down  = m_keys_down.count(SDLK_s);
+    m_input_state.player_sources[0].left  = m_keys_down.count(SDLK_a);
+    m_input_state.player_sources[0].right = m_keys_down.count(SDLK_d);
+    m_input_state.player_sources[0].up    = m_keys_down.count(SDLK_w);
+    m_input_state.player_sources[0].down  = m_keys_down.count(SDLK_s);
+    m_input_state.player_sources[0].join  = m_keys_down.count(SDLK_SPACE);
     m_input_state.pressing_shift = m_keys_down.count(SDLK_LSHIFT);
 }
 
@@ -193,13 +204,15 @@ bool Core::flip_frame_and_poll_events()
             ImGui_ImplSdlGL3_ProcessEvent(&event);
         #endif
 
-        switch (event.type) {
+        switch (event.type) 
+        {
             case SDL_QUIT:
                 still_running = false;
                 break;
 
             case SDL_WINDOWEVENT:
-                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+                if (event.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) 
+                {
                     m_window_width = event.window.data1;
                     m_window_height = event.window.data2;
                     glViewport(0, 0, m_window_width, m_window_height);
@@ -207,9 +220,9 @@ bool Core::flip_frame_and_poll_events()
                 break;
 
             case SDL_KEYDOWN:
-                if (event.key.keysym.sym == SDLK_ESCAPE) {
+                if (event.key.keysym.sym == SDLK_ESCAPE) 
                     still_running = false;
-                }
+
                 handle_key_event(event.key.keysym.sym, true);
                 break;
 
@@ -245,8 +258,11 @@ bool Core::flip_frame_and_poll_events()
     if (m_controller)
     {
         int16_t axis = SDL_GameControllerGetAxis(m_controller, SDL_CONTROLLER_AXIS_LEFTX);
-        m_input_state.player.left |= axis < -5000;
-        m_input_state.player.right |= axis > 5000;
+        m_input_state.player_sources[1].join = SDL_GameControllerGetButton(m_controller, SDL_CONTROLLER_BUTTON_START);
+        m_input_state.player_sources[1].left = axis < -5000;
+        m_input_state.player_sources[1].right = axis > 5000;
+        m_input_state.player_sources[1].up = SDL_GameControllerGetButton(m_controller, SDL_CONTROLLER_BUTTON_A);
+        m_input_state.player_sources[1].down = SDL_GameControllerGetButton(m_controller, SDL_CONTROLLER_BUTTON_X);
     }
 
     return still_running;

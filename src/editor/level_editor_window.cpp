@@ -116,6 +116,11 @@ void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_st
 
     ImGui::Begin("Level Editor", &window_state.open);
         ImGui::SliderFloat("Gravity", &Physics::GRAVITY, 0.0f, 0.1f);
+        ImGui::SliderFloat("Jump Speed", &Physics::JUMP_SPEED, 0.0f, 1.0f);
+        ImGui::SliderFloat("Max Run Speed", &Physics::MAX_RUN_SPEED, 0.0f, 1.0f);
+        ImGui::SliderFloat("Pump Accel", &Physics::PUMP_ACCEL, 0.0f, 0.1f);
+        ImGui::SliderFloat("Walk Accel", &Physics::WALK_ACCEL, 0.0f, 0.1f);
+        ImGui::SliderFloat("Turnaround Mult", &Physics::TURN_AROUND_MULTIPLIER, 0.0f, 5.0f);
 
         if (ImGui::SliderFloat("Level Curve Quality", &level.curve_quality, 0.0f, 1.0f))
             LoadedLevel::bake();

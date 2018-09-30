@@ -9,6 +9,7 @@ struct PlayerInput
     bool right = false;
     bool up = false;
     bool down = false;
+    bool join = false;
 
     PlayerInput() { }
     PlayerInput(const uint8_t *serialized, int serialized_length);

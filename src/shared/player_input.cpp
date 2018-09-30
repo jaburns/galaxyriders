@@ -11,6 +11,7 @@ std::vector<uint8_t> PlayerInput::serialize() const
     if (right) bit_flags |= (1 << 1);
     if (up)    bit_flags |= (1 << 2);
     if (down)  bit_flags |= (1 << 3);
+    if (join)  bit_flags |= (1 << 4);
 
     buf.write_val32(bit_flags);
 
@@ -26,4 +27,5 @@ PlayerInput::PlayerInput(const uint8_t *serialized, int serialized_length)
     right = bit_flags & (1 << 1);
     up    = bit_flags & (1 << 2);
     down  = bit_flags & (1 << 3);
+    join  = bit_flags & (1 << 4);
 }

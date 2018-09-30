@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <vector>
 #include <unordered_map>
 #include <glm/vec3.hpp>
 #include "../shared/world_state.hpp"
@@ -26,8 +27,14 @@ struct ClientState
         void step(const WorldState::Player& old_player, const WorldState::Player& new_player, bool move_left, bool move_right);
     };
 
+    struct LocalPlayerID
+    {
+        int player_id;
+        int input_source_id;
+    };
+
     glm::vec3 camera_pos = { 0.0f, 0.0f, 10.0f };
-    int32_t player_id;
+    std::vector<LocalPlayerID> local_player_ids;
     InputState last_input;
     std::unordered_map<int32_t, PlayerAnimation> player_anims;
     WorldState world;

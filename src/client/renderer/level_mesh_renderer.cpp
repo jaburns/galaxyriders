@@ -43,7 +43,7 @@ static void repair_inset_points(const std::vector<BakedLevel::Point>& original, 
 
 static std::vector<glm::vec2> inset_points(const std::vector<BakedLevel::Point>& points)
 {
-    static constexpr auto DEPTH = 5.0f;
+    static constexpr auto DEPTH = 1.0f;
 
     std::vector<glm::vec2> result(points.size());
 

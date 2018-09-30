@@ -1,6 +1,7 @@
 #pragma once
 
 #include <unordered_set>
+#include <vector>
 #include <glm/vec2.hpp>
 #include <glm/mat4x4.hpp>
 #include "gl.hpp"
@@ -14,7 +15,7 @@ struct InputState
     bool mouse_click = false;
     bool right_click = false;
     bool pressing_shift = false;
-    PlayerInput player;
+    std::vector<PlayerInput> player_sources;
 };
 
 class CoreView

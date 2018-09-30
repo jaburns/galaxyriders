@@ -1,7 +1,10 @@
 #include "client_state.hpp"
 
 #include <unordered_map>
+#include <algorithm>
 #include <glm/glm.hpp>
+
+#include "../shared/logger.hpp"
 
 void ClientState::PlayerAnimation::step(const WorldState::Player& old_player, const WorldState::Player& new_player, bool move_left, bool move_right)
 {
@@ -47,31 +50,79 @@ void ClientState::PlayerAnimation::step(const WorldState::Player& old_player, co
 
 static void step_camera(ClientState& state)
 {
-    const auto target_dist = 10.0f + 20.0f * glm::length(state.world.players.at(state.player_id).velocity);
-    state.camera_pos.x = state.world.players.at(state.player_id).position.x;
-    state.camera_pos.y = state.world.players.at(state.player_id).position.y;
-    state.camera_pos.z += (target_dist - state.camera_pos.z) / 10.0f;
+    if (state.local_player_ids.size() == 1)
+    {
+        const auto player_id = state.local_player_ids[0].player_id;
+        const auto target_dist = 20.0f + 30.0f * glm::length(state.world.players.at(player_id).velocity);
+        state.camera_pos.x = state.world.players.at(player_id).position.x;
+        state.camera_pos.y = state.world.players.at(player_id).position.y;
+        state.camera_pos.z += (target_dist - state.camera_pos.z) / 10.0f;
+    }
+    else if (state.local_player_ids.size() == 2)
+    {
+        const auto a = state.local_player_ids[0].player_id;
+        const auto b = state.local_player_ids[1].player_id;
+
+        const float dist = glm::length(state.world.players.at(a).position - state.world.players.at(b).position);
+
+        state.camera_pos.x = (state.world.players.at(a).position.x + state.world.players.at(b).position.x) / 2.0f;
+        state.camera_pos.y = (state.world.players.at(a).position.y + state.world.players.at(b).position.y) / 2.0f;
+        state.camera_pos.z = dist < 10 ? 10 : dist;
+    }
+}
+
+static void handle_local_player_join(ClientState& state, const InputState& input)
+{
+    for (int i = 0, max = input.player_sources.size(); i < max; ++i)
+    {
+        if (!input.player_sources[i].join) continue;
+        
+        const auto& ids = state.local_player_ids;
+        const bool input_already_used = ids.end() != std::find_if(
+            ids.begin(), ids.end(), 
+            [=](const auto& x) { return x.input_source_id == i; }
+        );
+
+        if (!input_already_used)
+        {
+            state.local_player_ids.push_back({ i, i });
+            state.world.players[i];
+        }
+    }
 }
 
 void ClientState::step(const InputState& input, bool single_step)
 {
-    const auto old_player = world.players.at(player_id);
+    handle_local_player_join(*this, input);
 
-    WorldState::Input inp;
-    inp.player_id = player_id;
-    inp.old_input = last_input.player;
-    inp.new_input = input.player;
+    const auto old_players = world.players;
 
     std::vector<WorldState::Input> inps;
-    inps.push_back(inp);
+
+    for (int i = 0, max = local_player_ids.size(); i < max; ++i)
+    {
+        WorldState::Input inp;
+        inp.player_id = local_player_ids[i].player_id;
+        inp.old_input = last_input.player_sources[local_player_ids[i].input_source_id];
+        inp.new_input = input.player_sources[local_player_ids[i].input_source_id];
+        inps.push_back(inp);
+    }
 
     world.step(inps);
 
-    if (!single_step) {
-        step_camera(*this);
-    }
+    if (!single_step) step_camera(*this);
 
-    player_anims[player_id].step(old_player, world.players.at(player_id), input.player.left, input.player.right);
+    for (int i = 0, max = local_player_ids.size(); i < max; ++i)
+    {
+        const auto id = local_player_ids[i];
+
+        player_anims[id.player_id].step(
+            old_players.at(id.player_id),
+            world.players.at(id.player_id),
+            input.player_sources[id.input_source_id].left,
+            input.player_sources[id.input_source_id].right
+        );
+    }
 
     last_input = input;
 }
