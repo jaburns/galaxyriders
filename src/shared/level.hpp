@@ -18,9 +18,10 @@ struct Level
         std::vector<Handle> handles;
     };
 
-    float curve_quality;
+    float curve_quality = 1.0f;
     std::vector<Poly> polys;
 
+    Level() {}
     Level(const std::vector<float>& data);
     Level(const std::string& serialized_level);
 
@@ -51,6 +52,7 @@ struct BakedLevel
 
     std::vector<Poly> polys;
 
+    BakedLevel() {}
     BakedLevel(const Level& level);
 
     CollisionResult move_and_collide_circle(glm::vec2 position, glm::vec2 delta, float radius, float bounce) const;

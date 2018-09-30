@@ -1,12 +1,38 @@
 #include "editor.hpp"
 
 #include <string>
+#include <sstream>
+#include <fstream>
 
 #include "../shared/world_state.hpp"
 
+#include "../shared/logger.hpp"
+
+#include <nlohmann/json.hpp>
+using json = nlohmann::json;
+
 Editor::Editor()
     : m_state(), m_log_window()
-{}
+{
+    {
+        std::ifstream file("res/levels/level.json");
+        json contents;
+        file >> contents;
+        LoadedLevel::set(Level(contents["level"].get<std::string>()));
+    }
+    {
+        std::ifstream file("res/physics.json");
+        json contents;
+        file >> contents;
+
+        Physics::GRAVITY = contents["gravity"].get<float>();
+        Physics::JUMP_SPEED = contents["jumpSpeed"].get<float>();
+        Physics::MAX_RUN_SPEED = contents["maxRunSpeed"].get<float>();
+        Physics::PUMP_ACCEL = contents["pumpAccel"].get<float>();
+        Physics::WALK_ACCEL = contents["walkAccel"].get<float>();
+        Physics::TURN_AROUND_MULTIPLIER = contents["turnaroundMult"].get<float>();
+    }
+}
 
 static void window_buttons(const std::string& name, WindowState& window_state)
 {

@@ -56,7 +56,6 @@ void main_local()
 {
     Core core(false);
     AudioEventDetector audio;
-    GameRenderer renderer;
     ClientState new_state;
     ClientState last_state = new_state;
     bool editor_paused = false;
@@ -66,6 +65,8 @@ void main_local()
     #else 
         const auto& editor_state = EditorState::NO_EDITOR;
     #endif
+
+    GameRenderer renderer;
 
     auto current_time = std::chrono::high_resolution_clock::now();
     auto accumulator = 0.0f;
