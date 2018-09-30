@@ -6,8 +6,6 @@
 #include "config.hpp"
 #include "serialization.hpp"
 
-#include "logger.hpp"
-
 #ifdef _DEBUG
     #define CONST_DECL
 #else

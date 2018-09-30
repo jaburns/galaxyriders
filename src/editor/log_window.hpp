@@ -1,4 +1,5 @@
 #pragma once
+#include "../shared/global.hpp"
 
 #include <imgui.h>
 #include "window_state.hpp"

@@ -1,3 +1,5 @@
+#include "../shared/global.hpp"
+
 #include <chrono>
 #include <thread>
 #include <iostream>

@@ -1,7 +1,6 @@
 #include "audio_player.hpp"
 
 #include <iostream>
-#include "../../shared/logger.hpp"
 
 SampleBuffer::SampleBuffer()
     : m_buffer()

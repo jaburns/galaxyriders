@@ -7,8 +7,6 @@
 #include "palette.hpp"
 #include "audio/audio_player.hpp"
 
-#include "../shared/logger.hpp"
-
 #ifdef _DEBUG
     #include <imgui.h>
     #include <imgui_impl_sdl_gl3.h>

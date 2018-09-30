@@ -1,4 +1,5 @@
 #pragma once
+#include "../../shared/global.hpp"
 
 #include <glm/mat4x4.hpp>
 #include "../client_state.hpp"

@@ -1,4 +1,5 @@
 #pragma once
+#include "../../shared/global.hpp"
 
 #include "../gl.hpp"
 #include "../../shared/lang_utils.hpp"

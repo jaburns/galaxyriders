@@ -1,4 +1,5 @@
 #pragma once
+#include "../shared/global.hpp"
 
 #include "../client/core.hpp"
 #include "../client/client_state.hpp"

@@ -4,8 +4,6 @@
 #include <algorithm>
 #include <glm/glm.hpp>
 
-#include "../shared/logger.hpp"
-
 void ClientState::PlayerAnimation::step(const WorldState::Player& old_player, const WorldState::Player& new_player, bool move_left, bool move_right)
 {
     if (new_player.grounded > 0) {

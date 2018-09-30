@@ -1,4 +1,5 @@
 #pragma once
+#include "global.hpp"
 
 #include <deque>
 #include <cstdint>

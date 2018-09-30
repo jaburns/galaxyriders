@@ -1,7 +1,5 @@
 #include "log_window.hpp"
 
-#include "../shared/logger.hpp"
-
 void LogWindow::update()
 {
     if (! window_state.prepare_window()) return;

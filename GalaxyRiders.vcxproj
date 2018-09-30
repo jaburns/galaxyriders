@@ -47,6 +47,7 @@
     </ClInclude>
     <ClInclude Include="src\shared\config.hpp" />
     <ClInclude Include="src\shared\geometry.hpp" />
+    <ClInclude Include="src\shared\global.hpp" />
     <ClInclude Include="src\shared\player_input.hpp" />
     <ClInclude Include="src\shared\lang_utils.hpp" />
     <ClInclude Include="src\shared\level.hpp" />

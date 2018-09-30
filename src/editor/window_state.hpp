@@ -1,4 +1,5 @@
 #pragma once
+#include "../shared/global.hpp"
 
 struct WindowState
 {

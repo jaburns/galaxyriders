@@ -6,7 +6,6 @@
 #include <nlohmann/json.hpp>
 
 #include "../shared/world_state.hpp"
-#include "../shared/logger.hpp"
 
 Editor::Editor()
     : m_state(), m_log_window()

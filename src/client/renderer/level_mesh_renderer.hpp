@@ -1,4 +1,5 @@
 #pragma once
+#include "../../shared/global.hpp"
 
 #include <vector>
 #include <glm/vec2.hpp>
