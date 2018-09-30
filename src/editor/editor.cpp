@@ -3,26 +3,23 @@
 #include <string>
 #include <sstream>
 #include <fstream>
+#include <nlohmann/json.hpp>
 
 #include "../shared/world_state.hpp"
-
 #include "../shared/logger.hpp"
-
-#include <nlohmann/json.hpp>
-using json = nlohmann::json;
 
 Editor::Editor()
     : m_state(), m_log_window()
 {
     {
         std::ifstream file("res/levels/level.json");
-        json contents;
+        nlohmann::json contents;
         file >> contents;
         LoadedLevel::set(Level(contents["level"].get<std::string>()));
     }
     {
         std::ifstream file("res/physics.json");
-        json contents;
+        nlohmann::json contents;
         file >> contents;
 
         Physics::GRAVITY = contents["gravity"].get<float>();

@@ -2,13 +2,14 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 
+#include <fstream>
+#include <iomanip>
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
+#include <nlohmann/json.hpp>
 
 #include "../client/core.hpp"
 #include "../shared/world_state.hpp"
-
-#include "../shared/logger.hpp"
 
 static constexpr float EDITMODE_CAMERA_SLIDE = 0.02f;
 static constexpr float EDITMODE_CAMERA_ZOOM  = 1.10f;
@@ -108,6 +109,33 @@ void LevelEditorWindow::step_edit_mode(EditorState& editor_state, ClientState& c
     }
 }
 
+static void save_level_changes()
+{
+    std::ofstream file("res/levels/level.json");
+    nlohmann::json contents;
+
+    contents["level"] = LoadedLevel::get().serialize();
+
+    file << std::setw(4) << contents;
+    file.close();
+}
+
+static void save_physics_changes()
+{
+    std::ofstream file("res/physics.json");
+    nlohmann::json contents;
+
+    contents["gravity"] = Physics::GRAVITY;
+    contents["jumpSpeed"] = Physics::JUMP_SPEED;
+    contents["maxRunSpeed"] = Physics::MAX_RUN_SPEED;
+    contents["pumpAccel"] = Physics::PUMP_ACCEL;
+    contents["walkAccel"] = Physics::WALK_ACCEL;
+    contents["turnaroundMult"] = Physics::TURN_AROUND_MULTIPLIER;
+
+    file << std::setw(4) << contents;
+    file.close();
+}
+
 void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_state, const InputState& input_state, const InputState& last_input, const CoreView& core_view)
 {
     if (!window_state.prepare_window()) return;
@@ -130,8 +158,12 @@ void LevelEditorWindow::update(EditorState& editor_state, ClientState& client_st
         ImGui::Checkbox("Wireframe", &editor_state.wireframe);
 
         ImGui::SameLine();
-        if (ImGui::Button("Write Level"))
-            LOG(level.serialize());
+        if (ImGui::Button("Save Level Changes"))
+            save_level_changes();
+
+        ImGui::SameLine();
+        if (ImGui::Button("Save Physics Changes"))
+            save_physics_changes();
 
         ImGui::SameLine();
         if (ImGui::Button("Step Frame"))

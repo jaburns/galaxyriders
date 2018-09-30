@@ -1,9 +1,8 @@
-
 {
-    "gravity": 0.025,
-    "jumpSpeed": 0.276,
-    "maxRunSpeed": 0.260,
-    "pumpAccel": 0.012,
-    "walkAccel": 0.008,
-    "turnaroundMult": 3.000
+    "gravity": 0.02500000037252903,
+    "jumpSpeed": 0.37299999594688416,
+    "maxRunSpeed": 0.25999999046325684,
+    "pumpAccel": 0.012000000104308128,
+    "turnaroundMult": 3.0,
+    "walkAccel": 0.00800000037997961
 }
