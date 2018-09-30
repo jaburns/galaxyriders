@@ -14,7 +14,8 @@ SampleBuffer::SampleBuffer(const std::string& path)
     uint8_t *wav_buffer;
     uint32_t wav_length;
 
-    if (SDL_LoadWAV(path.c_str(), &wav_spec, &wav_buffer, &wav_length) == NULL) {
+    if (SDL_LoadWAV(path.c_str(), &wav_spec, &wav_buffer, &wav_length) == NULL) 
+    {
         std::cout << "Failed to load .wav file: " << path << std::endl;
         exit(1);
     }
@@ -74,7 +75,8 @@ bool OneShotBufferReader::is_done() const
 
 AudioPlayer::AudioPlayer()
 {
-    if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) {
+    if (SDL_InitSubSystem(SDL_INIT_AUDIO) < 0) 
+    {
         std::cout << "Failed to init SDL audio subsystem." << std::endl;
         exit(1);
     }
@@ -87,7 +89,8 @@ AudioPlayer::AudioPlayer()
     spec.format = AUDIO_F32SYS;
     spec.samples = 256;
 
-    if (SDL_OpenAudio(&spec, NULL) < 0) {
+    if (SDL_OpenAudio(&spec, NULL) < 0) 
+    {
         std::cout << "Couldn't open audio: " << SDL_GetError() << std::endl;
         exit(1);
     }
@@ -112,7 +115,8 @@ void AudioPlayer::audio_callback(StereoSample *stream, int samples)
 {
     std::lock_guard<std::mutex> lock(m_mutex);
 
-    for (auto& reader : m_readers) {
+    for (auto& reader : m_readers) 
+    {
         reader.mix_into_buffer(stream, samples);
     }
 
