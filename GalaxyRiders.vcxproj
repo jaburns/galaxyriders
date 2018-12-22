@@ -58,6 +58,7 @@
     <ClInclude Include="src\shared\world_state.hpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="external\imgui\imgui_widgets.cpp" />
     <ClCompile Include="external\lodepng\lodepng.cpp" />
     <ClCompile Include="external\tinyxml2\tinyxml2.cpp" />
     <ClCompile Include="external\imgui\imgui.cpp">

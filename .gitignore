@@ -18,3 +18,4 @@ external/glew-2.1.0
 Game.app
 x64/Debug_server/
 imgui.ini
+.vs/
